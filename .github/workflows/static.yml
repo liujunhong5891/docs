@@ -19,9 +19,14 @@ jobs:
           # cache-dependency-path: 'pnpm-lock.yaml'
       # - run: yarn install --frozen-lockfile
 
-      - name: Build
+
+      - name: Build-1
         # run : npm run build
-        run: yarn docs:build
+        run: pnpm i 
+      - name: Build-2
+        run: pnpm run dev
+      - name: Build-3
+        run: npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
