@@ -284,7 +284,7 @@ kubectl -nargocd get apps --watch
 ## 4.验证流水线自动执行
 用户侧代码库（此处指demo-user-project）提交代码之后，使用tekton dashboard观察流水线是否自动执行。 
 本次示例的tekton dashboard地址为：http://tekton.pipeline1.119-8-99-179.nip.io:30080。
-  ![avatar](images/CI-10.jpg) 
+  <!-- ![avatar](images/CI-10.jpg)  -->
 - 提交用户侧代码，观察流水线已经触发自动执行；
 - 发现流水线执行时卡顿在git-clone-deployment task，检查vault服务端未配置授权。确认auth方法的path为pipeline1-cluster（前置步骤已配置），role为user-pipelines，sa为default，ns为user-pipelines，授权policy为git-github-user-deployments-default-readwrite，完整检查流水线的secrets涉及的policy还包括repo-github-container-lanbing-default-readwrite;
 - 通过vault界面给path为pipeline1-cluster的auth方法配置role，使用上述信息配置；
