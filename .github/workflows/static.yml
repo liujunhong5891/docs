@@ -14,15 +14,14 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          # cache: yarn
-          cache: npm 
-          # cache-dependency-path: ./package.json
-      # - run: yarn install --frozen-lockfile
+          node-version: 18
+          cache: yarn
+          cache-dependency-path: 'pnpm-lock.yaml'
+      - run: yarn install --frozen-lockfile
 
       - name: Build
-        run : npm run build
-        # run: yarn docs:build
+        # run : npm run build
+        run: yarn docs:build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
