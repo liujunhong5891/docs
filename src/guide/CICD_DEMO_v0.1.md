@@ -4,7 +4,7 @@
 
 
 # 工具及其关系概览
-![avatar](images/CI-1.jpg) 
+<!-- ![avatar](images/CI-1.jpg)  -->
 - metallb: k8s的lb工具。
 - traefik: 反向代理工具，用于ingress的实现。
 - cert-manager: 证书签发工具。
@@ -244,7 +244,7 @@ kubectl -nargocd get apps --watch
 通过界面访问安装在k8s空集群上的argoCD（此处示例的argoCD访问地址为https://argocd.119-8-99-179.nip.io:30443），并执行脚本cmds/get-argocd-admin-pwd.sh，可获取argoCD的初始密码；初始化结束后观察app状态，两个app未完成同步，其他app处于已同步状态。
 - cert-manager：vault服务端未设置了宿主集群（原k8s空集群）的auth授权，导致cert-manager app同步异常； 
 - root：新生成的vcluster集群没有注册到宿主集群的argoCD，导致runtime-appset、runtime-argocd-appset同步异常。
-![avatar](images/argocd_install_2.jpg)
+<!-- ![avatar](images/argocd_install_2.jpg) -->
 
 ### 修复cert-manager app - 配置vault授权
 
