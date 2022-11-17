@@ -19,7 +19,8 @@ jobs:
           # cache-dependency-path: 'pnpm-lock.yaml'
       # - run: yarn install --frozen-lockfile
 
-
+      - name: Build-0
+        run: npm install -g pnpm
       - name: Build-1
         # run : npm run build
         run: pnpm i 
