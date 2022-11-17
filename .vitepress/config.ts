@@ -132,12 +132,20 @@ export const sidebar: ThemeConfig['sidebar'] = {
         {
           text: 'Quick Start',
           link: '/guide/quick-start'
+        },
+        {
+          text: 'CICD_DEMO',
+          link: '/guide/CICD_DEMO_v0.1'
         }
       ]
     },
     {
       text: 'Essentials',
       items: [
+        {
+          text: 'CICD_FAQ',
+          link: '/guide/essentials/CICD_FAQ'
+        },
         {
           text: 'Creating an Application',
           link: '/guide/essentials/application'
@@ -564,6 +572,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
+  outDir: '.vitepress/dist',
 
   head: [
     ['meta', { name: 'theme-color', content: '#3c8772' }],
