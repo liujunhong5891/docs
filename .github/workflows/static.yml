@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          cache-dependency-path: 'pnpm-lock.yaml'
+          # cache-dependency-path: 'pnpm-lock.yaml'
       - run: yarn install --frozen-lockfile
 
       - name: Build
