@@ -132,11 +132,11 @@ export const sidebar: ThemeConfig['sidebar'] = {
         {
           text: 'Quick Start',
           link: '/guide/quick-start'
-        },
-        {
-          text: 'CICD_DEMO',
-          link: '/guide/CICD_DEMO_v0.1'
         }
+        // {
+        //   text: 'CICD_DEMO',
+        //   link: '/guide/CICD_DEMO_v0.1'
+        // }
       ]
     },
     {
