@@ -24,8 +24,8 @@ jobs:
       - name: Build-1
         # run : npm run build
         run: pnpm i 
-      - name: Build-2
-        run: pnpm run dev
+      # - name: Build-2
+      #   run: pnpm run dev
       - name: Build-3
         run: npm run build
 
