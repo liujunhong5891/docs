@@ -1,10 +1,2 @@
----
-page: true
-title: Vue.js - The Progressive JavaScript Framework
----
-
-<script setup>
-import Home from '@theme/components/Home.vue'
-</script>
-
-<Home />
+# 自定义首页
+自定义首页，暂未填充内容。
