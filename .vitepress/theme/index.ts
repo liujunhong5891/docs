@@ -21,7 +21,7 @@ export default Object.assign({}, VPTheme, {
       // banner: () => h('div', {}, [
       //   h(VueMasteryBanner)
       // ]),
-      'sidebar-top': () => h(PreferenceSwitch)
+      // 'sidebar-top': () => h(PreferenceSwitch)
       // 'aside-mid': () => h(SponsorsAside)
     })
   },
