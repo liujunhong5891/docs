@@ -23,7 +23,6 @@ export default Object.assign({}, VPTheme, {
       // ]),
       // 'sidebar-top': () => h(PreferenceSwitch)
       // 'aside-mid': () => h(SponsorsAside)
-      sidebar: 'false' 
     })
   },
   enhanceApp({ app }: { app: App }) {
