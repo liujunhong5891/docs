@@ -1,3 +1,7 @@
+---
+footer: false
+---
+
 # test-1
 test-1
 
