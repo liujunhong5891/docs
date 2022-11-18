@@ -661,8 +661,9 @@ export default defineConfigWithTheme<ThemeConfig>({
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
     },
+    sidebarDepth : 1
     // toc: { level: [1, 2, 3] },
-    headers: { level: [1, 2, 3] }
+    // headers: { level: [1, 2, 3] }
   },
 
   vite: {
