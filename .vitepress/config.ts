@@ -653,11 +653,11 @@ export default defineConfigWithTheme<ThemeConfig>({
     // }
   },
 
-  markdown: {
-    config(md) {
-      md.use(headerPlugin).use(jobsPlugin)
-    }
-  },
+  // markdown: {
+  //   config(md) {
+  //     md.use(headerPlugin).use(jobsPlugin)
+  //   }
+  // },
 
   vite: {
     define: {
