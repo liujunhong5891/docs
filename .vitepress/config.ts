@@ -619,7 +619,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav,
     sidebar,
-    sidebarDepth : 3
+    sidebarDepth : 2
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
