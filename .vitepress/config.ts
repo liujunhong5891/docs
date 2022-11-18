@@ -577,6 +577,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
+  sidebarDepth: '2',
   // base: '/docs/',
 
   head: [
@@ -619,7 +620,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav,
     sidebar,
-    sidebarDepth: 0,
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
