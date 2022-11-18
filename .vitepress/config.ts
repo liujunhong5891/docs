@@ -661,7 +661,8 @@ export default defineConfigWithTheme<ThemeConfig>({
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
     },
-    toc: { level: [1, 2, 3] }
+    toc: { level: [1, 2, 3] },
+    headers: { level: [1, 2, 3] }
   },
 
   vite: {
