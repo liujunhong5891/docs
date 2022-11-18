@@ -140,6 +140,10 @@ export const sidebar: ThemeConfig['sidebar'] = {
         {
           text: 'CICD Quick Start2',
           link: '/guide/CICD-quickStart'
+        },
+        {
+          text: 'customer_test_2',
+          link: '/guide/test-1'
         }
       ]
     },
@@ -663,7 +667,7 @@ export default defineConfigWithTheme<ThemeConfig>({
       md.use(headerPlugin).use(jobsPlugin)
     },
     // // toc: { level: [1, 2, 3] },
-    headers: { level: [1,2, 3, 4] }
+    headers: { level: [2, 3, 4] }
   },
 
   vite: {
