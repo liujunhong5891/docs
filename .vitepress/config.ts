@@ -619,6 +619,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav,
     sidebar,
+    sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
@@ -660,8 +661,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
-    },
-    sidebarDepth : 3
+    }
     // // toc: { level: [1, 2, 3] },
     // headers: { level: [2, 3, 4] }
   },
