@@ -2,12 +2,12 @@
 footer: false
 ---
 
-# 目标
+## 目标
 1. 基于开源工具搭建CI环境； 
 2. 基于CI环境实现一个代码提交即构建的流水线。 
 
 
-# 工具及其关系概览
+## 工具及其关系概览
 <!-- ![avatar](images/CI-1.jpg)  -->
 - metallb: k8s的lb工具。
 - traefik: 反向代理工具，用于ingress的实现。
@@ -18,7 +18,7 @@ footer: false
 - argo-events: 提供事件监听、转换和触发的工具。
 - tekton: k8s原生的流水线工具。
 
-# 前提
+## 前提
 
 1. 搭建一个空的kubernetes集群； 
 2. 搭建一个vault服务端实例； 
@@ -33,7 +33,7 @@ footer: false
    
 
 
-## 搭建一个空的k8s集群
+### 搭建一个空的k8s集群
 搭建一个空的kubernetes集群。此处以K3s作为示例。
 ```Shell
 # 注意替换tls-san的IP
@@ -43,7 +43,7 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-config
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
-## 搭建一个vault实例
+### 搭建一个vault实例
 搭建一个vault实例。vault有多种安装方式，包括根据安装包、helm、源码和docker安装。此处以安装包安装作为示例。
 
 - 下载vault并配置; 
@@ -94,7 +94,7 @@ export KUBECONFIG=~/.kube/config
 
 
 
-## 安装argocd命令行
+### 安装argocd命令行
 查看argoCD对应版本，下载配套的二进制文件安装包（下载链接参见附件），下载完成后拷贝文件到已有的PATH目录（例如/usr/local/bin）。 
 ```
 # 执行argocd version命令，查看版本验证是否安装成功
@@ -102,7 +102,7 @@ argocd version
 ```
 
 
-# 实施步骤
+## 实施步骤
 
 总体上包括四部分，包括：
 1. **维护密钥**：在vault服务端维护本次DEMO涉及的所有密钥，该步骤只包含存储密钥，并为其设置policy；至于授权方法得等到配套信息在后续步骤完全生成后才能完成；
@@ -111,8 +111,8 @@ argocd version
 4. **验证流水线自动执行**：在用户侧代码库（此处指demo-user-project）提交代码，观察tekton控制面板是否自动执行流水线。
 
 
-## 1.维护密钥
-### 维护cert-manager相关密钥
+### 1.维护密钥
+#### 维护cert-manager相关密钥
 用于存放cert-manager所需的证书和私钥的secret（此处以现成的证书文件作为示例）。通过vault界面配置vault的secrets、policy，后续再配置auth-kubernetes。
 - 创建secrets：启用kv secrets，path为pki，并设置secret path为root、secret data分别为tls.crt和tls.key，为其配置预先准备的证书文件; 
 - 创建policy：为确保可读性，将policy名称设置为secrets路径同名，其中“/”用“-”替代（pki-root）； policy表示具备指定路径下secrets的只读权限。
@@ -122,7 +122,7 @@ argocd version
    }
    ```
 
-### 维护argo-events相关密钥
+#### 维护argo-events相关密钥
 用于argoevents在github上创建webhook的secret。包括两个secrets：
 - argoevents访问github api来生成webhook，即github accesstoken。操作路径为github代码库demo-user-project的上下文，顶部账号的Settings - Developer settings - Personal access token - Token(classic)，新增classic类型的token，填写描述、选择授权范围（授予repo和project的权限）后提交即可。注意保存该token信息，后续将不可以再查看； 
 - 为了防止webhook被非法调用，创建github secret，用于确保触发webhook的是合法请求。操作路径为github代码库demo-user-project的上下文，Settings-security-Secrets-Actions，新增repository secrets，secrets可以是随机字符串，例如uuid。
@@ -138,7 +138,7 @@ argocd version
 
 
 
-### 维护pipelines推送镜像相关密钥
+#### 维护pipelines推送镜像相关密钥
 执行流水线涉及两个secrets。包括：向github仓库推送镜像需要的授权信息、以及从deployment代码库（此处指user-deployments）拉取代码并更新应用部署资源文件所需要的ssh私钥。此处先配置推送镜像的secret。
 - 确定用于向github仓库推送镜像的账号密码，格式为：<account_name>:<personal_access_tokens>，例如：zhangsan:ghp_xxxxxxxxxxxxxxxx，并通过base64加密后作为secrets备用；注意该access token需要有github package的写入权限； 
 
@@ -150,7 +150,7 @@ argocd version
       capabilities = ["read"]
    }
    ```
-### 维护pipelines提交部署配置相关密钥
+#### 维护pipelines提交部署配置相关密钥
 用于流水线修改应用部署配置的secret。
 - 获取需要向github deployment代码库（此处指user-deployments）推送代码涉及的密钥；
   ```Shell 
@@ -177,7 +177,7 @@ argocd version
    }
    ```
 
-## 2.安装argoCD
+### 2.安装argoCD
 在k8s空集群上手工安装argocd，供后续基于该argocd自动安装一系列工具。
 ```Shell  
 # 切换到k8s空集群的上下文，fork一份demo代码到宿主机的某目录; 
@@ -188,10 +188,10 @@ sh install-argocd.sh
 sh patch-argocd-server.sh
 ```
 
-## 3.安装argoCD app
+### 3.安装argoCD app
 根据k8s空集群上已安装的argocd，手工创建根project、app，使得argocd通过app of apps的方式自动安装运行在k8s空集群上的资源、运行时集群以及运行时集群上的资源。
 
-### 修改代码相关配置
+#### 修改代码相关配置
 需要变更的代码主要包括argocd app监听的源代码库地址（需变更为fork出来的代码库）、宿主集群（k8s空集群）的地址、运行时集群的地址，以及地址变更影响的配套资源，详情参见“附件-代码库变更配置”。
 - 根据脚本模板sed-demo.sh，按需替换，详见下文代码注释。
 ```shell
@@ -235,7 +235,7 @@ sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/te
 sh sed-demo.sh
 ```
 
-### 手工安装根project和根app
+#### 手工安装根project和根app
 通过命令手工安装根project和根app。
 ``` 
 # cd到demo代码库根目录，手工安装根project
@@ -250,7 +250,7 @@ kubectl -nargocd get apps --watch
 - root：新生成的vcluster集群没有注册到宿主集群的argoCD，导致runtime-appset、runtime-argocd-appset同步异常。
 <!-- ![avatar](images/argocd_install_2.jpg) -->
 
-### 修复cert-manager app - 配置vault授权
+#### 修复cert-manager app - 配置vault授权
 
 对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
 - 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
@@ -258,7 +258,7 @@ kubectl -nargocd get apps --watch
 - 对于当前的auth方法，创建配套role，确保cert-manager app可以获取vault中相应的secrets。其中role名称为cert-manager，授权sa为default，授权ns为cert-manager, 授权policy为pki-root，将以上信息保存为auth方法的role;
 - 回到argoCD访问界面，进入cert-manager app，删除名称为cert-manager-secretstore（类型=SecretStore）、root-issuer（类型=ExternalSecret）、org-issuer（类型=ClusterIssuer）的资源，强制其重新生成；再次观察cert-manager app状态为已同步。
 
-### 修复root app - 注册集群
+#### 修复root app - 注册集群
 对于root app，手工注册vcluster，使得root app的两个appset可以找到目标部署集群完成部署。
 - 执行脚本cmds目录下的脚本get-vcluster-kubeconfig.sh获取vcluster的config文件，并保存到宿主机指定目录；并修改config文件的clusters[0].server=https:<内网IP>:<vcluster1-svc的nodeport>、contexts[0].name=<自定义名称>、  current-context=<自定义名称>; 
 - 通过argocd命令添加vcluster；
@@ -276,7 +276,7 @@ kubectl -nargocd get apps --watch
    ```
 - 回到argoCD访问界面，进入root app，删除runtime-appset和runtime-argocd-appset，强制其重新生成，观察root app的同步状态更新为已同步。
 
-### 修复pipeline1 app - 配置vault授权
+#### 修复pipeline1 app - 配置vault授权
 当root app状态显示为已同步，通过安装在vcluster上的argoCD访问界面，观察pipeline1 app的相关资源是否安装就绪。
 - 查看argoCD的界面访问地址（此处示例为https://argocd.pipeline1.119-8-99-179.nip.io:30443），切换到vcluster集群的上下文，使用cmds目录下的get-argocd-admin-pwd.sh脚本可获取初始密码； 
 - 观察安装在vcluster上的app状态，此时发现有user-namespaces、argo-events两个app并未处于同步状态。user-namespaces app的pvc一直是pending状态，由于pvc暂未被pods使用，这是正常现像；argo-events app的secretStore资源异常，vault服务端需要给vcluster集群授权；
@@ -285,7 +285,7 @@ kubectl -nargocd get apps --watch
   - 对于当前auth-kubernetes的方法，创建配套role，确保argo-events app可以获取vault中相应的secrets。 其中role=argo-events-sa，授权sa=argo-events-sa，授权ns=argo-events, 授权policy=git-github-user-project-argoevents-webhook-access; 将以上信息提交为上述auth方法的role;
 - 通过argoCD界面删除argo-events app的资源，包括名称为webhook-secretstore（类型=SecretStore）、github-access（类型=ExternalSecret）、webhook（类型=EventSource）的资源，强制其重新生成；观察argoevents app状态为已同步。
 
-## 4.验证流水线自动执行
+### 4.验证流水线自动执行
 用户侧代码库（此处指demo-user-project）提交代码之后，使用tekton dashboard观察流水线是否自动执行。 
 本次示例的tekton dashboard地址为：http://tekton.pipeline1.119-8-99-179.nip.io:30080。
   <!-- ![avatar](images/CI-10.jpg)  -->
@@ -295,14 +295,14 @@ kubectl -nargocd get apps --watch
 - 再次提交用户侧代码，观察流水线执行成功。
 
 
-# 问题
+## 问题
 ## 获取vault服务端密钥报403异常
 1. vault服务端授权k8s，客户端访问服务端403异常。
    - 为vault server启用auth的sa，没有设置rbac.authorization.k8s.io的资源权限。注意检查sa配套的rbac。
 2. 使用github私钥，拉取代码库时异常； 此时证书通过本地客户端验证正确、vault服务端auth-k8s授权验证正确。
    - 使用valut ui保存secrets时，增加一行空行；属于vault自身的缺陷。
    
-## 删除argoCD app命名空间卡顿在terminating状态
+### 删除argoCD app命名空间卡顿在terminating状态
 argoCD app配置错误，更新配置后删除app，相关资源无法删除也无法正常安装、命名空间状态为terminating状态。
 1. 通过命令行登录argocd，查询argoevent app的资源及其状态; 逐项手工删除处于未删除状态的资源； 
    ``` 
@@ -311,7 +311,7 @@ argoCD app配置错误，更新配置后删除app，相关资源无法删除也�
    ```
 2. 检查卡顿状态的app的finalizers属性，删除其value（可通过argocd界面简化操作）。
 
-## 向github推送代码异常
+### 向github推送代码异常
 1. 使用https协议向github推送代码时，异常提示：OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to github.com:443
    - 执行以下命令，可以短时间内缓解问题
       ``` 
@@ -324,17 +324,17 @@ argoCD app配置错误，更新配置后删除app，相关资源无法删除也�
    - github的账号密码认证方式不同于gitlab、以及早期版本；而是通过access token的方式替代账号密码进行认证； 
    - github操作路径：个人图标-settings-developer settings-personl access token，生成token，并按需授予repo的权限；再次Push时，替换密码输入即可。 
 
-## argocd无法通过浏览器访问界面
+### argocd无法通过浏览器访问界面
 1. argocd svc在反复操作过程，忘记执行patch-argocd-server.sh操作，导致svc没有增加traefik的注解。
 
-## cert manager生成ClusterIssuer异常
+### cert manager生成ClusterIssuer异常
 cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypair for CA issuer: certificate is not a CA。
 1. 生成的secrets内容不符合CA证书。使用DEMO的相同证书，或者使用openssl重新生成证书，再写入vault。
 
 
-# 附件
+## 附件
 
-## 链接参考
+### 链接参考
 **Github DEMO示例：**
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets
 https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
@@ -365,7 +365,7 @@ https://argoproj.github.io/argo-events/eventsources/webhook-authentication/
 **推送image到github仓库：**
 https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
-## **代码库变更配置**
+### **代码库变更配置**
 | 代码库 | 文件相对路径 | 变更配置 | 配置说明 |
 | ----- | ----- | ----- | ----- |
 | demo-pipeline-argoevents-tekton | app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
@@ -400,7 +400,7 @@ https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 | demo-user-project | pipelines/test-pipeline.yaml | spec.pipelineSpec.tasks[4].params[0].value  | 变更sed命令处理的镜像路径字符串 |
 | demo-user-deployments | deployments/test/devops-sample-svc.yaml | (ingress)spec.rules.host[0]  | 变更为宿主集群ip的host地址 |
 
-# 未完成（2022.11.12，正式提交后删除该章节）
+## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
 1. 网络相关：traefik、ingress、metallab
 2. 证书相关：cert-manager
