@@ -20,10 +20,11 @@ const excludedPages = [
   'about/coc.md',
   'sponsor/index.md',
   'translations/index.md',
-  // 自定义md begin
+  // 自定义markdown begin
+  'index.md',
   'guide/customer_test.md', 
-  'index.md'
-  // 自定义md end
+  'guide/CICD_DEMO_v0.1'
+  // 自定义markdown end
 ]
 
 export const jobsPlugin = (md: MarkdownIt) => {
