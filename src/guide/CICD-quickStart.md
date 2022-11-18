@@ -31,7 +31,7 @@ footer: false
 > https://github.com/lanbingcloud/demo-user-project  
 > 
 > https://github.com/lanbingcloud/demo-user-deployments
-   
+
 ### 搭建一个空的k8s集群
 搭建一个空的kubernetes集群。此处以K3s作为示例。
 ```Shell
@@ -42,6 +42,7 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-config
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
+
 ### 搭建一个vault实例
 搭建一个vault实例。vault有多种安装方式，包括根据安装包、helm、源码和docker安装。此处以安装包安装作为示例。
 
@@ -91,15 +92,12 @@ export KUBECONFIG=~/.kube/config
    pkill -9 vault
    ```
 
-
-
 ### 安装argocd命令行
 查看argoCD对应版本，下载配套的二进制文件安装包（下载链接参见附件），下载完成后拷贝文件到已有的PATH目录（例如/usr/local/bin）。 
 ```
 # 执行argocd version命令，查看版本验证是否安装成功
 argocd version
 ```
-
 
 ## 实施步骤
 
@@ -108,7 +106,6 @@ argocd version
 2. **安装argoCD**：在宿主集群（k8s空集群）上手工安装argocd，供后续基于该argocd自动安装一系列工具； 
 3. **安装argoCD app**:根据宿主集群上已安装的argocd，手工创建根project、app，使得argocd通过app of apps的方式自动安装宿主集群上的资源、运行时集群以及运行时集群上的资源; 
 4. **验证流水线自动执行**：在用户侧代码库（此处指demo-user-project）提交代码，观察tekton控制面板是否自动执行流水线。
-
 
 ### 1.维护密钥
 #### 维护cert-manager相关密钥
@@ -135,8 +132,6 @@ argocd version
   }
   ```
 
-
-
 #### 维护pipelines推送镜像相关密钥
 执行流水线涉及两个secrets。包括：向github仓库推送镜像需要的授权信息、以及从deployment代码库（此处指user-deployments）拉取代码并更新应用部署资源文件所需要的ssh私钥。此处先配置推送镜像的secret。
 - 确定用于向github仓库推送镜像的账号密码，格式为：<account_name>:<personal_access_tokens>，例如：zhangsan:ghp_xxxxxxxxxxxxxxxx，并通过base64加密后作为secrets备用；注意该access token需要有github package的写入权限； 
@@ -149,6 +144,7 @@ argocd version
       capabilities = ["read"]
    }
    ```
+
 #### 维护pipelines提交部署配置相关密钥
 用于流水线修改应用部署配置的secret。
 - 获取需要向github deployment代码库（此处指user-deployments）推送代码涉及的密钥；
@@ -250,7 +246,6 @@ kubectl -nargocd get apps --watch
 <!-- ![avatar](images/argocd_install_2.jpg) -->
 
 #### 修复cert-manager app - 配置vault授权
-
 对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
 - 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
 - 启用auth方法，类型为kubernetes，path为host-cluster，并且需要将CA证书、token和host等上述信息上传或填写到vault的auth方法；
@@ -293,7 +288,6 @@ kubectl -nargocd get apps --watch
 - 通过vault界面给path为pipeline1-cluster的auth方法配置role，使用上述信息配置；
 - 再次提交用户侧代码，观察流水线执行成功。
 
-
 ## 问题
 ## 获取vault服务端密钥报403异常
 1. vault服务端授权k8s，客户端访问服务端403异常。
@@ -332,7 +326,6 @@ cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypa
 
 
 ## 附件
-
 ### 链接参考
 **Github DEMO示例：**
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets
