@@ -573,12 +573,12 @@ export default defineConfigWithTheme<ThemeConfig>({
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
-  base: '/docs/',
+  // base: '/docs/',
 
   head: [
-    ['meta', { name: 'theme-color', content: '#3c8772' }],
-    ['meta', { name: 'twitter:site', content: '@vuejs' }],
-    ['meta', { name: 'twitter:card', content: 'summary' }],
+    // ['meta', { name: 'theme-color', content: '#3c8772' }],
+    // ['meta', { name: 'twitter:site', content: '@vuejs' }],
+    // ['meta', { name: 'twitter:card', content: 'summary' }],
     [
       'meta',
       {
