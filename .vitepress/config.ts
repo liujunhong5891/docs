@@ -614,7 +614,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   themeConfig: {
     nav,
-    sidebar,
+    sidebar
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
@@ -627,10 +627,10 @@ export default defineConfigWithTheme<ThemeConfig>({
     //   }
     // },
 
-    carbonAds: {
-      code: 'CEBDT27Y',
-      placement: 'vuejsorg'
-    }
+    // carbonAds: {
+    //   code: 'CEBDT27Y',
+    //   placement: 'vuejsorg'
+    // }
 
     // socialLinks: [
     //   { icon: 'languages', link: '/translations/' },
