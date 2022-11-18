@@ -3,7 +3,6 @@ import MarkdownIt from 'markdown-it'
 const excludedPages = [
   'guide/introduction.md',
   'guide/quick-start.md',
-  'guide/customer_test.md', // 测试
   'guide/essentials/computed.md',
   'guide/essentials/conditional.md',
   'guide/essentials/list.md',
@@ -20,7 +19,11 @@ const excludedPages = [
   'about/community-guide.md',
   'about/coc.md',
   'sponsor/index.md',
-  'translations/index.md'
+  'translations/index.md',
+  // 自定义md begin
+  'guide/customer_test.md', 
+  'index.md'
+  // 自定义md end
 ]
 
 export const jobsPlugin = (md: MarkdownIt) => {
