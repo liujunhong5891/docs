@@ -1,3 +1,7 @@
+---
+footer: false
+---
+
 # 目标
 基于vuejs项目和github搭建文档服务环境。
 
