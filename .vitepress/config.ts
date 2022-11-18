@@ -135,7 +135,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         },
         {
           text: 'CICD_DEMO',
-          link: '/guide/CICD_DEMO_v0.1'
+          link: '/guide/customer_test'
         }
       ]
     },
