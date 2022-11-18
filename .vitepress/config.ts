@@ -661,9 +661,9 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
-    }
+    },
     // // toc: { level: [1, 2, 3] },
-    // headers: { level: [2, 3, 4] }
+    headers: { level: [1,2, 3, 4] }
   },
 
   vite: {
