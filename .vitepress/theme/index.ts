@@ -18,9 +18,9 @@ export default Object.assign({}, VPTheme, {
     // @ts-ignore
     return h(VPTheme.Layout, null, {
       // banner: () => h(Banner),
-      banner: () => h('div', {}, [
-        // h(VueMasteryBanner)
-      ]),
+      // banner: () => h('div', {}, [
+      //   h(VueMasteryBanner)
+      // ]),
       'sidebar-top': () => h(PreferenceSwitch),
       'aside-mid': () => h(SponsorsAside)
     })
