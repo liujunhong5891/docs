@@ -141,6 +141,10 @@ export const sidebar: ThemeConfig['sidebar'] = {
           text: 'CICD Quick Start',
           link: '/guide/CICD-quickStart'
         },
+        {
+          test: 'customer_test2',
+          link: '/guide/test'
+        }
       ]
     },
     {
