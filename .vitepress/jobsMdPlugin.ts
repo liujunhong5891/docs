@@ -3,6 +3,7 @@ import MarkdownIt from 'markdown-it'
 const excludedPages = [
   'guide/introduction.md',
   'guide/quick-start.md',
+  'guide/CICD_DEMO_v0.1.md', // 测试
   'guide/essentials/computed.md',
   'guide/essentials/conditional.md',
   'guide/essentials/list.md',
