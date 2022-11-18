@@ -592,24 +592,24 @@ export default defineConfigWithTheme<ThemeConfig>({
         rel: 'preconnect',
         href: 'https://sponsors.vuejs.org'
       }
-    ],
-    [
-      'script',
-      {},
-      fs.readFileSync(
-        path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
-        'utf-8'
-      )
-    ],
-    [
-      'script',
-      {
-        src: 'https://cdn.usefathom.com/script.js',
-        'data-site': 'XNOLWPLB',
-        'data-spa': 'auto',
-        defer: ''
-      }
     ]
+    // [
+    //   'script',
+    //   {},
+    //   fs.readFileSync(
+    //     path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
+    //     'utf-8'
+    //   )
+    // ],
+    // [
+    //   'script',
+    //   {
+    //     src: 'https://cdn.usefathom.com/script.js',
+    //     'data-site': 'XNOLWPLB',
+    //     'data-spa': 'auto',
+    //     defer: ''
+    //   }
+    // ]
   ],
 
   themeConfig: {
