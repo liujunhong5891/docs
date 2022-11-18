@@ -1,6 +1,7 @@
 ---
 footer: false
 ---
+# CICD-QuickStart
 
 ## 目标
 1. 基于开源工具搭建CI环境； 
@@ -31,7 +32,7 @@ footer: false
 > 
 > https://github.com/lanbingcloud/demo-user-deployments
    
-### `搭建一个空的k8s集群` {#搭建一个空的k8s集群}
+### 搭建一个空的k8s集群
 搭建一个空的kubernetes集群。此处以K3s作为示例。
 ```Shell
 # 注意替换tls-san的IP
