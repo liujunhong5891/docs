@@ -201,7 +201,7 @@ cat sed-demo.sh
 # 代码库：demo-pipeline-argoevents-tekton
 # 批量替换argocd监听代码库为fork下来的代码库地址； 
 sed -i -e "s#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git#g"  `grep https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换宿主集群IP地址； 
+# 批量替换替换宿主集群IP地址、宿主机IP、vault服务端IP； 
 sed -i -e "s#192.168.0.184#192.168.0.243#g"  `grep 192.168.0.184 -rl demo-pipeline-argoevents-tekton-1`
 # 批量替换ingress等nip的地址：
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  `grep 119-8-58-20 -rl demo-pipeline-argoevents-tekton-1`
@@ -537,7 +537,7 @@ spec:
 ...
 ```
 
-##### 2.替换宿主集群IP地址
+##### 2.替换宿主集群IP地址、宿主机IP、vault服务端IP
 相对路径：vclusters/vcluster1/vcluster1-app.yaml
 ```yaml{12}
 ...
@@ -637,8 +637,7 @@ spec:
         injector:
           enabled: true
           authPath: auth/host-cluster
-          # 替换为vault服务的IP和端口
-          externalVaultAddr: http://192.168.0.243:31820 
+          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
 ...
 ```
 
@@ -680,8 +679,7 @@ spec:
         injector:
           enabled: true
           authPath: auth/pipeline1-cluster
-          ## 替换为vault服务的IP和端口
-          externalVaultAddr: http://192.168.0.243:31820  
+          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
 ...
 ```
 
