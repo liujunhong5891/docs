@@ -113,7 +113,7 @@ argocd version
 
 
 ### 1.维护密钥
-### 维护cert-manager相关密钥
+#### 维护cert-manager相关密钥
 用于存放cert-manager所需的证书和私钥的secret（此处以现成的证书文件作为示例）。通过vault界面配置vault的secrets、policy，后续再配置auth-kubernetes。
 - 创建secrets：启用kv secrets，path为pki，并设置secret path为root、secret data分别为tls.crt和tls.key，为其配置预先准备的证书文件; 
 - 创建policy：为确保可读性，将policy名称设置为secrets路径同名，其中“/”用“-”替代（pki-root）； policy表示具备指定路径下secrets的只读权限。
@@ -537,39 +537,152 @@ spec:
 ...
 ```
 
-| 代码库 | 文件相对路径 | 变更配置 | 配置说明 |
-| ----- | ----- | ----- | ----- |
-| demo-pipeline-argoevents-tekton | app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | production/vcluster-appset.yaml | spec.template.spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | vclusters/vcluster1/vcluster1-patch-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | vclusters/vcluster1/vcluster1-app.yaml | spec.source.helm.values.extraArgs | 变更为宿主机的内网IP |
-| demo-pipeline-argoevents-tekton | production/vault-app.yaml | spec.source.helm.values.externalVaultAddr | 变更为外置vault server的访问地址 |
-| demo-pipeline-argoevents-tekton | production/patch-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | production/metallb-app.yaml | spec.source.helm.values的address | 变更为宿主机的外部IP |
-| demo-pipeline-argoevents-tekton | production/cert-manager-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | cert-manager/overlays/production/secretstore.yaml | spec.provider.vault.server | 变更为外置vault server的访问地址 |
-| demo-pipeline-argoevents-tekton | production/runtime-argocd-appset.yaml | spec.template.spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | production/runtime-argocd-appset.yaml | spec.generators.list[0].elements.clusterURL | 变更为IP地址为宿主机的内部IP |
-| demo-pipeline-argoevents-tekton | production/runtime-appset.yaml | spec.template.spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | production/runtime-appset.yaml | spec.generators.list[0].elements.clusterURL | 变更为IP地址为宿主机的内部IP |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/pipeline1-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/vault-app.yaml | spec.source.helm.values的externalVaultAddr | 变更为外置vault server的访问地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/user-namespaces-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/tekton-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | tekton/overlays/production/dashboard-ingress.yaml | spec.rules.host[0] | 变更为含宿主机外部IP的host地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/patch-app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/patch/ingress-argocd.yaml | spec.rules.host[0]  | 变更为含宿主机外部IP的host地址 |
-| demo-pipeline-argoevents-tekton | runtimes/pipeline1-runtime/production/argo-events-app.yaml | spec.source.repoURL  | 变更为fork下来的代码库地址 |
-| demo-pipeline-argoevents-tekton | argo-events/overlays/production/eventsource.yaml | spec.github.user-project.repositories  | 变更为fork下来的代码库owner和名称 |
-| demo-pipeline-argoevents-tekton | argo-events/overlays/production/eventsource.yaml | spec.github.user-project.webhook.url  | 变更为含宿主机外部IP的访问地址 |
-| demo-pipeline-argoevents-tekton | argo-events/overlays/production/ingress-webhook-eventsource.yaml | spec.rules.host[0]  | 变更为含宿主机外部IP的访问地址 |
-| demo-pipeline-argoevents-tekton | argo-events/overlays/production/secretstore.yaml | spec.provider.vault.server  | 变更为外置vault server的访问地址 |
-| demo-pipeline-argoevents-tekton | argo-events/overlays/production/init-pipeline.yaml | spec.triggers.template[0].k8s.source.resource.spec.pipelineSpec.task.name[0].params.name[0].value  | 变更为fork下来的含代码和流水线的代码库（demo-user-project） |
-| demo-user-project | pipelines/test-pipeline.yaml | spec.pipelineSpec.tasks[0].params[0].value  | 变更为fork下来的含代码和流水线的代码库（demo-user-project） |
-| demo-user-project | pipelines/test-pipeline.yaml | spec.pipelineSpec.tasks[1].params[0].value  | 变更为fork下来的含部署清单的代码库（demo-user-deployments） |
-| demo-user-project | pipelines/test-pipeline.yaml | spec.pipelineSpec.tasks[3].params[0].value  | 变更为fork下来的代码库对应的package库 |
-| demo-user-project | pipelines/test-pipeline.yaml | spec.pipelineSpec.tasks[4].params[0].value  | 变更sed命令处理的镜像路径字符串 |
-| demo-user-deployments | deployments/test/devops-sample-svc.yaml | (ingress)spec.rules.host[0]  | 变更为宿主集群ip的host地址 |
+##### 2.替换宿主集群IP地址
+相对路径：vclusters/vcluster1/vcluster1-app.yaml
+```yaml{12}
+...
+spec:
+  project: demo-vcluster
+  source:
+    ...
+    helm:
+      values: |-
+        vcluster:
+          image: rancher/k3s:v1.21.13-k3s1
+        syncer:
+          extraArgs:
+          - --tls-san=192.168.0.243   # 替换为宿主机的内网IP
+...
+```
+
+相对路径：argo-events/overlays/production/secretstore.yaml
+```yaml{6}
+...
+spec:
+  provider:
+    vault:
+      # 替换为vault服务端的IP和端口，由于本示例的vault服务部署在宿主机上因此使用内网IP
+      server: "http://192.168.0.243:31820"
+      path: "git"
+      version: "v2"
+...
+```
+
+相对路径：cert-manager/overlays/production/secretstore.yaml
+```yaml{6}
+...
+spec:
+  provider:
+    vault:
+      # 替换为vault服务端的IP和端口，由于本示例的vault服务部署在宿主机上因此使用内网IP
+      server: "http://192.168.0.243:31820"
+      path: "pki"
+      version: "v2"
+...
+```
+
+相对路径：production/metallb-app.yaml
+```yaml{13}
+...
+spec:
+  project: demo-vcluster
+  source:
+    ...
+    helm:
+      values: |-
+        configInline:
+          address-pools:
+          - name: default
+            protocol: layer2
+            addresses:
+            - 192.168.0.243-192.168.0.243    # 替换为宿主机的内网IP
+...
+```
+
+相对路径：production/runtime-appset.yaml
+```yaml{8}
+...
+spec:
+  generators:
+  - list:
+      elements:
+      - runtime: pipeline1-runtime
+        # 替换为宿主集群的IP地址和端口，此处为内网IP
+        clusterURL: https://192.168.0.243:31543    
+  template:
+    ...
+    spec:
+      project: demo-vcluster
+      source:
+        repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+        targetRevision: HEAD
+        path: runtimes/{{runtime}}
+      destination:
+        server: '{{clusterURL}}'
+        namespace: argocd
+...
+```
+
+相对路径：production/vault-app.yaml
+```yaml{13}
+...
+spec:
+  project: demo-vcluster
+  source:
+    ...
+    helm:
+      values: |-
+        global:
+          enabled: false
+        injector:
+          enabled: true
+          authPath: auth/host-cluster
+          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+...
+```
+
+相对路径：production/runtime-argocd-appset.yaml
+```yaml{8}
+...
+spec:
+  generators:
+  - list:
+      elements:
+      - runtime: pipeline1-runtime-argocd
+        # 替换为宿主集群的IP地址和端口，此处为内网IP
+        clusterURL: https://192.168.0.243:31543
+  template:
+    ...
+    spec:
+      project: demo-vcluster
+      source:
+        repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+        targetRevision: HEAD
+        path: argocd/overlays/production
+      destination:
+        server: '{{clusterURL}}'
+        namespace: argocd
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/vault-app.yaml
+```yaml{13}
+...
+spec:
+  project: demo-pipeline
+  source:
+    ...
+    helm:
+      values: |-
+        global:
+          enabled: false
+        injector:
+          enabled: true
+          authPath: auth/pipeline1-cluster
+          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+...
+```
+
 
 ## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
