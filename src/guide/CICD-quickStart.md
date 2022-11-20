@@ -369,7 +369,7 @@ https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 ### **代码库变更配置**
 
 #### 代码库：demo-pipeline-argoevents-tekton
-fork demo-pipeline-argoevents-tekton代码库，对复制下来的代码库进行修改。
+fork demo-pipeline-argoevents-tekton代码库，修改复制下来的代码库。
 
 ##### 替换监听的代码库地址
 相对路径：app.yaml

@@ -661,7 +661,8 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
-    }
+    },
+    lineNumbers: true
     // // toc: { level: [1, 2, 3] },
     // headers: { level: [2, 3, 4] }
   },
