@@ -373,8 +373,8 @@ fork demo-pipeline-argoevents-tekton代码库，对复制下来的代码库进�
 
 ##### 替换监听的代码库地址
 相对路径：app.yaml
-```yaml
-......
+```yaml{7}
+...
 spec:
   project: demo-vcluster
   source:
@@ -382,7 +382,7 @@ spec:
     # 替换为fork下来的代码库地址
     repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
     targetRevision: HEAD
-......
+...
 ```
 
 
