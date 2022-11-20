@@ -805,6 +805,71 @@ spec:
                       value: https://github.com/lanbingcloud/demo-user-project-1.git
 ```
 
+#### 二. 代码库：demo-user-project
+fork demo-user-project代码库，修改复制后的代码库。
+替换流水线task拉取代码、推送代码、推送镜像的地址。  
+
+相对路径：pipelines/test-pipeline.yaml
+```yaml{12,19,33,53}
+...
+spec:
+  ...
+  pipelineSpec:
+    ...
+    tasks:
+    - name: git-clone-sourcecode
+      ...
+      params:
+      - name: url
+        # 替换为fork下来的用户侧代码库
+        value: https://github.com/lanbingcloud/demo-user-project-1.git
+      ...
+    - name: git-clone-deployment
+      ...
+      params:
+      - name: url
+        # 替换为fork下来的部署运行时的代码库
+        value: git@github.com:lanbingcloud/demo-user-deployments-1.git
+      ...
+      - name: image-build
+      runAfter:
+      - mvn-build
+      taskRef:
+        name: kaniko
+        kind: ClusterTask
+      workspaces:
+      - name: source
+        workspace: source-volume
+      params:
+      - name: IMAGE
+        # 替换为github镜像仓库地址，根据实际情况更新
+        value: ghcr.io/zhangsan/devops-sample:0.0.1-$(tasks.git-clone-sourcecode.results.commit)
+      - name: DOCKERFILE
+        value: ./sourcecode/Dockerfile
+      - name: CONTEXT
+        value: ./sourcecode
+    - name: manifest-update
+      runAfter:
+      - image-build
+      taskRef:
+        name: git-cli
+        kind: ClusterTask
+      workspaces:
+      - name: source
+        workspace: source-volume
+      params:
+      ...
+      - name: GIT_SCRIPT
+        value: |
+          cd deployment
+         # 使用sed字符串替换镜像地址，根据实际情况更新
+          sed -i -e "s#ghcr.io/zhangsan/devops-sample.*#$(tasks.image-build.results.IMAGE_URL)#g" deployments/test/devops-sample.yaml
+          git add deployments/test/devops-sample.yaml
+          git commit -a -m "automatic update by pipeline bot: $(tasks.image-build.results.IMAGE_URL)"
+          git push origin HEAD:$(params.REVISION) --force
+```
+
+
 
 ## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
