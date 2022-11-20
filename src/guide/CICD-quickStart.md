@@ -2,7 +2,6 @@
 footer: false
 outline: deep
 ---
-# CICD-QuickStart
 
 ## 目标
 1. 基于开源工具搭建CI环境； 
@@ -32,6 +31,8 @@ outline: deep
 > https://github.com/lanbingcloud/demo-user-project  
 > 
 > https://github.com/lanbingcloud/demo-user-deployments
+   
+
 
 ### 搭建一个空的k8s集群
 搭建一个空的kubernetes集群。此处以K3s作为示例。
@@ -43,7 +44,6 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-config
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
-
 ### 搭建一个vault实例
 搭建一个vault实例。vault有多种安装方式，包括根据安装包、helm、源码和docker安装。此处以安装包安装作为示例。
 
@@ -93,12 +93,15 @@ export KUBECONFIG=~/.kube/config
    pkill -9 vault
    ```
 
+
+
 ### 安装argocd命令行
 查看argoCD对应版本，下载配套的二进制文件安装包（下载链接参见附件），下载完成后拷贝文件到已有的PATH目录（例如/usr/local/bin）。 
 ```
 # 执行argocd version命令，查看版本验证是否安装成功
 argocd version
 ```
+
 
 ## 实施步骤
 
@@ -108,8 +111,9 @@ argocd version
 3. **安装argoCD app**:根据宿主集群上已安装的argocd，手工创建根project、app，使得argocd通过app of apps的方式自动安装宿主集群上的资源、运行时集群以及运行时集群上的资源; 
 4. **验证流水线自动执行**：在用户侧代码库（此处指demo-user-project）提交代码，观察tekton控制面板是否自动执行流水线。
 
+
 ### 1.维护密钥
-#### 维护cert-manager相关密钥
+### 维护cert-manager相关密钥
 用于存放cert-manager所需的证书和私钥的secret（此处以现成的证书文件作为示例）。通过vault界面配置vault的secrets、policy，后续再配置auth-kubernetes。
 - 创建secrets：启用kv secrets，path为pki，并设置secret path为root、secret data分别为tls.crt和tls.key，为其配置预先准备的证书文件; 
 - 创建policy：为确保可读性，将policy名称设置为secrets路径同名，其中“/”用“-”替代（pki-root）； policy表示具备指定路径下secrets的只读权限。
@@ -133,6 +137,8 @@ argocd version
   }
   ```
 
+
+
 #### 维护pipelines推送镜像相关密钥
 执行流水线涉及两个secrets。包括：向github仓库推送镜像需要的授权信息、以及从deployment代码库（此处指user-deployments）拉取代码并更新应用部署资源文件所需要的ssh私钥。此处先配置推送镜像的secret。
 - 确定用于向github仓库推送镜像的账号密码，格式为：<account_name>:<personal_access_tokens>，例如：zhangsan:ghp_xxxxxxxxxxxxxxxx，并通过base64加密后作为secrets备用；注意该access token需要有github package的写入权限； 
@@ -145,7 +151,6 @@ argocd version
       capabilities = ["read"]
    }
    ```
-
 #### 维护pipelines提交部署配置相关密钥
 用于流水线修改应用部署配置的secret。
 - 获取需要向github deployment代码库（此处指user-deployments）推送代码涉及的密钥；
@@ -247,6 +252,7 @@ kubectl -nargocd get apps --watch
 <!-- ![avatar](images/argocd_install_2.jpg) -->
 
 #### 修复cert-manager app - 配置vault授权
+
 对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
 - 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
 - 启用auth方法，类型为kubernetes，path为host-cluster，并且需要将CA证书、token和host等上述信息上传或填写到vault的auth方法；
@@ -289,6 +295,7 @@ kubectl -nargocd get apps --watch
 - 通过vault界面给path为pipeline1-cluster的auth方法配置role，使用上述信息配置；
 - 再次提交用户侧代码，观察流水线执行成功。
 
+
 ## 问题
 ### 获取vault服务端密钥报403异常
 1. vault服务端授权k8s，客户端访问服务端403异常。
@@ -327,6 +334,7 @@ cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypa
 
 
 ## 附件
+
 ### 链接参考
 **Github DEMO示例：**
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets
@@ -359,6 +367,25 @@ https://argoproj.github.io/argo-events/eventsources/webhook-authentication/
 https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
 ### **代码库变更配置**
+
+#### 代码库：demo-pipeline-argoevents-tekton
+fork demo-pipeline-argoevents-tekton代码库，对复制下来的代码库进行修改。
+
+##### 替换监听的代码库地址
+相对路径：app.yaml
+```yaml
+......
+spec:
+  project: demo-vcluster
+  source:
+    path: production
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+......
+```
+
+
 | 代码库 | 文件相对路径 | 变更配置 | 配置说明 |
 | ----- | ----- | ----- | ----- |
 | demo-pipeline-argoevents-tekton | app.yaml | spec.source.repoURL | 变更为fork下来的代码库地址 |
@@ -401,11 +428,3 @@ https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 1）https协议，客户端的认证的异常（OPENSSL 443）
 2）github secrets
 3）access token：fine-grained token；
-4. 补充实操细节，在一个完全干净的虚机环境下搭建DEMO，确保实操过程正确;并基于当前小节整理文档。(完成v0.2)
-
-二 形式
-1. 搭建vuepress框架，导入markdown文档;【未完成】
-   
-三 参考链接
-https://github.com/vuejs/vuepress
-
