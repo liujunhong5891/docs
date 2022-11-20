@@ -1,3 +1,8 @@
+---
+footer: false
+outline: deep
+---
+
 # 目标
 基于vuejs项目和github搭建文档服务环境。
 
@@ -103,14 +108,6 @@ jobs:
 2. 通过github界面配置，指定代码库的指定分支、指定目录作为文档服务； 
 - 进入github界面，操作路径：Settings-pages，新增page； 填写信息包括：内容来源（分支、相对目录）、域名（可选）； 提交之后等待几分钟，即可根据站点路径访问文档。
 
-# 参考链接
-
-| 概述 | 链接 | 备注 |
-| :-----| :---- | :----: |
-| vuejs项目源码 | https://github.com/vuejs/docs |  |
-| github pages部署（github actions） | https://vitepress.vuejs.org/guide/deploying |  |
-| github pages界面维护 | https://medium.com/@Roli_Dori/deploy-vue-cli-3-project-to-github-pages-ebeda0705fbd | 仅参考维护github page部分 |
-| 安装nodejs | https://github.com/nodejs/help/wiki/Installation |  |
 
 # 配置
 ## 主面板去掉广告
@@ -144,3 +141,12 @@ outline: deep
 2. 使用yarn本地启动服务报404错误；
 yarn docs:build（无法生成dist目录下的文档）
 yarn docs:serve（无法启动服务） 
+
+# 参考链接
+
+| 概述 | 链接 | 备注 |
+| :-----| :---- | :----: |
+| vuejs项目源码 | https://github.com/vuejs/docs |  |
+| github pages部署（github actions） | https://vitepress.vuejs.org/guide/deploying |  |
+| github pages界面维护 | https://medium.com/@Roli_Dori/deploy-vue-cli-3-project-to-github-pages-ebeda0705fbd | 仅参考维护github page部分 |
+| 安装nodejs | https://github.com/nodejs/help/wiki/Installation |  |

@@ -1,6 +1,6 @@
 ---
 footer: false
-# outline: deep
+outline: deep
 ---
 # CICD-QuickStart
 
