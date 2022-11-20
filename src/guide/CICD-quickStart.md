@@ -10,7 +10,7 @@ outline: deep
 
 
 ## 工具及其关系概览
-<!-- ![avatar](images/CI-1.jpg)  -->
+![avatar](/images/CI-1.jpg)
 - metallb: k8s的lb工具。
 - traefik: 反向代理工具，用于ingress的实现。
 - cert-manager: 证书签发工具。
