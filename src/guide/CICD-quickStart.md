@@ -368,10 +368,10 @@ https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
 ### **代码库变更配置**
 
-#### 代码库：demo-pipeline-argoevents-tekton
-fork demo-pipeline-argoevents-tekton代码库，修改复制下来的代码库。
+#### 一. 代码库：demo-pipeline-argoevents-tekton
+fork demo-pipeline-argoevents-tekton代码库，修改复制后的代码库。
 
-##### 替换监听的代码库地址
+##### 1.替换监听的代码库地址
 相对路径：app.yaml
 ```yaml{7}
 ...
@@ -385,6 +385,20 @@ spec:
 ...
 ```
 
+相对路径：production/runtime-appset.yaml
+```yaml{8}
+...
+spec:
+  ...
+  template:
+    spec:
+      project: demo-vcluster
+      source:
+        repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+        targetRevision: HEAD
+        path: runtimes/{{runtime}}
+...
+```
 
 | 代码库 | 文件相对路径 | 变更配置 | 配置说明 |
 | ----- | ----- | ----- | ----- |
