@@ -637,7 +637,8 @@ spec:
         injector:
           enabled: true
           authPath: auth/host-cluster
-          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+          # 替换为vault服务的IP和端口
+          externalVaultAddr: http://192.168.0.243:31820 
 ...
 ```
 
@@ -679,7 +680,8 @@ spec:
         injector:
           enabled: true
           authPath: auth/pipeline1-cluster
-          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+          ## 替换为vault服务的IP和端口
+          externalVaultAddr: http://192.168.0.243:31820  
 ...
 ```
 
