@@ -24,7 +24,7 @@ const excludedPages = [
   'index.md',
   'guide/customer_test.md', 
   'guide/CICD-quickStart.md',
-  'guide/test-1.md'
+  // 'guide/test-1.md'
   // 自定义markdown end
 ]
 
