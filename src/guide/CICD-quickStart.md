@@ -386,7 +386,7 @@ spec:
 ```
 
 相对路径：production/runtime-appset.yaml
-```yaml{8}
+```yaml{9}
 ...
 spec:
   ...
@@ -394,6 +394,7 @@ spec:
     spec:
       project: demo-vcluster
       source:
+        #替换为fork下来的代码库地址
         repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
         targetRevision: HEAD
         path: runtimes/{{runtime}}
