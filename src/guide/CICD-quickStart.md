@@ -335,7 +335,7 @@ cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypa
 
 ## 附件
 
-### 链接参考
+### 参考链接
 **Github DEMO示例：**
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets
 https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
@@ -869,7 +869,25 @@ spec:
           git push origin HEAD:$(params.REVISION) --force
 ```
 
+#### 三. 代码库：demo-user-deployments
 
+fork demo-user-deployments代码库，修改复制后的代码库。替换业务应用svc的外部访问地址。
+
+相对路径：deployments/test/devops-sample-svc.yaml
+```yaml{8}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ks-sample-dev
+spec:
+  rules:
+  # 替换为宿主机外网IP
+  - host: devops-sample.119-8-99-179.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+```
 
 ## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
