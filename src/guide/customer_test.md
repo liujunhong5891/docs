@@ -1,7 +1,3 @@
----
-footer: false
----
-
 # 目标
 基于vuejs项目和github搭建文档服务环境。
 
@@ -116,11 +112,35 @@ jobs:
 | github pages界面维护 | https://medium.com/@Roli_Dori/deploy-vue-cli-3-project-to-github-pages-ebeda0705fbd | 仅参考维护github page部分 |
 | 安装nodejs | https://github.com/nodejs/help/wiki/Installation |  |
 
+# 配置
+## 主面板去掉广告
+md文件头部添加注释，同时.vitepress/jobsMdPlugin.ts引用相关文件
+```md
+<!-- md文件头部 -->
+---
+footer: false
+---
+```
+
+```ts
+const excludedPages = [
+  'guide/introduction.md',
+  'guide/quick-start.md',
+  'guide/customer_test.md', // 测试
+  ......
+]
+```
+## 配置md文件当前界面的显示大纲层级
+```md
+<!-- md文件头部，添加后显示二级和三级大纲，否则只显示二级大纲 -->
+---
+outline: deep
+---
+```
+
 # 遗留问题
 ## vitepress【2022.11.17 未完成】
-1. 正文内容：兼容测试；图片不显示、正文大纲缺少一级大纲呈现； 
-2. 整体样式：去广告;  
-3. 使用yarn本地启动服务报404错误；
+1. 正文内容：图片不显示； 
+2. 使用yarn本地启动服务报404错误；
 yarn docs:build（无法生成dist目录下的文档）
 yarn docs:serve（无法启动服务） 
-
