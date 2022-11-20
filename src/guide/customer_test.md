@@ -1,7 +1,3 @@
----
-footer: false
-outline: deep
----
 ## 目标
 基于vuejs项目和github搭建文档服务环境。
 
@@ -110,7 +106,7 @@ jobs:
 
 ## 配置
 ### 主面板去掉广告
-md文件头部添加注释，同时.vitepress/jobsMdPlugin.ts引用相关文件
+md文件头部添加配置，同时.vitepress/jobsMdPlugin.ts引用相关文件。
 ```md
 <!-- md文件头部 -->
 ---
@@ -127,6 +123,7 @@ const excludedPages = [
 ]
 ```
 ### 配置md文件当前界面的显示大纲层级
+md文件头部添加配置。
 ```md
 <!-- md文件头部，添加后显示二级和三级大纲，否则只显示二级大纲 -->
 ---
