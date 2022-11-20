@@ -757,6 +757,54 @@ spec:
 ...
 ```
 
+##### 4.替换argo-events的eventsource的repo信息
+相对路径：argo-events/overlays/production/eventsource.yaml
+```yaml{6,8}
+...
+spec:
+  github:
+    user-project:
+      repositories:
+        - owner: lanbingcloud       # 替换为eventsource监听的代码库的owner
+          names:
+            - demo-user-project-1   # 替换为eventsource监听的代码库
+...
+```
+
+##### 5.替换init-pipeline的git clone任务的代码库地址
+相对路径：argo-events/overlays/production/init-pipeline.yaml
+```yaml{29}
+...
+spec:
+  ...
+  triggers:
+    - template:
+        name: init-pipeine
+        k8s:
+          operation: create
+          source:
+            resource:
+              ...
+              spec:
+                ...
+                pipelineSpec:
+                  params:
+                    ...
+                  tasks:
+                  - name: git-clone
+                    taskRef:
+                      name: git-clone
+                      kind: ClusterTask
+                    workspaces:
+                    - name: output
+                      workspace: source-volume
+                      subPath: $(params.REVISION)
+                    params:
+                    - name: url
+                      # 替换为fork下来的用户侧代码库地址
+                      value: https://github.com/lanbingcloud/demo-user-project-1.git
+```
+
 
 ## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
