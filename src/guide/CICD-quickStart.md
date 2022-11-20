@@ -683,6 +683,80 @@ spec:
 ...
 ```
 
+##### 3.替换ingress等nip的地址
+相对路径：argo-events/overlays/production/eventsource.yaml
+```yaml{11}
+...
+spec:
+  github:
+    user-project:
+      ...
+      webhook:
+        endpoint: /user-project
+        port: "12000"
+        method: POST
+        # 替换为宿主机IP，本示例的宿主机外网IP地址为119.8.99.179
+        url: http://webhook.pipeline1.119-8-99-179.nip.io:30080
+...
+```
+
+相对路径：argo-events/overlays/production/ingress-webhook-eventsource.yaml
+```yaml{10}
+...
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webhook-eventsource
+  namespace: argo-events
+spec:
+  rules:
+   # 替换为宿主机IP
+  - host: webhook.pipeline1.119-8-99-179.nip.io
+...
+```
+
+相对路径：production/patch/ingress-argocd.yaml
+```yaml{5}
+...
+spec:
+  rules:
+  # 替换为宿主机IP
+  - host: argocd.119-8-99-179.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/patch/ingress-argocd.yaml
+```yaml{5}
+...
+spec:
+  rules:
+  # 替换为宿主机IP
+  - host: argocd.pipeline1.119-8-99-179.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+...
+```
+
+相对路径：tekton/overlays/production/dashboard-ingress.yaml
+```yaml{5}
+...
+spec:
+  rules:
+  # 替换为宿主机IP
+  - host: tekton.pipeline1.119-8-99-179.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+...
+```
+
 
 ## 未完成（2022.11.12，正式提交后删除该章节）
 一 内容
