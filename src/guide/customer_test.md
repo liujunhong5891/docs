@@ -1,12 +1,7 @@
----
-footer: false
-outline: deep
----
-
-# 目标
+## 目标
 基于vuejs项目和github搭建文档服务环境。
 
-# 本地调试
+## 本地调试
 ```Shell
 # 卸载宿主机低版本的nodejs，vuejs项目要求nodejs版本至少在14.0.0或者更高版本; 
 apt-get remove nodejs
@@ -32,7 +27,7 @@ npm run build
 npm run serve
 ```
 
-# 服务端部署
+## 服务端部署
 1. 采用github actions将main分支构建出来的文件deploy到新分支，此时的文件指的是mkdown构成的目录； 
 - 要点：使用本地调试通过的命令，替换workflow中github action涉及的命令，职责就是将源文件目录（src）build到目标目录(.vitepress/dist)。下文展示几个关键文件配置。
 ```ts
@@ -109,8 +104,8 @@ jobs:
 - 进入github界面，操作路径：Settings-pages，新增page； 填写信息包括：内容来源（分支、相对目录）、域名（可选）； 提交之后等待几分钟，即可根据站点路径访问文档。
 
 
-# 配置
-## 主面板去掉广告
+## 配置
+### 主面板去掉广告
 md文件头部添加注释，同时.vitepress/jobsMdPlugin.ts引用相关文件
 ```md
 <!-- md文件头部 -->
@@ -127,7 +122,7 @@ const excludedPages = [
   ......
 ]
 ```
-## 配置md文件当前界面的显示大纲层级
+### 配置md文件当前界面的显示大纲层级
 ```md
 <!-- md文件头部，添加后显示二级和三级大纲，否则只显示二级大纲 -->
 ---
@@ -135,14 +130,14 @@ outline: deep
 ---
 ```
 
-# 遗留问题
-## vitepress【2022.11.17 未完成】
+## 遗留问题
+### vitepress【2022.11.17 未完成】
 1. 正文内容：图片不显示； 
 2. 使用yarn本地启动服务报404错误；
 yarn docs:build（无法生成dist目录下的文档）
 yarn docs:serve（无法启动服务） 
 
-# 参考链接
+## 参考链接
 
 | 概述 | 链接 | 备注 |
 | :-----| :---- | :----: |
