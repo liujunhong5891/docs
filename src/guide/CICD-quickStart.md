@@ -31,7 +31,7 @@ outline: deep
 > https://github.com/lanbingcloud/demo-user-project  
 > 
 > https://github.com/lanbingcloud/demo-user-deployments
-   
+
 
 
 ### 搭建一个空的k8s集群
@@ -394,10 +394,146 @@ spec:
     spec:
       project: demo-vcluster
       source:
-        #替换为fork下来的代码库地址
+        # 替换为fork下来的代码库地址
         repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
         targetRevision: HEAD
         path: runtimes/{{runtime}}
+...
+```
+
+相对路径：production/cert-manager-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-vcluster
+  source:
+    path: cert-manager/overlays/production
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：production/runtime-argocd-appset.yaml
+```yaml{9}
+...
+spec:
+  ...
+  template:
+    spec:
+      project: demo-vcluster
+      source:
+        # 替换为fork下来的代码库地址
+        repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+        targetRevision: HEAD
+        path: argocd/overlays/production
+  ...
+```
+
+相对路径：production/vcluster-appset.yaml
+```yaml{9}
+...
+spec:
+  ...
+  template:
+    spec:
+      project: demo-vcluster
+      source:
+        # 替换为fork下来的代码库地址
+        repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+        targetRevision: HEAD
+        path: vclusters/{{cluster}}
+...
+```
+
+相对路径：production/patch-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-vcluster
+  source:
+    path: production/patch
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：vclusters/vcluster1/vcluster1-patch-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-vcluster
+  source:
+    path: vclusters/vcluster1/vcluster1-patch
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/pipeline1-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-pipeline
+  source:
+    path: runtimes/pipeline1-runtime/production
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/argo-events-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-pipeline
+  source:
+    path: argo-events/overlays/production
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/user-namespaces-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-pipeline
+  source:
+    path: user-namespaces
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/tekton-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-pipeline
+  source:
+    path: tekton/overlays/production
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
+...
+```
+
+相对路径：runtimes/pipeline1-runtime/production/patch-app.yaml
+```yaml{7}
+...
+spec:
+  project: demo-pipeline
+  source:
+    path: runtimes/pipeline1-runtime/production/patch
+    # 替换为fork下来的代码库地址
+    repoURL: https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git
+    targetRevision: HEAD
 ...
 ```
 
