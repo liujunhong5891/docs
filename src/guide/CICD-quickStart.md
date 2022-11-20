@@ -290,7 +290,7 @@ kubectl -nargocd get apps --watch
 - 再次提交用户侧代码，观察流水线执行成功。
 
 ## 问题
-## 获取vault服务端密钥报403异常
+### 获取vault服务端密钥报403异常
 1. vault服务端授权k8s，客户端访问服务端403异常。
    - 为vault server启用auth的sa，没有设置rbac.authorization.k8s.io的资源权限。注意检查sa配套的rbac。
 2. 使用github私钥，拉取代码库时异常； 此时证书通过本地客户端验证正确、vault服务端auth-k8s授权验证正确。
