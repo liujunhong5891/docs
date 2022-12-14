@@ -8,7 +8,7 @@ import { jobsPlugin } from './jobsMdPlugin'
 
 const nav: ThemeConfig['nav'] = [
   {
-    text: 'Docs',
+    text: '文档',
     activeMatch: `^/(guide|style-guide|cookbook|examples)/`,
     items: [
       { text: 'Guide', link: '/guide/introduction' },
@@ -23,6 +23,18 @@ const nav: ThemeConfig['nav'] = [
     activeMatch: `^/api/`,
     link: '/api/'
   },
+  {
+    text: 'Github',
+    link: 'https://github.com/lanbingcloud'
+  },
+  {
+    text: '视频',
+    link: 'https://space.bilibili.com/404408807/?spm_id_from=333.999.0.0'
+  },
+  {
+    text: '社区',
+    link: ''
+  }
   // {
   //   text: 'Ecosystem',
   //   activeMatch: `^/ecosystem/`,
@@ -82,24 +94,6 @@ const nav: ThemeConfig['nav'] = [
   //     }
   //   ]
   // },
-  {
-    text: 'About',
-    activeMatch: `^/about/`,
-    items: [
-      { text: 'FAQ', link: '/about/faq' },
-      { text: 'Team', link: '/about/team' },
-      { text: 'Releases', link: '/about/releases' },
-      {
-        text: 'Community Guide',
-        link: '/about/community-guide'
-      },
-      { text: 'Code of Conduct', link: '/about/coc' },
-      {
-        text: 'The Documentary',
-        link: 'https://www.youtube.com/watch?v=OrxmtDw4pVI'
-      }
-    ]
-  }
 ]
 
 export const sidebar: ThemeConfig['sidebar'] = {
