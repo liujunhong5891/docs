@@ -11,10 +11,10 @@ const nav: ThemeConfig['nav'] = [
     text: '文档',
     activeMatch: `^/(guide|style-guide|cookbook|examples)/`,
     items: [
-      { text: 'Guide', link: '/guide/introduction' },
-      { text: 'Tutorial', link: '/tutorial/' },
-      { text: 'Examples', link: '/examples/' },
-      { text: 'Quick Start', link: '/guide/quick-start' }
+      { text: 'Overview', link: '/guide/overview.md' }
+      // { text: 'Tutorial', link: '/tutorial/' },
+      // { text: 'Examples', link: '/examples/' },
+      // { text: 'Quick Start', link: '/guide/quick-start' }
       // { text: 'Style Guide', link: '/style-guide/' },
     ]
   },
