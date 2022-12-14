@@ -9,14 +9,15 @@ import { jobsPlugin } from './jobsMdPlugin'
 const nav: ThemeConfig['nav'] = [
   {
     text: '文档',
-    activeMatch: `^/(guide|style-guide|cookbook|examples)/`,
-    items: [
-      { text: 'Overview', link: '/guide/overview.md' }
+    link: 'guide/docs-overview.md',
+    activeMatch: `^/(guide|style-guide|cookbook|examples)/`
+    // items: [
+    //   { text: 'Overview', link: 'guide/docs-overview.md' }
       // { text: 'Tutorial', link: '/tutorial/' },
       // { text: 'Examples', link: '/examples/' },
       // { text: 'Quick Start', link: '/guide/quick-start' }
       // { text: 'Style Guide', link: '/style-guide/' },
-    ]
+    // ]
   },
   {
     text: 'API',
