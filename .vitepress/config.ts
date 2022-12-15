@@ -407,7 +407,8 @@ export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
 
   lang: 'en-US',
-  title: 'Vue.js',
+  // title: 'Vue.js',
+  title: 'Lanbing',
   description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
