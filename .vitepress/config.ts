@@ -407,7 +407,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
 
   lang: 'en-US',
-  // title: 'Vue.js',
   title: 'Lanbing', // 修改标题
   // description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
@@ -455,7 +454,8 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   themeConfig: {
     nav,
-    sidebar
+    sidebar,
+    logo: '../src/public/logo.svg', // 验证中
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
