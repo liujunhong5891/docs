@@ -416,46 +416,45 @@ export default defineConfigWithTheme<ThemeConfig>({
   base: '/docs/',
 
   head: [
-    // ['meta', { name: 'theme-color', content: '#3c8772' }],
-    // ['meta', { name: 'twitter:site', content: '@vuejs' }],
-    // ['meta', { name: 'twitter:card', content: 'summary' }],
-    // [
-    //   'meta',
-    //   {
-    //     name: 'twitter:image',
-    //     content: 'https://vuejs.org/images/logo.png'
-    //   }
-    // ],
-    // [
-    //   'link',
-    //   {
-    //     rel: 'preconnect',
-    //     href: 'https://sponsors.vuejs.org'
-    //   }
-    // ]
-    // [
-    //   'script',
-    //   {},
-    //   fs.readFileSync(
-    //     path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
-    //     'utf-8'
-    //   )
-    // ],
-    // [
-    //   'script',
-    //   {
-    //     src: 'https://cdn.usefathom.com/script.js',
-    //     'data-site': 'XNOLWPLB',
-    //     'data-spa': 'auto',
-    //     defer: ''
-    //   }
-    // ]
+    ['meta', { name: 'theme-color', content: '#3c8772' }],
+    ['meta', { name: 'twitter:site', content: '@vuejs' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+    [
+      'meta',
+      {
+        name: 'twitter:image',
+        content: 'https://vuejs.org/images/logo.png'
+      }
+    ],
+    [
+      'link',
+      {
+        rel: 'preconnect',
+        href: 'https://sponsors.vuejs.org'
+      }
+    ],
+    [
+      'script',
+      {},
+      fs.readFileSync(
+        path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
+        'utf-8'
+      )
+    ],
+    [
+      'script',
+      {
+        src: 'https://cdn.usefathom.com/script.js',
+        'data-site': 'XNOLWPLB',
+        'data-spa': 'auto',
+        defer: ''
+      }
+    ]
   ],
 
   themeConfig: {
     nav,
-    sidebar,
-    logo: '../src/public/logo.svg', // 验证中
+    sidebar
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
