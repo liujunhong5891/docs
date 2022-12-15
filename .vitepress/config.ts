@@ -102,156 +102,68 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '概述',
       items: [
-        { text: 'Introduction', link: '/guide/introduction' },
-        {
-          text: 'Quick Start',
-          link: '/guide/quick-start'
-        },
-        {
-          text: 'customer_test',
-          link: '/guide/customer_test'
-        },
-        {
-          text: 'CICD Quick Start',
-          link: '/guide/CICD-quickStart'
-        }
+        { text: '概述', link: 'guide/docs-overview' },
       ]
     },
     {
       text: '基础知识',
       items: [
         {
-          text: 'CICD_FAQ',
+          text: 'kubernetes',
           link: '/guide/essentials/CICD_FAQ'
         },
         {
-          text: 'Creating an Application',
-          link: '/guide/essentials/application'
+          text: 'vault',
+          link: '/guide/essentials/CICD_FAQ'
         },
         {
-          text: 'Template Syntax',
-          link: '/guide/essentials/template-syntax'
+          text: 'vcluster',
+          link: '/guide/essentials/CICD_FAQ'
         },
-        {
-          text: 'Reactivity Fundamentals',
-          link: '/guide/essentials/reactivity-fundamentals'
-        },
-        {
-          text: 'Computed Properties',
-          link: '/guide/essentials/computed'
-        },
-        {
-          text: 'Class and Style Bindings',
-          link: '/guide/essentials/class-and-style'
-        },
-        {
-          text: 'Conditional Rendering',
-          link: '/guide/essentials/conditional'
-        },
-        { text: 'List Rendering', link: '/guide/essentials/list' },
-        {
-          text: 'Event Handling',
-          link: '/guide/essentials/event-handling'
-        },
-        { text: 'Form Input Bindings', link: '/guide/essentials/forms' },
-        {
-          text: 'Lifecycle Hooks',
-          link: '/guide/essentials/lifecycle'
-        },
-        { text: 'Watchers', link: '/guide/essentials/watchers' },
-        { text: 'Template Refs', link: '/guide/essentials/template-refs' },
-        {
-          text: 'Components Basics',
-          link: '/guide/essentials/component-basics'
-        }
       ]
     },
     {
       text: '核心概念',
       items: [
         {
-          text: 'Registration',
+          text: 'gitops',
           link: '/guide/components/registration'
         },
-        { text: 'Props', link: '/guide/components/props' },
-        { text: 'Events', link: '/guide/components/events' },
-        {
-          text: 'Fallthrough Attributes',
-          link: '/guide/components/attrs'
-        },
-        { text: 'Slots', link: '/guide/components/slots' },
-        {
-          text: 'Provide / inject',
-          link: '/guide/components/provide-inject'
-        },
-        {
-          text: 'Async Components',
-          link: '/guide/components/async'
-        }
+        { text: 'operator', link: '/guide/components/props' }
       ]
     },
     {
       text: '演示DEMO',
       items: [
         {
-          text: 'Composables',
+          text: '通过ArgoCD部署和管理CI/CD环境',
           link: '/guide/reusability/composables'
         },
         {
-          text: 'Custom Directives',
+          text: '用Tekton和ArgoEvents构建Kubernetes原生的流水线',
           link: '/guide/reusability/custom-directives'
         },
-        { text: 'Plugins', link: '/guide/reusability/plugins' }
+        { text: '集成Tekton和ArgoCD', link: '/guide/reusability/plugins' }
       ]
     },
     {
       text: '开发篇',
       items: [
-        { text: 'Transition', link: '/guide/built-ins/transition' },
-        {
-          text: 'TransitionGroup',
-          link: '/guide/built-ins/transition-group'
-        },
-        { text: 'KeepAlive', link: '/guide/built-ins/keep-alive' },
-        { text: 'Teleport', link: '/guide/built-ins/teleport' },
-        { text: 'Suspense', link: '/guide/built-ins/suspense' }
+        { text: '筹备中', link: '/guide/built-ins/transition' }
       ]
     },
     {
       text: '运维篇',
       items: [
-        { text: 'Single-File Components', link: '/guide/scaling-up/sfc' },
-        { text: 'Tooling', link: '/guide/scaling-up/tooling' },
-        { text: 'Routing', link: '/guide/scaling-up/routing' },
-        {
-          text: 'State Management',
-          link: '/guide/scaling-up/state-management'
-        },
-        { text: 'Testing', link: '/guide/scaling-up/testing' },
-        {
-          text: 'Server-Side Rendering (SSR)',
-          link: '/guide/scaling-up/ssr'
-        }
+        { text: '筹备中', link: '/guide/scaling-up/sfc' }
       ]
     },
     {
       text: '测试篇',
       items: [
         {
-          text: 'Production Deployment',
+          text: '筹备中',
           link: '/guide/best-practices/production-deployment'
-        },
-        {
-          text: 'Performance',
-          link: '/guide/best-practices/performance'
-        },
-        {
-          text: 'Accessibility',
-          link: '/guide/best-practices/accessibility'
-        },
-        {
-          text: 'Security',
-          link: '/guide/best-practices/security'
         }
       ]
     }
