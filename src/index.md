@@ -1,5 +1,6 @@
 ---
 footer: false
+layout: home
 ---
 
 # 概述
