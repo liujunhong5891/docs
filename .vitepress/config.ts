@@ -408,7 +408,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   lang: 'en-US',
   // title: 'Vue.js',
-  title: 'Lanbing',
+  title: 'Lanbing', // 修改无效
   description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
@@ -420,20 +420,20 @@ export default defineConfigWithTheme<ThemeConfig>({
     // ['meta', { name: 'theme-color', content: '#3c8772' }],
     // ['meta', { name: 'twitter:site', content: '@vuejs' }],
     // ['meta', { name: 'twitter:card', content: 'summary' }],
-    [
-      'meta',
-      {
-        name: 'twitter:image',
-        content: 'https://vuejs.org/images/logo.png'
-      }
-    ],
-    [
-      'link',
-      {
-        rel: 'preconnect',
-        href: 'https://sponsors.vuejs.org'
-      }
-    ]
+    // [
+    //   'meta',
+    //   {
+    //     name: 'twitter:image',
+    //     content: 'https://vuejs.org/images/logo.png'
+    //   }
+    // ],
+    // [
+    //   'link',
+    //   {
+    //     rel: 'preconnect',
+    //     href: 'https://sponsors.vuejs.org'
+    //   }
+    // ]
     // [
     //   'script',
     //   {},
