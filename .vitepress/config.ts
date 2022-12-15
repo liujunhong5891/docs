@@ -22,7 +22,8 @@ const nav: ThemeConfig['nav'] = [
   {
     text: 'API',
     activeMatch: `^/api/`,
-    link: '/api/'
+    link: ''
+    // link: '/api/'
   },
   {
     text: 'Github',
@@ -102,7 +103,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '概述',
       items: [
-        { text: '概述', link: 'guide/docs-overview' },
+        { text: '概述', link: '/guide/docs-overview' },
       ]
     },
     {
@@ -110,15 +111,15 @@ export const sidebar: ThemeConfig['sidebar'] = {
       items: [
         {
           text: 'kubernetes',
-          link: '/guide/essentials/CICD_FAQ'
+          link: '/guide/default'
         },
         {
           text: 'vault',
-          link: '/guide/essentials/CICD_FAQ'
+          link: '/guide/default'
         },
         {
           text: 'vcluster',
-          link: '/guide/essentials/CICD_FAQ'
+          link: '/guide/default'
         },
       ]
     },
@@ -127,9 +128,9 @@ export const sidebar: ThemeConfig['sidebar'] = {
       items: [
         {
           text: 'gitops',
-          link: '/guide/components/registration'
+          link: '/guide/default'
         },
-        { text: 'operator', link: '/guide/components/props' }
+        { text: 'operator', link: '/guide/default' }
       ]
     },
     {
@@ -137,25 +138,28 @@ export const sidebar: ThemeConfig['sidebar'] = {
       items: [
         {
           text: '通过ArgoCD部署和管理CI/CD环境',
-          link: '/guide/reusability/composables'
+          link: '/guide/CICD-quickStart'
         },
         {
           text: '用Tekton和ArgoEvents构建Kubernetes原生的流水线',
-          link: '/guide/reusability/custom-directives'
+          link: '/guide/CICD-quickStart'
         },
-        { text: '集成Tekton和ArgoCD', link: '/guide/reusability/plugins' }
+        { text: '集成Tekton和ArgoCD', link: '/guide/default' },
+        { text: 'Github界面访问Tekton和ArgoCD', link: '/guide/default' },
+        { text: '实现Kubernetes/Tekton/ArgoCD的统一认证', link: '/guide/default' },
+        { text: '实现Kubernetes/Tekton/ArgoCD的统一权限', link: '/guide/default' }
       ]
     },
     {
       text: '开发篇',
       items: [
-        { text: '筹备中', link: '/guide/built-ins/transition' }
+        { text: '筹备中', link: '/guide/default' }
       ]
     },
     {
       text: '运维篇',
       items: [
-        { text: '筹备中', link: '/guide/scaling-up/sfc' }
+        { text: '筹备中', link: '/guide/default' }
       ]
     },
     {
@@ -163,10 +167,16 @@ export const sidebar: ThemeConfig['sidebar'] = {
       items: [
         {
           text: '筹备中',
-          link: '/guide/best-practices/production-deployment'
+          link: '/guide/default'
         }
       ]
-    }
+    },
+    {
+      text: 'FAQ',
+      items: [
+        { text: '筹备中', link: '/guide/default' }
+      ]
+    },
   ],
   '/api/': [
     {
