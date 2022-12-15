@@ -455,8 +455,8 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav,
     sidebar,
-    // 修改顶部栏位的内容，在此配置
-
+    // 修改顶部栏位的内容，在此配置【.】
+    logo: '/logo.svg'
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
