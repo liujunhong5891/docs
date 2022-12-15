@@ -408,8 +408,9 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   lang: 'en-US',
   // title: 'Vue.js',
-  title: 'Lanbing', // 修改无效
-  description: 'Vue.js - The Progressive JavaScript Framework',
+  title: 'Lanbing', // 修改标题
+  logo: '/nautes.png', // 修改logo
+  // description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
