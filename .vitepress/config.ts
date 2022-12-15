@@ -100,7 +100,7 @@ const nav: ThemeConfig['nav'] = [
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [
     {
-      text: '概览',
+      text: '概述',
       items: [
         { text: 'Introduction', link: '/guide/introduction' },
         {
