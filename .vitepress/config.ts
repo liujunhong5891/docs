@@ -455,43 +455,45 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav,
     sidebar,
+    // 修改顶部栏位的内容，在此配置
+
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
-    algolia: {
-      indexName: 'vuejs',
-      appId: 'ML0LEBN7FQ',
-      apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
-      searchParameters: {
-        facetFilters: ['version:v3']
-      }
-    },
+    // algolia: {
+    //   indexName: 'vuejs',
+    //   appId: 'ML0LEBN7FQ',
+    //   apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
+    //   searchParameters: {
+    //     facetFilters: ['version:v3']
+    //   }
+    // },
 
-    carbonAds: {
-      code: 'CEBDT27Y',
-      placement: 'vuejsorg'
-    },
+    // carbonAds: {
+    //   code: 'CEBDT27Y',
+    //   placement: 'vuejsorg'
+    // },
 
-    socialLinks: [
-      { icon: 'languages', link: '/translations/' },
-      { icon: 'github', link: 'https://github.com/vuejs/' },
-      { icon: 'twitter', link: 'https://twitter.com/vuejs' },
-      { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
-    ],
+    // socialLinks: [
+    //   { icon: 'languages', link: '/translations/' },
+    //   { icon: 'github', link: 'https://github.com/vuejs/' },
+    //   { icon: 'twitter', link: 'https://twitter.com/vuejs' },
+    //   { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
+    // ],
 
-    editLink: {
-      repo: 'vuejs/docs',
-      text: 'Edit this page on GitHub'
-    },
+    // editLink: {
+    //   repo: 'vuejs/docs',
+    //   text: 'Edit this page on GitHub'
+    // },
 
-    footer: {
-      license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      },
-      copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
-    }
+    // footer: {
+    //   license: {
+    //     text: 'MIT License',
+    //     link: 'https://opensource.org/licenses/MIT'
+    //   },
+    //   copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
+    // }
   },
 
   markdown: {
