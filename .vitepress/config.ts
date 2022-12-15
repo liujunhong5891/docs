@@ -416,82 +416,82 @@ export default defineConfigWithTheme<ThemeConfig>({
   base: '/docs/',
 
   head: [
-    ['meta', { name: 'theme-color', content: '#3c8772' }],
-    ['meta', { name: 'twitter:site', content: '@vuejs' }],
-    ['meta', { name: 'twitter:card', content: 'summary' }],
-    [
-      'meta',
-      {
-        name: 'twitter:image',
-        content: 'https://vuejs.org/images/logo.png'
-      }
-    ],
-    [
-      'link',
-      {
-        rel: 'preconnect',
-        href: 'https://sponsors.vuejs.org'
-      }
-    ],
-    [
-      'script',
-      {},
-      fs.readFileSync(
-        path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
-        'utf-8'
-      )
-    ],
-    [
-      'script',
-      {
-        src: 'https://cdn.usefathom.com/script.js',
-        'data-site': 'XNOLWPLB',
-        'data-spa': 'auto',
-        defer: ''
-      }
-    ]
+    // ['meta', { name: 'theme-color', content: '#3c8772' }],
+    // ['meta', { name: 'twitter:site', content: '@vuejs' }],
+    // ['meta', { name: 'twitter:card', content: 'summary' }],
+    // [
+    //   'meta',
+    //   {
+    //     name: 'twitter:image',
+    //     content: 'https://vuejs.org/images/logo.png'
+    //   }
+    // ],
+    // [
+    //   'link',
+    //   {
+    //     rel: 'preconnect',
+    //     href: 'https://sponsors.vuejs.org'
+    //   }
+    // ],
+    // [
+    //   'script',
+    //   {},
+    //   fs.readFileSync(
+    //     path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
+    //     'utf-8'
+    //   )
+    // ],
+    // [
+    //   'script',
+    //   {
+    //     src: 'https://cdn.usefathom.com/script.js',
+    //     'data-site': 'XNOLWPLB',
+    //     'data-spa': 'auto',
+    //     defer: ''
+    //   }
+    // ]
   ],
 
   themeConfig: {
     nav,
-    sidebar
+    sidebar,
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
     // i18n,
 
-    // algolia: {
-    //   indexName: 'vuejs',
-    //   appId: 'ML0LEBN7FQ',
-    //   apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
-    //   searchParameters: {
-    //     facetFilters: ['version:v3']
-    //   }
-    // },
+    algolia: {
+      indexName: 'vuejs',
+      appId: 'ML0LEBN7FQ',
+      apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
+      searchParameters: {
+        facetFilters: ['version:v3']
+      }
+    },
 
-    // carbonAds: {
-    //   code: 'CEBDT27Y',
-    //   placement: 'vuejsorg'
-    // }
+    carbonAds: {
+      code: 'CEBDT27Y',
+      placement: 'vuejsorg'
+    },
 
-    // socialLinks: [
-    //   { icon: 'languages', link: '/translations/' },
-    //   { icon: 'github', link: 'https://github.com/vuejs/' },
-    //   { icon: 'twitter', link: 'https://twitter.com/vuejs' },
-    //   { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
-    // ],
+    socialLinks: [
+      { icon: 'languages', link: '/translations/' },
+      { icon: 'github', link: 'https://github.com/vuejs/' },
+      { icon: 'twitter', link: 'https://twitter.com/vuejs' },
+      { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
+    ],
 
-    // editLink: {
-    //   repo: 'vuejs/docs',
-    //   text: 'Edit this page on GitHub'
-    // },
+    editLink: {
+      repo: 'vuejs/docs',
+      text: 'Edit this page on GitHub'
+    },
 
-    // footer: {
-    //   license: {
-    //     text: 'MIT License',
-    //     link: 'https://opensource.org/licenses/MIT'
-    //   },
-    //   copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
-    // }
+    footer: {
+      license: {
+        text: 'MIT License',
+        link: 'https://opensource.org/licenses/MIT'
+      },
+      copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
+    }
   },
 
   markdown: {
