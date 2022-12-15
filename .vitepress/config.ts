@@ -100,7 +100,7 @@ const nav: ThemeConfig['nav'] = [
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [
     {
-      text: 'Getting Started',
+      text: '概览',
       items: [
         { text: 'Introduction', link: '/guide/introduction' },
         {
@@ -118,7 +118,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Essentials',
+      text: '基础知识',
       items: [
         {
           text: 'CICD_FAQ',
@@ -167,7 +167,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Components In-Depth',
+      text: '核心概念',
       items: [
         {
           text: 'Registration',
@@ -191,7 +191,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Reusability',
+      text: '演示DEMO',
       items: [
         {
           text: 'Composables',
@@ -205,7 +205,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Built-in Components',
+      text: '开发篇',
       items: [
         { text: 'Transition', link: '/guide/built-ins/transition' },
         {
@@ -218,7 +218,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Scaling Up',
+      text: '运维篇',
       items: [
         { text: 'Single-File Components', link: '/guide/scaling-up/sfc' },
         { text: 'Tooling', link: '/guide/scaling-up/tooling' },
@@ -235,7 +235,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: 'Best Practices',
+      text: '测试篇',
       items: [
         {
           text: 'Production Deployment',
@@ -253,66 +253,6 @@ export const sidebar: ThemeConfig['sidebar'] = {
           text: 'Security',
           link: '/guide/best-practices/security'
         }
-      ]
-    },
-    {
-      text: 'TypeScript',
-      items: [
-        { text: 'Overview', link: '/guide/typescript/overview' },
-        {
-          text: 'TS with Composition API',
-          link: '/guide/typescript/composition-api'
-        },
-        {
-          text: 'TS with Options API',
-          link: '/guide/typescript/options-api'
-        }
-      ]
-    },
-    {
-      text: 'Extra Topics',
-      items: [
-        {
-          text: 'Ways of Using Vue',
-          link: '/guide/extras/ways-of-using-vue'
-        },
-        {
-          text: 'Composition API FAQ',
-          link: '/guide/extras/composition-api-faq'
-        },
-        {
-          text: 'Reactivity in Depth',
-          link: '/guide/extras/reactivity-in-depth'
-        },
-        {
-          text: 'Rendering Mechanism',
-          link: '/guide/extras/rendering-mechanism'
-        },
-        {
-          text: 'Render Functions & JSX',
-          link: '/guide/extras/render-function'
-        },
-        {
-          text: 'Vue and Web Components',
-          link: '/guide/extras/web-components'
-        },
-        {
-          text: 'Animation Techniques',
-          link: '/guide/extras/animation'
-        },
-        {
-          text: 'Reactivity Transform',
-          link: '/guide/extras/reactivity-transform'
-        }
-        // {
-        //   text: 'Building a Library for Vue',
-        //   link: '/guide/extras/building-a-library'
-        // },
-        // { text: 'Custom Renderers', link: '/guide/extras/custom-renderer' },
-        // {
-        //   text: 'Vue for React Devs',
-        //   link: '/guide/extras/vue-for-react-devs'
-        // }
       ]
     }
   ],
