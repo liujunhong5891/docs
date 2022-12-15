@@ -422,8 +422,8 @@ export default defineConfigWithTheme<ThemeConfig>({
     [
       'meta',
       {
-        name: '',
-        content: 'https://vuejs.org/images/'
+        name: 'twitter:image',
+        content: 'https://vuejs.org/images/logo.png'
       }
     ],
     [
