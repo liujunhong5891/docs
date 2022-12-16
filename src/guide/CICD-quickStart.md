@@ -303,7 +303,7 @@ kubectl -nargocd get apps --watch
 2. 使用github私钥，拉取代码库时异常； 此时证书通过本地客户端验证正确、vault服务端auth-k8s授权验证正确。
    - 使用valut ui保存secrets时，增加一行空行；属于vault自身的缺陷。
    
-**删除argoCD **app命名空间卡顿在terminating状态**
+**删除argoCD app命名空间卡顿在terminating状态**
 argoCD app配置错误，更新配置后删除app，相关资源无法删除也无法正常安装、命名空间状态为terminating状态。
 1. 通过命令行登录argocd，查询argoevent app的资源及其状态; 逐项手工删除处于未删除状态的资源； 
    ``` 
@@ -328,7 +328,7 @@ argoCD app配置错误，更新配置后删除app，相关资源无法删除也�
 **argocd无法通过浏览器访问界面**
 1. argocd svc在反复操作过程，忘记执行patch-argocd-server.sh操作，导致svc没有增加traefik的注解。
 
-**cert manager生成ClusterIssuer异常**
+**cert manager生成ClusterIssuer异常**  
 cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypair for CA issuer: certificate is not a CA。
 1. 生成的secrets内容不符合CA证书。使用DEMO的相同证书，或者使用openssl重新生成证书，再写入vault。
 
@@ -350,7 +350,7 @@ https://developer.hashicorp.com/vault/docs/install#precompiled-binaries
 https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error  
 https://developer.hashicorp.com/vault/docs
 
-**argoCD命令行安装**  
+**argoCD命令行安装：**  
 https://tanzu.vmware.com/developer/guides/argocd-gs/#install-and-set-up-the-argocd-cli
 
 **github access token：**  
