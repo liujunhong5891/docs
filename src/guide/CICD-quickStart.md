@@ -112,7 +112,7 @@ argocd version
 4. **验证流水线自动执行**：在用户侧代码库（此处指demo-user-project）提交代码，观察tekton控制面板是否自动执行流水线。
 
 
-### 1.维护密钥
+### 维护密钥
 #### 维护cert-manager相关密钥
 用于存放cert-manager所需的证书和私钥的secret（此处以现成的证书文件作为示例）。通过vault界面配置vault的secrets、policy，后续再配置auth-kubernetes。
 - 创建secrets：启用kv secrets，path为pki，并设置secret path为root、secret data分别为tls.crt和tls.key，为其配置预先准备的证书文件; 
@@ -178,7 +178,7 @@ argocd version
    }
    ```
 
-### 2.安装argoCD
+### 安装argoCD
 在k8s空集群上手工安装argocd，供后续基于该argocd自动安装一系列工具。
 ```Shell  
 # 切换到k8s空集群的上下文，fork一份demo代码到宿主机的某目录; 
@@ -189,7 +189,7 @@ sh install-argocd.sh
 sh patch-argocd-server.sh
 ```
 
-### 3.安装argoCD app
+### 安装argoCD app
 根据k8s空集群上已安装的argocd，手工创建根project、app，使得argocd通过app of apps的方式自动安装运行在k8s空集群上的资源、运行时集群以及运行时集群上的资源。
 
 #### 修改代码相关配置
@@ -286,7 +286,7 @@ kubectl -nargocd get apps --watch
   - 对于当前auth-kubernetes的方法，创建配套role，确保argo-events app可以获取vault中相应的secrets。 其中role=argo-events-sa，授权sa=argo-events-sa，授权ns=argo-events, 授权policy=git-github-user-project-argoevents-webhook-access; 将以上信息提交为上述auth方法的role;
 - 通过argoCD界面删除argo-events app的资源，包括名称为webhook-secretstore（类型=SecretStore）、github-access（类型=ExternalSecret）、webhook（类型=EventSource）的资源，强制其重新生成；观察argoevents app状态为已同步。
 
-### 4.验证流水线自动执行
+### 验证流水线自动执行
 用户侧代码库（此处指demo-user-project）提交代码之后，使用tekton dashboard观察流水线是否自动执行。 
 本次示例的tekton dashboard地址为：http://tekton.pipeline1.119-8-99-179.nip.io:30080。
 ![directive syntax graph](./images/CI-10.jpg)
@@ -297,13 +297,13 @@ kubectl -nargocd get apps --watch
 
 
 ## 问题
-### 获取vault服务端密钥报403异常
+**获取vault服务端密钥报403异常**
 1. vault服务端授权k8s，客户端访问服务端403异常。
    - 为vault server启用auth的sa，没有设置rbac.authorization.k8s.io的资源权限。注意检查sa配套的rbac。
 2. 使用github私钥，拉取代码库时异常； 此时证书通过本地客户端验证正确、vault服务端auth-k8s授权验证正确。
    - 使用valut ui保存secrets时，增加一行空行；属于vault自身的缺陷。
    
-### 删除argoCD app命名空间卡顿在terminating状态
+**删除argoCD **app命名空间卡顿在terminating状态**
 argoCD app配置错误，更新配置后删除app，相关资源无法删除也无法正常安装、命名空间状态为terminating状态。
 1. 通过命令行登录argocd，查询argoevent app的资源及其状态; 逐项手工删除处于未删除状态的资源； 
    ``` 
@@ -312,7 +312,7 @@ argoCD app配置错误，更新配置后删除app，相关资源无法删除也�
    ```
 2. 检查卡顿状态的app的finalizers属性，删除其value（可通过argocd界面简化操作）。
 
-### 向github推送代码异常
+**向github推送代码异常**
 1. 使用https协议向github推送代码时，异常提示：OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to github.com:443
    - 执行以下命令，可以短时间内缓解问题
       ``` 
@@ -325,10 +325,10 @@ argoCD app配置错误，更新配置后删除app，相关资源无法删除也�
    - github的账号密码认证方式不同于gitlab、以及早期版本；而是通过access token的方式替代账号密码进行认证； 
    - github操作路径：个人图标-settings-developer settings-personl access token，生成token，并按需授予repo的权限；再次Push时，替换密码输入即可。 
 
-### argocd无法通过浏览器访问界面
+**argocd无法通过浏览器访问界面**
 1. argocd svc在反复操作过程，忘记执行patch-argocd-server.sh操作，导致svc没有增加traefik的注解。
 
-### cert manager生成ClusterIssuer异常
+**cert manager生成ClusterIssuer异常**
 cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypair for CA issuer: certificate is not a CA。
 1. 生成的secrets内容不符合CA证书。使用DEMO的相同证书，或者使用openssl重新生成证书，再写入vault。
 
@@ -337,17 +337,17 @@ cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypa
 
 ### 参考链接
 **Github DEMO示例：**
-https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets
+https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets  
 https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
 
 **B站讲解视频：**
-https://www.bilibili.com/video/BV1yP4y1U7mS/?spm_id_from=333.999.0.0&vd_source=ddbfd6bc7b8ad554ea42861b279f978d
-https://www.bilibili.com/video/BV1Fm4y1A7qL/?spm_id_from=333.999.0.0&vd_source=ddbfd6bc7b8ad554ea42861b279f978d
+https://www.bilibili.com/video/BV1yP4y1U7mS/  
+https://www.bilibili.com/video/BV1Fm4y1A7qL/
 
 **vault相关：**
-https://developer.hashicorp.com/vault/docs/install#installing-vault
-https://developer.hashicorp.com/vault/docs/install#precompiled-binaries
-https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error
+https://developer.hashicorp.com/vault/docs/install#installing-vault  
+https://developer.hashicorp.com/vault/docs/install#precompiled-binaries  
+https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error  
 https://developer.hashicorp.com/vault/docs
 
 **argoCD命令行安装**
@@ -357,7 +357,7 @@ https://tanzu.vmware.com/developer/guides/argocd-gs/#install-and-set-up-the-argo
 https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 **github ssh证书相关：**
-https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent  
 https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
 **argoevent webhook：**
