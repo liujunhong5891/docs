@@ -6,17 +6,17 @@ layout: home
 # 概述
 深圳市岚冰科技有限公司成立于2022年03月07日，致力于研究CICD开源工具并打造基于kubernetes的开源DevOps工具链。
 
-## 文档
-描述基于kubernetes的DevOps开源工具链的配套文档、不同角色的最佳实践等。
+## 问题
+近年来以kubernetes为中心的生态相当活跃，有助于基于开源工具建设DevOps平台，但怎么选型工具、怎么集成不同工具、怎么实现不同工具间的统一登录统一认证统一权限等问题，是建设DevOps平台过程中不可避免的问题。
 
-## API
-描述DevOps开源工具链的API接口清单。
-
-## 视频
-开源DevOps开源工具链涉及的DEMO、以及相关最佳实践的视频文件。
-
-## Github
-岚冰科技的Github地址，存放DEMO和最佳实践相关的代码。
-
-## 社区
-建设者分享最新消息，访问者反馈问题和建议，促进对于DevOps开源工具链的共同建设。
+## 方案
+岚冰科技研究以kubernetes为中心的CI/CD开源工具，进一步打造DevOps开源工具链。包括但不限于以下主题：
+- 通过ArgoCD部署和管理CI/CD环境
+- 用Tekton和ArgoEvents构建Kubernetes原生的流水线
+- 如何优雅的集成Tekton和ArgoCD
+- 如何通过Github界面直接访问Tekton和ArgoCD
+- 基于github、dex、oauth2 proxy实现kubernetes、tekton、argocd的统一认证
+- 实现Kubernetes和其他工具的统一权限管理
+- 在kubernetes集群实现多租户
+- 持续更新......
+希望对关注CI/CD工具的同行或用户有所帮助。
