@@ -336,34 +336,34 @@ cert manager生成 ClusterIssuer org-issuer异常，提示：Error getting keypa
 ## 附件
 
 ### 参考链接
-**Github DEMO示例：**
+**Github DEMO示例：**  
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets  
 https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
 
-**B站讲解视频：**
+**B站讲解视频：**  
 https://www.bilibili.com/video/BV1yP4y1U7mS/  
 https://www.bilibili.com/video/BV1Fm4y1A7qL/
 
-**vault相关：**
+**vault相关：**  
 https://developer.hashicorp.com/vault/docs/install#installing-vault  
 https://developer.hashicorp.com/vault/docs/install#precompiled-binaries  
 https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error  
 https://developer.hashicorp.com/vault/docs
 
-**argoCD命令行安装**
+**argoCD命令行安装**  
 https://tanzu.vmware.com/developer/guides/argocd-gs/#install-and-set-up-the-argocd-cli
 
-**github access token：**
+**github access token：**  
 https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
-**github ssh证书相关：**
+**github ssh证书相关：**  
 https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent  
 https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
-**argoevent webhook：**
+**argoevent webhook：**  
 https://argoproj.github.io/argo-events/eventsources/webhook-authentication/
 
-**推送image到github仓库：**
+**推送image到github仓库：**  
 https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
 ### **代码库变更配置**
