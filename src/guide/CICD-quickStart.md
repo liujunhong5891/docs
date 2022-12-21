@@ -77,7 +77,6 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 #### cert-manager
 存储cert-manager的证书和私钥。
 - 这里使用[预置的证书和私钥](#预置的证书和私钥)。
-
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：  
 
@@ -166,60 +165,55 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   ```
 
 ### 安装argoCD
-在k8s空集群上安装argocd，供后续基于该argocd自动安装一系列工具。
+在宿主集群安装argoCD。
 ```Shell  
-# 切换到k8s空集群的上下文，fork一份demo代码到宿主机的某目录; 
+# 切换到宿主集群 
 export KUBECONFIG=~/.kube/config
-# cd到fork代码目录（相对路径为cmds），执行argocd安装脚本install-argocd.sh; 
+# clone目标代码库(fork demo-pipeline-argoevents-tekton)，cd到相对路径cmds，执行安装脚本
 sh install-argocd.sh
-# 为argocd添加补丁，执行patch-argocd-server.sh，后续等待trafik、ingress安装完毕可通过浏览器访问argocd； 
+# 执行argocd的补丁脚本 
 sh patch-argocd-server.sh
 ```
 
 ### 安装argoCD app
-根据k8s空集群上已安装的argocd，创建根project、app，使得argocd通过app of apps的方式自动安装运行在k8s空集群上的资源、运行时集群以及运行时集群上的资源。
+在宿主集群上的argoCD，安装根project和根app，使得argoCD通过[app of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
+
 
 #### 替换服务地址
-需要变更的代码主要包括argocd app监听的源代码库地址（需变更为fork出来的代码库）、宿主集群（k8s空集群）的地址、运行时集群的地址，以及地址变更影响的配套资源，详情参见“附件-替换服务地址配置”。
-- 根据脚本模板sed-demo.sh，按需替换，详见下文代码注释。
+变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
+- 根据脚本模板sed-demo.sh，替换代码库地址、集群地址等，详见下文代码注释。
 ```shell
-# 查看替换服务地址的脚本sed-demo.sh
 cat sed-demo.sh
-# 代码库：demo-pipeline-argoevents-tekton
-# 批量替换argocd监听代码库为fork下来的代码库地址； 
+# 目标代码库(fork demo-pipeline-argoevents-tekton)
+# 批量替换argocd监听代码库地址为目标代码库
 sed -i -e "s#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git#g"  `grep https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换替换宿主集群IP地址、宿主机IP、vault服务端IP； 
+# 批量替换宿主集群IP地址、宿主机IP地址、vault服务端IP地址(这里vault也安装在同一台宿主机)
 sed -i -e "s#192.168.0.184#192.168.0.243#g"  `grep 192.168.0.184 -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换ingress等nip的地址：
+# 批量替换ingress的地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  `grep 119-8-58-20 -rl demo-pipeline-argoevents-tekton-1`
-# 替换argo-events的eventsource的repo信息，将<zhangsan>替换为对应的owner；本示例与demo使用相同的owner，因此省略该步骤 
-# sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
+# 替换argo-events中eventsource的repo信息，包括owner和names
+sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
 sed -i -e "s#demo-user-project#demo-user-project-1#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
-#  替换init-pipeline.yaml的git-clone task的代码库地址：
+#  替换argo-events中init-pipeline.yaml git-clone的代码库地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/init-pipeline.yaml
 
-# 代码库：demo-user-project
-# 替换流水线task拉取代码、推送代码、推送镜像的地址； 
+# 目标代码库(fork demo-user-project)
+# 替换流水线task拉取代码、推送代码、推送镜像的地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
 sed -i -e "s#git@github.com:lanbingcloud/demo-user-deployments.git#git@github.com:lanbingcloud/demo-user-deployments-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
-# 替换推送镜像的github package；本示例与demo使用相同的package，因此省略该步骤
-# sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipelines/test-pipeline.yaml
+# 替换推送镜像的github package
+sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipelines/test-pipeline.yaml
 
-# 代码库：demo-user-deployments
-# 替换业务应用svc的外部访问地址
+# 目标代码库(fork demo-user-deployments)
+# 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
 ```
 
-> 说明：
-> - 上文脚本模板引用的fork代码库地址分别为：  
-> https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git  
-> https://github.com/lanbingcloud/demo-user-project-1.git  
-> https://github.com/lanbingcloud/demo-user-deployments-1.git
-> - 安装k8s空集群的服务器内网IP：192.168.0.184，外网IP：119.8.99.179。
+> [Tips]
+> 上文模板示例的宿主机内网IP：192.168.0.184，外网IP：119.8.99.179
 
-- 执行sed-demo.sh脚本，批量更新demo代码库的相关配置。
+- 执行sed-demo.sh脚本，批量替换目标代码库的相关配置
 ```shell
-# 客户端克隆fork的代码库，保持sed-demo.sh与三个demo目录处于相同层级，执行脚本替换代码
 sh sed-demo.sh
 ```
 
