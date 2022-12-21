@@ -85,8 +85,8 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   | Secrets Engine |  | type | KV |
   |  |  | path | pki |
   | secret |  | secret path | root |
-  |  | secret data | tls.crt | [预置的证书]() |
-  |  | secret data | tls.key | [预置的私钥]() |
+  |  | secret data | tls.crt |  |
+  |  | secret data | tls.key |  |
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
   path "pki/data/root" {
