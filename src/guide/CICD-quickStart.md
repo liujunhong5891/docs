@@ -79,23 +79,14 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 这里使用[预置的证书和私钥](### 预置的证书和私钥)。
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：  
-  | &nbsp;  |  &nbsp;  | 属性（或key） | 值 |  
-  | ---- | ---- | ----| ---- |  
-  | Secrets Engine |  | type | KV |  
-  | &nbsp; | &nbsp; | path | pki |  
-  | secret | &nbsp; | secret path | root |  
-  | &nbsp; | secret data | tls.crt | &nbsp; |  
-  | &nbsp; | secret data | tls.key | &nbsp; |  
 
-  测试表格：  
-  | Tables        | Are           | Cool  |
-  | ------------- |:-------------:| -----:|
-  | col 3 is      | right-aligned | $1600 |
-  | col 2 is      |       |   $12 |
-  | zebra stripes | are neat      |    $1 |
-
-
-
+  |  |  | 属性（或key） | 值 |
+  | :-----| :---- | :-----| :---- |
+  | Secrets Engine |  | type | KV |
+  |  |  | path | pki |
+  | secret |  | secret path | root |
+  |  | secret data | tls.crt | [预置的证书]() |
+  |  | secret data | tls.key | [预置的私钥]() |
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
   path "pki/data/root" {
@@ -109,6 +100,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 新增github secret：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“Settings-Security-Secrets-Actions”操作路径下，新增repository secrets，填写secrets后保存，secrets可以是随机字符串（例如uuid）。保存明文的secrets，关闭界面之后将不再显示明文。
 - 访问vault界面，配置secrets和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：
+  
   |  |  | 属性（或key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
@@ -127,6 +119,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 新增推送镜像的github账号密码。组成格式为：<account_name>:<personal_access_tokens>，例如：zhangsan:ghp_xxxx。这里使用了和argo-events相同的accesstoken，具备repo的写入权限。再使用base64加密，保存备用。
 - 访问vault界面，配置secrets和policy：
   - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
+  
   |  |  | 属性（或key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
@@ -141,7 +134,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-2. 存储向目标代码库推送代码的密钥。
+1. 存储向目标代码库推送代码的密钥。
 - 新增ssh密钥。
   ```Shell 
   # 使用git客户端生成密钥，其中邮箱替换为github账号的邮箱 
@@ -157,6 +150,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 - 访问vault界面，配置secrets和policy：
   - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
+  
   |  |  | 属性（或key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
