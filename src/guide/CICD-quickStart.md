@@ -87,6 +87,15 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   | &nbsp; | secret data | tls.crt | &nbsp; |  
   | &nbsp; | secret data | tls.key | &nbsp; |  
 
+  测试表格：  
+  | Tables        | Are           | Cool  |
+  | ------------- |:-------------:| -----:|
+  | col 3 is      | right-aligned | $1600 |
+  | col 2 is      |       |   $12 |
+  | zebra stripes | are neat      |    $1 |
+
+
+
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
   path "pki/data/root" {
