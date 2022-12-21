@@ -17,13 +17,13 @@ outline: deep
 - argo-events: 提供事件监听、转换和触发的工具。
 - tekton: k8s原生的流水线工具。
 
-【补充工具间关系、说明整体实施结构和联动关系】
+【补充工具间关系、说明整体实施结构和协同关系】
 
 ## 准备
 以下服务有多种安装方式，下文只是其中一种方式。【引用方式的滥用、说明的适用范围】
 
-**安装一个kubernetes集群**
-通过命令安装K3s。【修改措辞】
+**安装一个kubernetes集群**  
+通过命令安装K3s。
 ```Shell
 # 替换tls-san IP为宿主机IP
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.14+k3s1 sh -s - server --disable servicelb --disable traefik --disable metrics-server --tls-san 119.8.99.179
@@ -31,7 +31,7 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-config
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
-**安装一个vault实例**
+**安装一个vault实例**  
 vault有多种安装方式，包括安装包、helm、源码和docker安装。下文使用安装包安装。【修改措辞】
 
 - 下载并配置vault，参见[官网链接](https://developer.hashicorp.com/vault/docs/install#precompiled-binaries)。
@@ -56,10 +56,10 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
    ui = true
    ```
 
-**在宿主机安装argocd命令行**
+**在宿主机安装argocd命令行**  
 下载并配置argoCD命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
-**了解Github DEMO代码库的作用**
+**了解Github DEMO代码库的作用**  
 - 配置CI基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
 - 存储应用源码和流水线：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
 - 存储应用部署的资源文件：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
