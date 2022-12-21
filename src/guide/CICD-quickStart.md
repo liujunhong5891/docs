@@ -78,14 +78,6 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 存储cert-manager的证书和私钥。
 - 这里使用[预置的证书和私钥](#预置的证书和私钥)。
 
-[跳转到测试锚点](#测试锚点)
-
-<p>
-    <a href="#测试锚点">
-        跳转到测试锚点-html
-    </a>
-</p>
-
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：  
 
@@ -294,10 +286,6 @@ kubectl -nargocd get apps --watch
 - 再次提交用户侧代码，观察流水线执行成功。
 
 ## 附件
-
-<h3 id="测试锚点">
-    测试锚点-html
-</h3>
 
 ### 预置的证书和私钥
 **tls.crt**  
