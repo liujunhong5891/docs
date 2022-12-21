@@ -80,7 +80,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：  
 
-  |  |  | 属性（或key） | 值 |
+  |  |  | 属性（或者key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
   |  |  | path | pki |
@@ -101,7 +101,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 访问vault界面，配置secrets和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：
   
-  |  |  | 属性（或key） | 值 |
+  |  |  | 属性（或者key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
   |  |  | path | git |
@@ -120,7 +120,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 访问vault界面，配置secrets和policy：
   - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
   
-  |  |  | 属性（或key） | 值 |
+  |  |  | 属性（或者key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
   |  |  | path | repo |
@@ -134,7 +134,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-1. 存储向目标代码库推送代码的密钥。
+2. 存储向目标代码库推送代码的密钥。
 - 新增ssh密钥。
   ```Shell 
   # 使用git客户端生成密钥，其中邮箱替换为github账号的邮箱 
@@ -151,7 +151,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 访问vault界面，配置secrets和policy：
   - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
   
-  |  |  | 属性（或key） | 值 |
+  |  |  | 属性（或者key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
   |  |  | path | git |
@@ -287,7 +287,7 @@ kubectl -nargocd get apps --watch
 ## 附件
 
 ### 预置的证书和私钥
-**tls.crt**
+**tls.crt**  
 ----BEGIN CERTIFICATE-----
 MIIC+zCCAeOgAwIBAgIJAMv/rvOaPioGMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
 BAMMCWJsdXppbi1jYTAeFw0yMjA2MjEwMjEzNTBaFw00OTExMDYwMjEzNTBaMBQx
@@ -307,7 +307,7 @@ rKLTdjUcbrAT9XeTkVwBSSBG5itGUaEeUmbITZlu9juI031W8Wl28i3dRaWvTDGY
 nT4uAguLdb0yB/NhUh+9iwpxkSv5/o547/nQ8JLJHotJkJ7HaXdMKliL3xvr4Qw=
 -----END CERTIFICATE-----
 
-**tls.key**
+**tls.key**  
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEApioKTyrJY1Sy8u3/rWJ7YIYW93AUt1YLB+T5t7RT3Cnsurr5
 FH4oRFAXf8QbXm5Glk+t5U79gmlN62h3lFaQl4gyGjV663KEkV1pZbEDUbujLEv9
