@@ -85,8 +85,8 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   | Secrets Engine |  | type | KV |
   |  |  | path | pki |
   | secret |  | secret path | root |
-  |  | secret data | tls.crt |  |
-  |  | secret data | tls.key |  |
+  |  | secret data | tls.crt | [预置的证书](#预置的证书和私钥) |
+  |  | secret data | tls.key | [预置的私钥](#预置的证书和私钥) |
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
   path "pki/data/root" {
@@ -208,10 +208,6 @@ sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipeli
 # 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
 ```
-
-> [Tips]
-> 上文模板示例的宿主机内网IP：192.168.0.184，外网IP：119.8.99.179
-
 - 执行sed-demo.sh脚本，批量替换目标代码库的相关配置
 ```shell
 sh sed-demo.sh
