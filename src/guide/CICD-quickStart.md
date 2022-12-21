@@ -20,7 +20,7 @@ outline: deep
 【补充工具间关系、说明整体实施结构和协同关系】
 
 ## 准备
-以下服务有多种安装方式，下文只是其中一种方式。【引用方式的滥用、说明的适用范围】
+以下服务有多种安装方式，下文只是其中一种方式。【说明的适用范围】
 
 **安装一个kubernetes集群**  
 通过命令安装K3s。
@@ -32,7 +32,7 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
 **安装一个vault实例**  
-vault有多种安装方式，包括安装包、helm、源码和docker安装。下文使用安装包安装。【修改措辞】
+vault有多种安装方式，包括安装包、helm、源码和docker安装。下文使用安装包安装。
 
 - 下载并配置vault，参见[官网链接](https://developer.hashicorp.com/vault/docs/install#precompiled-binaries)。
   
@@ -59,7 +59,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 **在宿主机安装argocd命令行**  
 下载并配置argoCD命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
-**了解Github DEMO代码库的作用**  
+**了解Github DEMO代码库的作用**  【修改措辞】
 - 配置CI基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
 - 存储应用源码和流水线：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
 - 存储应用部署的资源文件：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
@@ -79,13 +79,18 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 这里使用[预置的证书和私钥](### 预置的证书和私钥)。
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：
-  |  |  | 属性（或key） | 值 |
+  <!-- |  |  | 属性（或key） | 值 |
   | :-----| :---- | :-----| :---- |
   | Secrets Engine |  | type | KV |
   |  |  | path | pki |
   | secret |  | secret path | root |
   |  | secret data | tls.crt |  |
-  |  | secret data | tls.key |  |
+  |  | secret data | tls.key |  | -->
+  |  表头   | 表头  |
+  |  ----  | ----  |
+  | 单元格  | 单元格 |
+  | 单元格  | 单元格 |
+
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
   path "pki/data/root" {
