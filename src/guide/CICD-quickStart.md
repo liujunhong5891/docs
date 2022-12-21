@@ -79,13 +79,13 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - 这里使用[预置的证书和私钥](### 预置的证书和私钥)。
 - 访问vault界面，创建secret和policy：
   - 创建secret：启用Secrets Engine、并创建secret，详情参见下表：  
-  |   |    | 属性（或key） | 值 |  
+  | &nbsp;  |  &nbsp;  | 属性（或key） | 值 |  
   | ---- | ---- | ----| ---- |  
   | Secrets Engine |  | type | KV |  
-  |    |    | path | pki |  
-  | secret |    | secret path | root |  
-  |    | secret data | tls.crt |    |  
-  |   | secret data | tls.key |    |  
+  | &nbsp; | &nbsp; | path | pki |  
+  | secret | &nbsp; | secret path | root |  
+  | &nbsp; | secret data | tls.crt | &nbsp; |  
+  | &nbsp; | secret data | tls.key | &nbsp; |  
 
   - 创建policy：设置policy名称为pki-root，参见下文代码块。
   ```
