@@ -231,7 +231,7 @@ sh get-argocd-admin-pwd.sh
 - root：vcluster没有在argoCD注册，导致untime-argocd-appset、runtime-appset安装失败。
 
 ### 向vault同步宿主集群/运行时集群的认证信息
-**同步宿主集群的认证信息**
+**同步宿主集群的认证信息**  
 用于宿主集群上的资源获取存储在vault的密钥。
 - 准备配置kubernetes集群认证需要的信息。包括：集群的CA证书、集群host地址、授权sa的token。
 ``` Shell
