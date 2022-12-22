@@ -231,7 +231,7 @@ sh get-argocd-admin-pwd.sh
 - root：vcluster没有在argoCD注册，导致untime-argocd-appset、runtime-appset安装失败。
 
 ### 向vault同步宿主集群/运行时集群的认证信息【补充】
-**修复cert-manager app - 配置vault授权**
+**配置宿主集群的vault认证**
 
 对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
 - 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
@@ -239,7 +239,7 @@ sh get-argocd-admin-pwd.sh
 - 对于当前的auth方法，创建配套role，确保cert-manager app可以获取vault中相应的secrets。其中role名称为cert-manager，授权sa为default，授权ns为cert-manager, 授权policy为pki-root，将以上信息保存为auth方法的role;
 - 回到argoCD访问界面，进入cert-manager app，删除名称为cert-manager-secretstore（类型=SecretStore）、root-issuer（类型=ExternalSecret）、org-issuer（类型=ClusterIssuer）的资源，强制其重新生成；再次观察cert-manager app状态为已同步。
 
-**修复pipeline1 app - 配置vault授权**
+**配置vcluster的vault认证**
 当root app状态显示为已同步，通过安装在vcluster上的argoCD访问界面，观察pipeline1 app的相关资源是否安装就绪。
 - 查看argoCD的界面访问地址（此处示例为https://argocd.pipeline1.119-8-99-179.nip.io:30443），切换到vcluster集群的上下文，使用cmds目录下的get-argocd-admin-pwd.sh脚本可获取初始密码； 
 - 观察安装在vcluster上的app状态，此时发现有user-namespaces、argo-events两个app并未处于同步状态。user-namespaces app的pvc一直是pending状态，由于pvc暂未被pods使用，这是正常现像；argo-events app的secretStore资源异常，vault服务端需要给vcluster集群授权；
@@ -278,7 +278,7 @@ sh get-argocd-admin-pwd.sh
 
 ## 附件
 
-### argoCD访问地址  
+### argoCD访问地址
 协议：https  
 地址：来自production/patch/ingress-argocd.yaml的hosts  
 端口：来自production/traefik-app.yaml的websecure.nodePort  
