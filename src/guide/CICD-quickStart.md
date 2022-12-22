@@ -222,12 +222,12 @@ kubectl -nargocd apply -f project.yaml
 kubectl -nargocd apply -f app.yaml
 kubectl -nargocd get apps --watch
 ```
-获取argoCD的初始密码，访问[argoCD界面](#argoCD访问地址) [argoCD界面-test](#argoCD访问地址)。。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
+获取argoCD的初始密码，访问[argoCD界面](#argoCD访问地址)。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
 ```
-- cert-manager；宿主集群没有通过vault认证，导致cert manager无法获取密钥安装失败。
+- cert-manager：宿主集群没有通过vault认证，导致cert manager无法获取密钥安装失败。
 - root：vcluster没有在argoCD注册，导致untime-argocd-appset、runtime-appset安装失败。
 
 ### 向vault同步宿主集群/运行时集群的认证信息【补充】
@@ -278,11 +278,11 @@ sh get-argocd-admin-pwd.sh
 
 ## 附件
 
-### argoCD访问地址
-协议：https
-地址：来自production/patch/ingress-argocd.yaml的hosts
-端口：来自production/traefik-app.yaml的websecure.nodePort
-示例：https://argocd.119-8-99-179.nip.io:30443
+### argoCD访问地址  
+协议：https  
+地址：来自production/patch/ingress-argocd.yaml的hosts  
+端口：来自production/traefik-app.yaml的websecure.nodePort  
+示例：https://argocd.119-8-99-179.nip.io:30443  
 
 ### 预置的证书和私钥
 **tls.crt**  
