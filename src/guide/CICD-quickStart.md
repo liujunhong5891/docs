@@ -222,7 +222,7 @@ kubectl -nargocd apply -f project.yaml
 kubectl -nargocd apply -f app.yaml
 kubectl -nargocd get apps --watch
 ```
-获取argoCD的初始密码，访问[argoCD界面](#安装在宿主集群的argoCD访问地址)。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
+获取argoCD的初始密码，访问[argoCD界面](#argoCD访问地址) [argoCD界面-test](#argoCD访问地址)。。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
@@ -278,7 +278,7 @@ sh get-argocd-admin-pwd.sh
 
 ## 附件
 
-### 安装在宿主集群的argoCD访问地址
+### argoCD访问地址
 协议：https
 地址：来自production/patch/ingress-argocd.yaml的hosts
 端口：来自production/traefik-app.yaml的websecure.nodePort
