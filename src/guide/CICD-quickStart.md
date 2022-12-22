@@ -267,7 +267,7 @@ cat ~/.kube/config
 
 - 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argoCD访问地址)，观察cert-manager app状态更新为已同步。如果想立即验证效果，删除以下资源：cert-manager-secretstore（类型为SecretStore）、root-issuer（类型为ExternalSecret）和org-issuer（类型为ClusterIssuer），等待argoCD重新生成资源，观察cert-manager app状态更新为已同步。
 
-**同步vcluster的认证信息**
+**同步vcluster的认证信息**  
 用于vcluster集群上的资源获取存储在vault的密钥。
 - 准备配置vcluster集群认证需要的信息。包括：集群的CA证书、集群host地址、授权sa的token。
 ``` Shell
@@ -280,6 +280,7 @@ sh get-vault-auth-token.sh
 cat /opt/vcluster/kubeconfig-31543.yaml
 ```
 - 启用并配置kubernetes认证，详情参见下表：
+
 |       |  | 属性 | 值 |
 | ----------- | ----------- | ----------- | ----------- |
 |   Authentication Method    |        |   类别     |    kubernetes    |
