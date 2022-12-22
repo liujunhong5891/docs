@@ -181,7 +181,7 @@ sh patch-argocd-server.sh
 
 #### 替换服务地址
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
-- 根据脚本模板sed-demo.sh，替换代码库地址、集群地址等，详见下文代码注释。
+- 根据模板sed-demo.sh，替换代码库地址、集群地址等，详见下文代码注释。
 ```shell
 cat sed-demo.sh
 # 目标代码库(fork demo-pipeline-argoevents-tekton)
@@ -208,29 +208,48 @@ sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipeli
 # 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
 ```
-- 执行sed-demo.sh脚本，批量替换目标代码库的相关配置
+- clone目标代码库，执行sed-demo.sh脚本，批量替换目标代码库的相关配置
 ```shell
 sh sed-demo.sh
 ```
 
 #### 安装根project和根app
-通过命令安装根project和根app。
-``` 
-# cd到demo代码库根目录，安装根project
+使用命令安装根project和根app。
+``` Shell
+# cd到目标代码库(fork demo-pipeline-argoevents-tekton)的根目录，安装根project
 kubectl -nargocd apply -f project.yaml
-# 安装根app，等待初始化结束；
+# 安装根app
 kubectl -nargocd apply -f app.yaml
-# 查看argocd app的安装进度和状态，安装过程需要等待一段时间
 kubectl -nargocd get apps --watch
 ```
-通过界面访问安装在k8s空集群上的argoCD（此处示例的argoCD访问地址为https://argocd.119-8-99-179.nip.io:30443），并执行脚本cmds/get-argocd-admin-pwd.sh，可获取argoCD的初始密码；初始化结束后观察app状态，两个app未完成同步，其他app处于已同步状态。
-- cert-manager：vault服务端未设置了宿主集群（原k8s空集群）的auth授权，导致cert-manager app同步异常； 
-- root：新生成的vcluster集群没有注册到宿主集群的argoCD，导致runtime-appset、runtime-argocd-appset同步异常。
-<!-- ![avatar](images/argocd_install_2.jpg) -->
+获取argoCD的初始密码，访问[argoCD界面](#安装在宿主集群的argoCD访问地址)。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
+```Shell
+# cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
+sh get-argocd-admin-pwd.sh
+```
+- cert-manager；宿主集群没有通过vault认证，导致cert manager无法获取密钥安装失败。
+- root：vcluster没有在argoCD注册，导致untime-argocd-appset、runtime-appset安装失败。
 
+### 向vault同步宿主集群/运行时集群的认证信息【补充】
+**修复cert-manager app - 配置vault授权**
 
+对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
+- 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
+- 启用auth方法，类型为kubernetes，path为host-cluster，并且需要将CA证书、token和host等上述信息上传或填写到vault的auth方法；
+- 对于当前的auth方法，创建配套role，确保cert-manager app可以获取vault中相应的secrets。其中role名称为cert-manager，授权sa为default，授权ns为cert-manager, 授权policy为pki-root，将以上信息保存为auth方法的role;
+- 回到argoCD访问界面，进入cert-manager app，删除名称为cert-manager-secretstore（类型=SecretStore）、root-issuer（类型=ExternalSecret）、org-issuer（类型=ClusterIssuer）的资源，强制其重新生成；再次观察cert-manager app状态为已同步。
 
-#### 修复root app - 注册集群
+**修复pipeline1 app - 配置vault授权**
+当root app状态显示为已同步，通过安装在vcluster上的argoCD访问界面，观察pipeline1 app的相关资源是否安装就绪。
+- 查看argoCD的界面访问地址（此处示例为https://argocd.pipeline1.119-8-99-179.nip.io:30443），切换到vcluster集群的上下文，使用cmds目录下的get-argocd-admin-pwd.sh脚本可获取初始密码； 
+- 观察安装在vcluster上的app状态，此时发现有user-namespaces、argo-events两个app并未处于同步状态。user-namespaces app的pvc一直是pending状态，由于pvc暂未被pods使用，这是正常现像；argo-events app的secretStore资源异常，vault服务端需要给vcluster集群授权；
+- 通过vault界面配置vcluster集群的auth授权
+  - 启用auth方法，类型为kubernetes，path为pipeline1-cluster; 并且需要将vcluster集群的CA证书、token和host等信息上传或填写到vault的auth方法。获取相关信息参见cert-manager app，不再赘述； 
+  - 对于当前auth-kubernetes的方法，创建配套role，确保argo-events app可以获取vault中相应的secrets。 其中role=argo-events-sa，授权sa=argo-events-sa，授权ns=argo-events, 授权policy=git-github-user-project-argoevents-webhook-access; 将以上信息提交为上述auth方法的role;
+- 通过argoCD界面删除argo-events app的资源，包括名称为webhook-secretstore（类型=SecretStore）、github-access（类型=ExternalSecret）、webhook（类型=EventSource）的资源，强制其重新生成；观察argoevents app状态为已同步。
+
+### 在argoCD注册虚拟集群【补充】
+修复root app - 注册集群
 对于root app，注册vcluster，使得root app的两个appset可以找到目标部署集群完成部署。
 - 执行脚本cmds目录下的脚本get-vcluster-kubeconfig.sh获取vcluster的config文件，并保存到宿主机指定目录；并修改config文件的clusters[0].server=https:<内网IP>:<vcluster1-svc的nodeport>、contexts[0].name=<自定义名称>、  current-context=<自定义名称>; 
 - 通过argocd命令添加vcluster；
@@ -248,24 +267,6 @@ kubectl -nargocd get apps --watch
    ```
 - 回到argoCD访问界面，进入root app，删除runtime-appset和runtime-argocd-appset，强制其重新生成，观察root app的同步状态更新为已同步。
 
-### 向vault同步宿主集群/运行时集群的认证信息【补充】
-#### 修复cert-manager app - 配置vault授权
-
-对于cert-manager app，通过vault界面配置宿主集群（原k8s空集群）与vault服务端的auth授权。
-- 准备auth方法需要的信息，包括：kubernetes集群的CA证书、授权sa的token、集群host地址；切换到原k8s空集群的上下文，执行cmds目录下的脚本get-cluster-ca.sh获取CA证书内容、执行get-vault-auth-token.sh获取token、查看~/.kube/config文件明确host地址； 
-- 启用auth方法，类型为kubernetes，path为host-cluster，并且需要将CA证书、token和host等上述信息上传或填写到vault的auth方法；
-- 对于当前的auth方法，创建配套role，确保cert-manager app可以获取vault中相应的secrets。其中role名称为cert-manager，授权sa为default，授权ns为cert-manager, 授权policy为pki-root，将以上信息保存为auth方法的role;
-- 回到argoCD访问界面，进入cert-manager app，删除名称为cert-manager-secretstore（类型=SecretStore）、root-issuer（类型=ExternalSecret）、org-issuer（类型=ClusterIssuer）的资源，强制其重新生成；再次观察cert-manager app状态为已同步。
-
-#### 修复pipeline1 app - 配置vault授权
-当root app状态显示为已同步，通过安装在vcluster上的argoCD访问界面，观察pipeline1 app的相关资源是否安装就绪。
-- 查看argoCD的界面访问地址（此处示例为https://argocd.pipeline1.119-8-99-179.nip.io:30443），切换到vcluster集群的上下文，使用cmds目录下的get-argocd-admin-pwd.sh脚本可获取初始密码； 
-- 观察安装在vcluster上的app状态，此时发现有user-namespaces、argo-events两个app并未处于同步状态。user-namespaces app的pvc一直是pending状态，由于pvc暂未被pods使用，这是正常现像；argo-events app的secretStore资源异常，vault服务端需要给vcluster集群授权；
-- 通过vault界面配置vcluster集群的auth授权
-  - 启用auth方法，类型为kubernetes，path为pipeline1-cluster; 并且需要将vcluster集群的CA证书、token和host等信息上传或填写到vault的auth方法。获取相关信息参见cert-manager app，不再赘述； 
-  - 对于当前auth-kubernetes的方法，创建配套role，确保argo-events app可以获取vault中相应的secrets。 其中role=argo-events-sa，授权sa=argo-events-sa，授权ns=argo-events, 授权policy=git-github-user-project-argoevents-webhook-access; 将以上信息提交为上述auth方法的role;
-- 通过argoCD界面删除argo-events app的资源，包括名称为webhook-secretstore（类型=SecretStore）、github-access（类型=ExternalSecret）、webhook（类型=EventSource）的资源，强制其重新生成；观察argoevents app状态为已同步。
-
 ### 执行流水线
 用户侧代码库（此处指demo-user-project）提交代码之后，使用tekton dashboard观察流水线是否自动执行。 
 本次示例的tekton dashboard地址为：http://tekton.pipeline1.119-8-99-179.nip.io:30080。
@@ -276,6 +277,12 @@ kubectl -nargocd get apps --watch
 - 再次提交用户侧代码，观察流水线执行成功。
 
 ## 附件
+
+### 安装在宿主集群的argoCD访问地址
+协议：https
+地址：来自production/patch/ingress-argocd.yaml的hosts
+端口：来自production/traefik-app.yaml的websecure.nodePort
+示例：https://argocd.119-8-99-179.nip.io:30443
 
 ### 预置的证书和私钥
 **tls.crt**  
