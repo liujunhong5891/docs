@@ -20,7 +20,7 @@ outline: deep
 【补充工具间关系、说明整体实施结构和协同关系】
 
 ## 准备
-以下服务有多种安装方式，下文只是其中一种方式。【说明的适用范围】
+以下服务有多种安装方式，下文只是其中一种方式。
 
 **安装一个kubernetes集群**  
 通过命令安装K3s。
@@ -932,7 +932,7 @@ spec:
       - name: GIT_SCRIPT
         value: |
           cd deployment
-        # 使用sed字符串替换镜像地址
+        # 使用sed字符串替换镜像地址 
           sed -i -e "s#ghcr.io/zhangsan/devops-sample.*#$(tasks.image-build.results.IMAGE_URL)#g" deployments/test/devops-sample.yaml
           git add deployments/test/devops-sample.yaml
           git commit -a -m "automatic update by pipeline bot: $(tasks.image-build.results.IMAGE_URL)"
