@@ -147,6 +147,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   cat ~/.ssh/id_ed25519.pub
   ```
 2. 新增deploy key：在目标代码库(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))的github界面，点击顶部的Settings，进入设置界面；点击左侧菜单的Deploy keys，进入Deploy keys的维护界面； 点击Add deploy key，参考下表填写属性值，点击Add key完成新增deploy key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+
 | 属性      | 取值 | 说明 |
 | ----------- | ----------- | ----------- |
 | Title      |   自定义     |   deploy key的标题     |
