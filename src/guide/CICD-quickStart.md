@@ -114,27 +114,25 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
     capabilities = ["read"]
   }
   ```
-#### pipeline
-1. 存储向github packager推送镜像的密钥。
-- 新增推送镜像的github账号密码。组成格式为：<account_name>:<personal_access_tokens>，例如：zhangsan:ghp_xxxx。这里使用了和argo-events相同的accesstoken，具备repo的写入权限。再使用base64加密，保存备用。
-- 访问vault界面，配置secrets和policy：
-  - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
-  
-  |  |  | 属性（或者key） | 值 |
-  | :-----| :---- | :-----| :---- |
-  | Secrets Engine |  | type | KV |
-  |  |  | path | repo |
-  | secret |  | secret path | github/container/lanbing/default/readwrite |
-  |  | secret data | auth | github账号密码（密文） |
+#### pipeline-推送镜像
+存储向github package推送镜像的密钥。
+1. 准备推送镜像的github access token：这里使用了[和argo-events相同的accesstoken](#argo-events)，具备repo的写入权限。再用base64加密，暂存备用。
+2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV；进入Enable KV Secrets Engine配置界面，填写Path为repo，点击Enable Engine按钮；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值：
 
-  - 创建policy：设置policy名称为repo-github-container-lanbing-default-readwrite，参见下文代码块。
+| 属性      | 取值 | 说明 |
+| ----------- | ----------- | ----------- |
+| Path for this secret      | github/container/lanbing/default/readwrite       |    sercret的path    |
+| Secret data - key   |  auth  |  secrets的key，key和value配对使用       |
+| Secret data - value |  github access token使用base64加密后的值   | secrets的value，key和value配对使用 |
+
+3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，Policy参见下文代码块：
   ```  
   path "repo/data/github/container/lanbing/default/readwrite" {
       capabilities = ["read"]
   }
   ```
-
-2. 存储向目标代码库推送代码的密钥。
+#### pipeline-推送代码
+存储向目标代码库推送代码的密钥。
 - 新增ssh密钥。更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
   # 使用git客户端生成密钥，其中邮箱替换为github账号的邮箱 
@@ -256,7 +254,7 @@ sh get-argocd-admin-pwd.sh
   #自定义名称 
   current-context: Default31543  
   ...
-  ``` 
+  ```
 - 使用argocd命令注册vcluster。
    ``` 
    # 切换到宿主集群，修改argocd server的svc类型为NodePort（步骤略）
