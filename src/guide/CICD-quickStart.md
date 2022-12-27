@@ -225,7 +225,8 @@ sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipeli
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
 ```
 
-- clone目标代码库，执行sed-demo.sh脚本，批量替换目标代码库的相关配置
+- clone目标代码库，执行sed-demo.sh脚本，批量替换目标代码库的相关配置。
+
 ```Shell
 sh sed-demo.sh
 ```
