@@ -198,7 +198,7 @@ sh patch-argocd-server.sh
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
 - 根据模板sed-demo.sh，替换代码库地址、集群地址等，详见下文代码注释。
 
-```Shell
+<!-- ```Shell
 cat sed-demo.sh
 # 目标代码库(fork demo-pipeline-argoevents-tekton)
 # 批量替换argocd监听代码库地址为目标代码库
@@ -221,7 +221,7 @@ sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipeli
 # 目标代码库(fork demo-user-deployments)
 # 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
-```
+``` -->
 
 - clone目标代码库，执行sed-demo.sh脚本，批量替换目标代码库的相关配置。
 
