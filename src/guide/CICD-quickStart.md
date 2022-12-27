@@ -74,7 +74,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 
 ### 维护密钥
-**cert-manager**
+**cert-manager**  
 存储cert-manager的证书和私钥。
 - 这里使用[预置的证书和私钥](#预置的证书和私钥)。
 - 访问vault界面，创建secret和policy：
@@ -94,7 +94,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**argo-events**
+**argo-events**  
 存储argoevents需要的密钥，包括：创建github webhook的accesstoken、防止webhook被非法调用的github secret。
 - 新增github accesstoken：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“账号Settings - Developer settings - Personal access token - Token(classic)”操作路径下，新增classic类型的token，填写描述、选择授权范围（授予repo和project的权限）后保存。保存生成的token，关闭界面之后将不再显示。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。 
 - 新增github secret：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“Settings-Security-Secrets-Actions”操作路径下，新增repository secrets，填写secrets后保存，secrets可以是随机字符串（例如uuid）。保存明文的secrets，关闭界面之后将不再显示明文。
@@ -115,7 +115,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**pipeline-推送镜像**
+**pipeline-推送镜像**  
 存储向github package推送镜像的密钥。
 1. 准备推送镜像的github access token：这里使用了[和argo-events相同的accesstoken](#argo-events)，具备repo的写入权限。再用base64加密，暂存备用。
 2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
@@ -133,7 +133,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**pipeline-推送代码**
+**pipeline-推送代码**  
 存储向目标代码库推送代码的密钥。
 1. 新增ssh密钥：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
