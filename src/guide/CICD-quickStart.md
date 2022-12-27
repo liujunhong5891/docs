@@ -131,14 +131,15 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 **pipeline-推送镜像**  
 用于向github package推送镜像。
-<!-- 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成“<github account>:<github access token>”格式的字符。再通过base64转码，用于后续写入密钥。
+1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 <github account>:<github access token> 格式的字符。再通过base64转码，用于后续写入密钥。
+
 2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | github/container/lanbing/default/readwrite    |
 | Secret data - key   |  auth  |
-| Secret data - value |  github access token使用base64转码后的值   | -->
+| Secret data - value |  github access token使用base64转码后的值   |
 
 3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```  
