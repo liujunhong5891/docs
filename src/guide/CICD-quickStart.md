@@ -74,7 +74,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 
 ### 维护密钥
-#### cert-manager
+**cert-manager**
 存储cert-manager的证书和私钥。
 - 这里使用[预置的证书和私钥](#预置的证书和私钥)。
 - 访问vault界面，创建secret和policy：
@@ -94,7 +94,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-#### argo-events
+**argo-events**
 存储argoevents需要的密钥，包括：创建github webhook的accesstoken、防止webhook被非法调用的github secret。
 - 新增github accesstoken：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“账号Settings - Developer settings - Personal access token - Token(classic)”操作路径下，新增classic类型的token，填写描述、选择授权范围（授予repo和project的权限）后保存。保存生成的token，关闭界面之后将不再显示。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。 
 - 新增github secret：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“Settings-Security-Secrets-Actions”操作路径下，新增repository secrets，填写secrets后保存，secrets可以是随机字符串（例如uuid）。保存明文的secrets，关闭界面之后将不再显示明文。
@@ -114,26 +114,28 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
     capabilities = ["read"]
   }
   ```
-#### pipeline-推送镜像
+
+**pipeline-推送镜像**
 存储向github package推送镜像的密钥。
 1. 准备推送镜像的github access token：这里使用了[和argo-events相同的accesstoken](#argo-events)，具备repo的写入权限。再用base64加密，暂存备用。
-2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV；进入Enable KV Secrets Engine配置界面，填写Path为repo，点击Enable Engine按钮；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值：
+2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 | 说明 |
 | ----------- | ----------- | ----------- |
 | Path for this secret      | github/container/lanbing/default/readwrite       |    sercret的path    |
 | Secret data - key   |  auth  |  secrets的key，key和value配对使用       |
-| Secret data - value |  github access token使用base64加密后的值   | secrets的value，key和value配对使用 |
+| Secret data - value |  将github access token使用base64加密后的值   | secrets的value，key和value配对使用 |
 
-3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，Policy参见下文代码块：
+3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```  
   path "repo/data/github/container/lanbing/default/readwrite" {
       capabilities = ["read"]
   }
   ```
-#### pipeline-推送代码
+
+**pipeline-推送代码**
 存储向目标代码库推送代码的密钥。
-- 新增ssh密钥。更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
+1. 新增ssh密钥：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
   # 使用git客户端生成密钥，其中邮箱替换为github账号的邮箱 
   ssh-keygen -t ed25519 -C "your_email@example.com"
@@ -144,18 +146,23 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   cat ~/.ssh/id_ed25519
   cat ~/.ssh/id_ed25519.pub
   ```
-- 访问目标代码库(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))的github界面，新增deploy key，设置值为ssh公钥，并授权代码库的写入权限。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+2. 新增deploy key：在目标代码库(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))的github界面，点击顶部的Settings，进入设置界面；点击左侧菜单的Deploy keys，进入Deploy keys的维护界面； 点击Add deploy key，参考下表填写属性值，点击Add key完成新增deploy key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+| 属性      | 取值 | 说明 |
+| ----------- | ----------- | ----------- |
+| Title      |   自定义     |   deploy key的标题     |
+| Key   |  ssh公钥  |    deploy key的值 |
+| Allow write access(复选框)   |  选中  |    是否具备写入repo权限    |
 
-- 访问vault界面，配置secrets和policy：
-  - 创建secrets：启用Secrets Engine、并创建secret，详情参见下表：
-  
-  |  |  | 属性（或者key） | 值 |
-  | :-----| :---- | :-----| :---- |
-  | Secrets Engine |  | type | KV |
-  |  |  | path | git |
-  | secret |  | secret path | github/user-deployments/default/readwrite |
-  |  | secret data | deploykey | ssh私钥(末尾预留一行空行) |
-  - 创建policy：设置policy名称为git-github-user-deployments-default-readwrite，参见下文代码块。
+
+3. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为git，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+
+| 属性      | 取值 | 说明 |
+| ----------- | ----------- | ----------- |
+| Path for this secret      | github/user-deployments/default/readwrite       |    sercret的path    |
+| Secret data - key   |  deploykey  |  secrets的key，key和value配对使用       |
+| Secret data - value |  ssh私钥(末尾预留一行空行)   | secrets的value，key和value配对使用 |
+
+4. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为git-github-user-deployments-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```  
   path "git/data/github/user-deployments/default/readwrite" {
       capabilities = ["read"]
