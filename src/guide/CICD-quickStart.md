@@ -69,7 +69,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - **维护密钥**：在vault服务端维护本次DEMO需要的所有密钥，以及密钥的访问策略。
 - **安装argoCD**：在宿主集群安装argoCD。 
 - **安装argoCD app**： 在宿主集群上的argoCD，创建根project和根app，使得argoCD通过[app of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
-- **向vault同步宿主/运行时集群的认证信息**: 同步集群的认证信息，用于kubernetes资源使用存储在vault的密钥。
+- **向vault同步宿主集群和运行时集群的认证信息**: 同步集群的认证信息，用于kubernetes资源使用存储在vault的密钥。
 - **执行流水线**：向fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)的目标代码库推送代码，触发流水线自动执行。
 
 
@@ -96,7 +96,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   ```
 
 **argo-events**  
-用于argoevents创建并监听webhook。包括：创建github webhook的accesstoken、防止webhook被非法调用的github secret。
+用于argoevents创建webhook。包括：创建github webhook的accesstoken、防止webhook被非法调用的github secret。
 1. 新增github accesstoken：访问github界面，在“账号Settings - Developer settings - Personal access token - Token(classic)”操作路径下，点击Generate new token(classic)，参见下表填写属性值，点击Generate token完成新增accesstoken。保存生成的token，关闭界面之后将不再显示。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
 
 | 属性      | 取值 |
@@ -134,7 +134,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 &lt;github account&gt;:&lt;github access token&gt; 格式的字符。再通过base64转码，用于后续写入密钥。
 <!-- 测试异常: <github account>:<github access token> -->
 
-2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+1. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -187,14 +187,14 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 export KUBECONFIG=~/.kube/config
 # clone目标代码库(fork demo-pipeline-argoevents-tekton)，cd到相对路径cmds，执行安装脚本
 sh install-argocd.sh
-# 执行argocd的补丁脚本 
+# 执行补丁脚本 
 sh patch-argocd-server.sh
 ```
 
 ### 安装argoCD app
 
 **替换服务地址**  
-变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
+变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见[替换服务地址配置](#替换服务地址配置)。
 1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
 ```Shell
@@ -203,7 +203,7 @@ sh patch-argocd-server.sh
 sed -i -e "s#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git#g"  `grep https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git -rl demo-pipeline-argoevents-tekton-1`
 # 批量替换宿主集群IP地址、宿主机IP地址、vault服务端IP地址(这里vault也安装在同一台宿主机)
 sed -i -e "s#192.168.0.184#192.168.0.243#g"  `grep 192.168.0.184 -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换ingress的地址
+# 批量替换ingress的域名地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  `grep 119-8-58-20 -rl demo-pipeline-argoevents-tekton-1`
 # 替换argo-events中eventsource的repo信息，包括owner和names
 sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
@@ -272,20 +272,21 @@ sh get-argocd-admin-pwd.sh
 2. 使用argocd命令注册vcluster。
   ``` 
   # 切换到宿主集群，修改argocd server的svc类型为NodePort（步骤略）
-  # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取安装在宿主集群的argoCD初始密码
+  # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取argoCD初始密码
+  sh get-argocd-admin-pwd.sh
   # 使用命令行登录argocd：argocd login <内网IP>:<argocd server svc的nodeport>
   argocd login 192.168.0.243:30070
   # 切换到vcluster
   export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
   # 使用命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
   argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
-  # 查看已注册的集群是否包括vcluster
+  # 验证vcluster是否注册成功
   argocd cluster list
   ```
 3. 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，等待argoCD自动同步，直到root app状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
 
 
-### 向vault同步宿主集群/运行时集群的认证信息  
+### 向vault同步宿主集群和运行时集群的认证信息  
 **同步宿主集群的认证信息**  
 用于安装在宿主集群上的资源获取存储在vault的密钥。
 1. 准备配置宿主集群认证需要的信息：包括集群的CA证书、授权sa的token、集群host地址。
@@ -299,13 +300,13 @@ sh get-vault-auth-token.sh
 cat ~/.kube/config
 ```
 
-2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为host-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证。
+2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为host-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证方法。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
-| Kubernetes host   |  host地址  |
-| Kubernetes CA Certificate |  CA证书   |
-| Token Reviewer JWT |  token   |
+| Kubernetes host   |  宿主集群的host地址  |
+| Kubernetes CA Certificate |  宿主集群的CA证书   |
+| Token Reviewer JWT |  宿主集群的sa token   |
 
 3. 新增特定kubernetes认证方法的role：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Path为host-cluster的认证方法链接； 进入role的维护界面，点击Create role，参见下表填写属性值，点击Save完成新增role。
 
@@ -330,7 +331,7 @@ sh get-vault-auth-token.sh
 # 查看kubeconfig文件获取host地址
 cat /opt/vcluster/kubeconfig-31543.yaml
 ```
-2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为pipeline1-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证。
+2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为pipeline1-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证方法。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -352,7 +353,7 @@ cat /opt/vcluster/kubeconfig-31543.yaml
 | Generated Token's Policies |  git-github-user-deployments-default-readwrite<br>repo-github-container-lanbing-default-readwrite   |
 
 4. 验证argo-events获取密钥：访问[安装在vcluster集群的argoCD界面](#安装在vcluster集群的argocd访问地址)，等待argoCD自动同步，直到argo-events app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的webhook-secretstore、类型为ExternalSecret的github-access、类型为EventSource的webhook，等待argoCD重新生成资源，观察argo-events app的状态更新为已同步。
-
+【获取初始密码太突兀】
 ```Shell
 # 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
@@ -758,7 +759,7 @@ spec:
 ...
 ```
 
-##### 替换ingress地址
+##### 替换ingress的域名地址
 相对路径：argo-events/overlays/production/eventsource.yaml
 ```yaml{11}
 ...
@@ -840,9 +841,9 @@ spec:
   github:
     user-project:
       repositories:
-        - owner: lanbingcloud       # 替换为eventsource监听的代码库的owner
+        - owner: lanbingcloud       # 替换为eventsource监听代码库的owner
           names:
-            - demo-user-project-1   # 替换为eventsource监听的代码库
+            - demo-user-project-1   # 替换为eventsource监听代码库的name
 ...
 ```
 
