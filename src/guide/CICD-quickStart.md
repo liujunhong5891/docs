@@ -129,9 +129,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-<!-- **pipeline-推送镜像**  
+**pipeline-推送镜像**  
 用于向github package推送镜像。
-1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 <github account>:<github access token> 格式的字符。再通过base64转码，用于后续写入密钥。
+<!-- 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 <github account>:<github access token> 格式的字符。再通过base64转码，用于后续写入密钥。 -->
 
 2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
@@ -146,7 +146,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   path "repo/data/github/container/lanbing/default/readwrite" {
       capabilities = ["read"]
   }
-  ``` -->
+  ```
 
 **pipeline-推送代码**  
 用于向github代码库推送代码。
@@ -192,7 +192,7 @@ sh patch-argocd-server.sh
 
 ### 安装argoCD app
 
-**替换服务地址**
+**替换服务地址**  
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
 1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
