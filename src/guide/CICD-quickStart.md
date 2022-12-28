@@ -192,9 +192,9 @@ sh patch-argocd-server.sh
 
 ### 安装argoCD app
 
-**替换服务地址**
+<!-- **替换服务地址**
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
-<!-- 1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
+1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
 ```Shell
 # 目标代码库(fork demo-pipeline-argoevents-tekton)
@@ -218,13 +218,13 @@ sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipeli
 # 目标代码库(fork demo-user-deployments)
 # 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yaml 
-``` -->
+```
 
 2. clone目标代码库，执行脚本，批量替换目标代码库的服务地址。
 
 ```Shell
 sh sed-demo.sh
-```
+``` -->
 
 **安装根project和根app**
 1. 使用命令安装根project和根app。
