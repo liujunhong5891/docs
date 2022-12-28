@@ -148,7 +148,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ``` -->
 
-<!-- **pipeline-推送代码**  
+**pipeline-推送代码**  
 用于向github代码库推送代码。
 1. 新增ssh密钥：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
@@ -177,9 +177,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   path "git/data/github/user-deployments/default/readwrite" {
       capabilities = ["read"]
   }
-  ``` -->
+  ```
 
-<!-- ### 安装argoCD
+### 安装argoCD
 在宿主集群安装argoCD。
 ```Shell  
 # 切换到宿主集群 
@@ -190,9 +190,9 @@ sh install-argocd.sh
 sh patch-argocd-server.sh
 ```
 
-### 安装argoCD app -->
+### 安装argoCD app
 
-<!-- **替换服务地址**
+**替换服务地址**
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
 1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
@@ -224,9 +224,9 @@ sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/te
 
 ```Shell
 sh sed-demo.sh
-``` -->
+```
 
-<!-- **安装根project和根app**
+**安装根project和根app**
 1. 使用命令安装根project和根app。
 ``` Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的根目录，安装根project
@@ -238,7 +238,7 @@ kubectl -nargocd apply -f app.yaml
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
-``` -->
+```
 
 
 ### 向argoCD注册虚拟集群
