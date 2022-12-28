@@ -148,7 +148,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**pipeline-推送代码**  
+<!-- **pipeline-推送代码**  
 用于向github代码库推送代码。
 1. 新增ssh密钥：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
@@ -177,7 +177,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   path "git/data/github/user-deployments/default/readwrite" {
       capabilities = ["read"]
   }
-  ```
+  ``` -->
 
 <!-- ### 安装argoCD
 在宿主集群安装argoCD。
