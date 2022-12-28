@@ -179,7 +179,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-### 安装argoCD
+<!-- ### 安装argoCD
 在宿主集群安装argoCD。
 ```Shell  
 # 切换到宿主集群 
@@ -190,7 +190,7 @@ sh install-argocd.sh
 sh patch-argocd-server.sh
 ```
 
-### 安装argoCD app
+### 安装argoCD app -->
 
 <!-- **替换服务地址**
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
