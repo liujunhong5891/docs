@@ -69,7 +69,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 - **维护密钥**：在vault服务端维护本次DEMO需要的所有密钥，以及密钥的访问策略。
 - **安装argoCD**：在宿主集群安装argoCD。 
 - **安装argoCD app**： 在宿主集群上的argoCD，创建根project和根app，使得argoCD通过[app of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
-- **向vault同步宿主/运行时集群的认证信息**: 同步集群的认证信息，帮助kubernetes资源使用存储在vault的密钥。
+- **向vault同步宿主/运行时集群的认证信息**: 同步集群的认证信息，用于kubernetes资源使用存储在vault的密钥。
 - **执行流水线**：向fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)的目标代码库推送代码，触发流水线自动执行。
 
 
@@ -243,7 +243,7 @@ sh get-argocd-admin-pwd.sh
 
 
 ### 向argoCD注册虚拟集群
-用于通过argoCD向vcluster集群安装运行时资源，包括root app中runtime-argocd-appset和runtime-appset定义的资源。
+用于argoCD向vcluster集群安装运行时资源，包括root app中runtime-argocd-appset和runtime-appset定义的资源。
 
 1. 准备注册vcluster集群需要的kubeconfig文件。
   ```Shell
@@ -282,13 +282,13 @@ sh get-argocd-admin-pwd.sh
   # 查看已注册的集群是否包括vcluster
   argocd cluster list
   ```
-3. 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，观察root app，状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
+3. 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，等待argoCD自动同步，直到root app状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
 
 
 ### 向vault同步宿主集群/运行时集群的认证信息  
 **同步宿主集群的认证信息**  
-用于宿主集群上的资源获取存储在vault的密钥。
-- 准备配置kubernetes集群认证需要的信息。包括：集群的CA证书、集群host地址、授权sa的token。
+用于安装在宿主集群上的资源获取存储在vault的密钥。
+1. 准备配置宿主集群认证需要的信息：包括集群的CA证书、授权sa的token、集群host地址。
 ``` Shell
 # 切换到宿主集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
 export KUBECONFIG=~/.kube/config
@@ -299,32 +299,28 @@ sh get-vault-auth-token.sh
 cat ~/.kube/config
 ```
 
-- 启用并配置kubernetes认证，详情参见下表：
+2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为host-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证。
 
-|       |  | 属性 | 值 |
-| ----------- | ----------- | ----------- | ----------- |
-|   Authentication Method    |        |   类别     |    kubernetes    |
-|     |         |     Path    |    host-cluster     |
-|     |    Kubernetes Configure     |     Kubernetes host    |   host地址      |
-|     |         |     Kubernetes CA Certificate    |    CA证书     |
-|     |         |     Token Reviewer JWT    |    token     |
+| 属性      | 取值 |
+| ----------- | ----------- |
+| Kubernetes host   |  host地址  |
+| Kubernetes CA Certificate |  CA证书   |
+| Token Reviewer JWT |  token   |
 
-- 基于前置步骤创建的认证方法，创建role，详情参见下表：
+3. 新增特定kubernetes认证方法的role：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Path为host-cluster的认证方法链接； 进入role的维护界面，点击Create role，参见下表填写属性值，点击Save完成新增role。
 
-|       |  | 属性 | 值 |
-| ----------- | ----------- | ----------- | ----------- |
-|   Authentication Method    |        |   类别     |    kubernetes    |
-|     |         |     Path    |    host-cluster     |
-|     |    Role     |     Name    |   cert-manager      |
-|     |         |     Bound service account names     |    default     |
-|     |         |     Bound service account namespaces    |    cert-manager     |
-|     |         |     Generated Token's Policies    |     pki-root    |
+| 属性      | 取值 |
+| ----------- | ----------- |
+| Name   |  cert-manager  |
+| Bound service account names |  default   |
+| Bound service account namespaces |  cert-manager   |
+| Generated Token's Policies |  pki-root   |
 
-- 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，观察cert-manager app状态更新为已同步。如果想立即验证效果，删除以下资源：cert-manager-secretstore（类型为SecretStore）、root-issuer（类型为ExternalSecret）和org-issuer（类型为ClusterIssuer），等待argoCD重新生成资源，观察cert-manager app状态更新为已同步。
+4. 验证cert-manager获取密钥：访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，等待argoCD自动同步，直到cert-manager app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的cert-manager-secretstore、类型为ExternalSecret的root-issuer、类型为ClusterIssuer的org-issuer，等待argoCD重新生成资源，观察cert-manager app的状态更新为已同步。
 
 **同步vcluster的认证信息**  
-用于vcluster集群上的资源获取存储在vault的密钥。
-- 准备配置vcluster集群认证需要的信息。包括：集群的CA证书、集群host地址、授权sa的token。
+用于安装在vcluster集群上的资源获取存储在vault的密钥。
+1. 准备配置vcluster集群认证需要的信息。包括：集群的CA证书、授权sa的token、集群host地址。
 ``` Shell
 # 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
 export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
@@ -334,32 +330,29 @@ sh get-vault-auth-token.sh
 # 查看kubeconfig文件获取host地址
 cat /opt/vcluster/kubeconfig-31543.yaml
 ```
-- 启用并配置kubernetes认证，详情参见下表：
+2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为pipeline1-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证。
 
-|       |  | 属性 | 值 |
-| ----------- | ----------- | ----------- | ----------- |
-|   Authentication Method    |        |   类别     |    kubernetes    |
-|     |         |     Path    |    pipeline1-cluster     |
-|     |    Kubernetes Configure     |     Kubernetes host    |   vcluster的host地址      |
-|     |         |     Kubernetes CA Certificate    |    vcluster的CA证书     |
-|     |         |     Token Reviewer JWT    |    vcluster的sa token     |
+| 属性      | 取值 |
+| ----------- | ----------- |
+| Kubernetes host   |  vcluster的host地址  |
+| Kubernetes CA Certificate |  vcluster的CA证书   |
+| Token Reviewer JWT |  vcluster的sa token   |
 
-- 基于前置步骤创建的认证方法，创建role，详情参见下表：
+3. 新增特定kubernetes认证方法的role：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Path为pipeline1-cluster的认证方法链接； 进入role的维护界面，点击Create role，参见下表填写属性值，点击Save完成新增role。
 
-|       |  | 属性 | 值 |
-| ----------- | ----------- | ----------- | ----------- |
-|   Authentication Method    |        |   类别     |    kubernetes    |
-|     |         |     Path    |    pipeline1-cluster     |
-|     |    Role     |     Name    |   argo-events-sa      |
-|     |         |     Bound service account names     |    argo-events-sa     |
-|     |         |     Bound service account namespaces    |    argo-events     |
-|     |         |     Generated Token's Policies    |     git-github-user-project-argoevents-webhook-access    |
-|     |    Role     |     Name    |   user-pipelines      |
-|     |         |     Bound service account names     |    default     |
-|     |         |     Bound service account namespaces    |    user-pipelines     |
-|     |         |     Generated Token's Policies    |     git-github-user-deployments-default-readwrite<br>repo-github-container-lanbing-default-readwrite    |
+| 属性      | 取值 |
+| ----------- | ----------- |
+| Name   |  argo-events-sa  |
+| Bound service account names |  argo-events-sa   |
+| Bound service account namespaces |  argo-events   |
+| Generated Token's Policies |  git-github-user-project-argoevents-webhook-access   |
+| Name   |  user-pipelines  |
+| Bound service account names |  default   |
+| Bound service account namespaces |  user-pipelines   |
+| Generated Token's Policies |  git-github-user-deployments-default-readwrite<br>repo-github-container-lanbing-default-readwrite   |
 
-- 访问[安装在vcluster集群的argoCD界面](#安装在vcluster集群的argocd访问地址)，观察argo-events app状态更新为已同步。如果想立即验证效果，删除以下资源：webhook-secretstore（类型为SecretStore）、github-access（类型为ExternalSecret）、webhook（类型为EventSource），等待argoCD重新生成资源，观察argo-events app状态更新为已同步。
+4. 验证argo-events获取密钥：访问[安装在vcluster集群的argoCD界面](#安装在vcluster集群的argocd访问地址)，等待argoCD自动同步，直到argo-events app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的webhook-secretstore、类型为ExternalSecret的github-access、类型为EventSource的webhook，等待argoCD重新生成资源，观察argo-events app的状态更新为已同步。
+
 ```Shell
 # 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
