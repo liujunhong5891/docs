@@ -103,7 +103,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | ----------- | ----------- |
 | Note      |  自定义描述    |
 | Expiration   |  30days(默认值)  |
-| Select scopes(复选框)   |  repo、write:packages(下文将重用该token)  |
+| Select scopes(复选框)   |  repo、write:packages  |
 
 2. 新增github secret：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“Settings-Secrets-Actions”操作路径下，点击New repository secret，参见下表填写属性，点击Add secret完成新增secret。保存明文的secrets，关闭界面之后将不再显示明文。
 
@@ -139,7 +139,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | ----------- | ----------- |
 | Path for this secret      | github/container/lanbing/default/readwrite    |
 | Secret data - key   |  auth  |
-| Secret data - value |  github access token使用base64转码后的值   |
+| Secret data - value |  对github access token进行base64转码后的值   |
 
 3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```  
@@ -191,15 +191,12 @@ sh patch-argocd-server.sh
 ```
 
 ### 安装argoCD app
-在宿主集群上的argoCD，安装根project和根app，使得argoCD通过[app of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
 
-
-#### 替换服务地址
+**替换服务地址**
 变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见“附件-替换服务地址配置”。
-- 根据模板sed-demo.sh，替换代码库地址、集群地址等，详见下文代码注释。
+1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
 ```Shell
-cat sed-demo.sh
 # 目标代码库(fork demo-pipeline-argoevents-tekton)
 # 批量替换argocd监听代码库地址为目标代码库
 sed -i -e "s#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git#g"  `grep https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git -rl demo-pipeline-argoevents-tekton-1`
@@ -208,48 +205,46 @@ sed -i -e "s#192.168.0.184#192.168.0.243#g"  `grep 192.168.0.184 -rl demo-pipeli
 # 批量替换ingress的地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  `grep 119-8-58-20 -rl demo-pipeline-argoevents-tekton-1`
 # 替换argo-events中eventsource的repo信息，包括owner和names
-# sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
-# sed -i -e "s#demo-user-project#demo-user-project-1#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
+sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
+sed -i -e "s#demo-user-project#demo-user-project-1#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
 #  替换argo-events中init-pipeline.yaml git-clone的代码库地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/init-pipeline.yaml
 # 目标代码库(fork demo-user-project)
-# 替换流水线task拉取代码、推送代码、推送镜像的地址
+# 替换pipeline task 拉取代码、推送代码、推送镜像的地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
 sed -i -e "s#git@github.com:lanbingcloud/demo-user-deployments.git#git@github.com:lanbingcloud/demo-user-deployments-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
 # 替换推送镜像的github package
 sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipelines/test-pipeline.yaml
 # 目标代码库(fork demo-user-deployments)
 # 替换应用svc的外部访问地址
-sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yamlroot@ecs-bd3f:/opt/git/lanbingcloud# 
+sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yaml 
 ```
 
-- clone目标代码库，执行sed-demo.sh脚本，批量替换目标代码库的相关配置。
+2. clone目标代码库，执行脚本，批量替换目标代码库的服务地址。
 
 ```Shell
 sh sed-demo.sh
 ```
 
-#### 安装根project和根app
-使用命令安装根project和根app。
+**安装根project和根app**
+1. 使用命令安装根project和根app。
 ``` Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的根目录，安装根project
 kubectl -nargocd apply -f project.yaml
 # 安装根app
 kubectl -nargocd apply -f app.yaml
-kubectl -nargocd get apps --watch
 ```
-获取argoCD的初始密码，访问[argoCD界面](#安装在宿主集群的argocd访问地址)。观察app状态，其中cert-manager和root两个app显示同步失败，其他app显示同步成功。
+2. 获取argoCD的初始密码，访问[argoCD界面](#安装在宿主集群的argocd访问地址)。观察app状态，其中root和cert-manager两个app显示同步失败：vcluster没有在argoCD注册，导致runtime-argocd-appset和runtime-appset找不到目标集群； 宿主集群没有通过vault认证，导致cert manager无法获取密钥。
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
 ```
-- cert-manager：宿主集群没有通过vault认证，导致cert manager无法获取密钥安装失败。
-- root：vcluster没有在argoCD注册，导致runtime-argocd-appset、runtime-appset安装失败。
+
 
 ### 向argoCD注册虚拟集群
-用于向vcluster集群安装运行时资源，包括root app的runtime-argocd-appset和runtime-appset定义的资源。
+用于通过argoCD向vcluster集群安装运行时资源，包括root app中runtime-argocd-appset和runtime-appset定义的资源。
 
-- 准备注册vcluster集群需要的kubeconfig文件。
+1. 准备注册vcluster集群需要的kubeconfig文件。
   ```Shell
   # 切换到宿主集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取vcluster的kubeconfig
   export KUBECONFIG=~/.kube/config
@@ -273,20 +268,20 @@ sh get-argocd-admin-pwd.sh
   current-context: Default31543  
   ...
   ```
-- 使用argocd命令注册vcluster。
-   ``` 
-   # 切换到宿主集群，修改argocd server的svc类型为NodePort（步骤略）
-   # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取安装在宿主集群的argoCD初始密码
-   # 命令行登录argocd：argocd login <内网IP>:<argocd server svc的nodeport>
-   argocd login 192.168.0.243:30070
-   # 切换到vcluster
-   export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
-   # 命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
-   argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
-   # 查看已注册的集群
-   argocd cluster list
-   ```
-- 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，观察root app，状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
+2. 使用argocd命令注册vcluster。
+  ``` 
+  # 切换到宿主集群，修改argocd server的svc类型为NodePort（步骤略）
+  # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取安装在宿主集群的argoCD初始密码
+  # 使用命令行登录argocd：argocd login <内网IP>:<argocd server svc的nodeport>
+  argocd login 192.168.0.243:30070
+  # 切换到vcluster
+  export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
+  # 使用命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
+  argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
+  # 查看已注册的集群是否包括vcluster
+  argocd cluster list
+  ```
+3. 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，观察root app，状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
 
 
 ### 向vault同步宿主集群/运行时集群的认证信息  
