@@ -129,7 +129,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**pipeline-推送镜像**  
+<!-- **pipeline-推送镜像**  
 用于向github package推送镜像。
 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 <github account>:<github access token> 格式的字符。再通过base64转码，用于后续写入密钥。
 
@@ -146,7 +146,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   path "repo/data/github/container/lanbing/default/readwrite" {
       capabilities = ["read"]
   }
-  ```
+  ``` -->
 
 <!-- **pipeline-推送代码**  
 用于向github代码库推送代码。
