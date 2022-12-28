@@ -134,7 +134,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 &lt;github account&gt;:&lt;github access token&gt; 格式的字符。再通过base64转码，用于后续写入密钥。
 <!-- 测试异常: <github account>:<github access token> -->
 
-1. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -353,7 +353,6 @@ cat /opt/vcluster/kubeconfig-31543.yaml
 | Generated Token's Policies |  git-github-user-deployments-default-readwrite<br>repo-github-container-lanbing-default-readwrite   |
 
 4. 验证argo-events获取密钥：访问[安装在vcluster集群的argoCD界面](#安装在vcluster集群的argocd访问地址)，等待argoCD自动同步，直到argo-events app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的webhook-secretstore、类型为ExternalSecret的github-access、类型为EventSource的webhook，等待argoCD重新生成资源，观察argo-events app的状态更新为已同步。
-【获取初始密码太突兀】
 ```Shell
 # 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
