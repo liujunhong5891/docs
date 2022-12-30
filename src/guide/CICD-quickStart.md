@@ -44,7 +44,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
       path    = "/opt/vault/data"
       node_id = "node1"
    }
-   #  更新address端为预置端口
+   #  更新address端口为预置端口
    listener "tcp" {     
       address     = "0.0.0.0:31820"
       tls_disable = "true"
@@ -59,7 +59,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 **在宿主机安装argocd命令行**  
 下载并配置argoCD命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
-**了解Github DEMO代码库的作用**  【修改措辞】
+**fork Github DEMO代码库**  
 - 配置CI基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
 - 存储应用源码和流水线：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
 - 存储应用部署的资源文件：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
@@ -75,8 +75,16 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 ### 维护密钥
 **cert-manager**  
-用于cert-manager给ingress资源颁发证书和私钥。
-1. 这里使用[预置的证书和私钥](#预置的证书和私钥)。
+
+用于生成包含tls证书和tls私钥的kubernetes secret，进一步构成ca类别的issuer来签发证书。
+
+
+1. 新增私钥和自签证书：回答CSR信息提问，完成新增私钥和证书。
+  ```Shell
+  openssl req \
+    -newkey rsa:2048 -nodes -keyout tls.key \
+    -x509 -days 365 -out tls.crt
+  ```
 
 2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为pki，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
@@ -84,9 +92,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | ----------- | ----------- |
 | Path for this secret      | root    |
 | Secret data - key  |  tls.crt  |
-| Secret data - value |  [预置的证书](#预置的证书和私钥)   |
+| Secret data - value |  前提步骤tls.crt的值   |
 | Secret data - key  |  tls.key  |
-| Secret data - value |  [预置的私钥](#预置的证书和私钥)   |
+| Secret data - value |  前提步骤tls.key的值   |
 
 3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```
@@ -103,16 +111,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | ----------- | ----------- |
 | Note      |  自定义描述    |
 | Expiration   |  30days(默认值)  |
-| Select scopes(复选框)   |  repo、write:packages  |
+| Select scopes(复选框)   |  admin:repo_hook<br>write:packages(复用该accesstoken用于pipeline推送镜像) |
 
-2. 新增github secret：访问目标代码库（fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)）的github界面，在“Settings-Secrets-Actions”操作路径下，点击New repository secret，参见下表填写属性，点击Add secret完成新增secret。保存明文的secrets，关闭界面之后将不再显示明文。
-
-| 属性      | 取值 |
-| ----------- | ----------- |
-| Name      |  自定义名称    |
-| Secret   |  随机字符串(例如UUID)  |
-
-3. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为git，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为git，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -120,9 +121,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Secret data - key  |  token  |
 | Secret data - value |  github accesstoken的值   |
 | Secret data - key   |  secret  |
-| Secret data - value |  github secret的值（明文）   |
+| Secret data - value |  github secret的值，使用随机字符串，例如uuid   |
 
-4. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为git-github-user-project-argoevents-webhook-access，参见下文代码块填写policy，点击Create policy完成新增Policy。
+3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为git-github-user-project-argoevents-webhook-access，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```
   path "git/data/github/user-project/argoevents/webhook-access" {
     capabilities = ["read"]
@@ -132,7 +133,6 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 **pipeline-推送镜像**  
 用于向github package推送镜像。
 1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 &lt;github account&gt;:&lt;github access token&gt; 格式的字符。再通过base64转码，用于后续写入密钥。
-<!-- 测试异常: <github account>:<github access token> -->
 
 2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
@@ -165,7 +165,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Allow write access(复选框)   |  选中  |
 
 
-3. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为git，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+3. 新增secret：访问vault界面，点击“Secrets”一级菜单，进入Secrets Engine的维护界面，点击Path为git的Secrets Engine链接；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -217,6 +217,8 @@ sed -i -e "s#git@github.com:lanbingcloud/demo-user-deployments.git#git@github.co
 # 替换推送镜像的github package
 sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipelines/test-pipeline.yaml
 # 目标代码库(fork demo-user-deployments)
+# 替换Deployment中image地址的关键字
+sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g"  demo-user-deployments-1/deployments/test/devops-sample.yaml 
 # 替换应用svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yaml 
 ```
@@ -227,6 +229,8 @@ sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/te
 sh sed-demo.sh
 ```
 
+3. push替换后的服务地址到目标代码库。
+
 **安装根project和根app**
 1. 使用命令安装根project和根app。
 ``` Shell
@@ -235,7 +239,7 @@ kubectl -nargocd apply -f project.yaml
 # 安装根app
 kubectl -nargocd apply -f app.yaml
 ```
-2. 获取argoCD的初始密码，访问[argoCD界面](#安装在宿主集群的argocd访问地址)。观察app状态，其中root和cert-manager两个app显示同步失败：vcluster没有在argoCD注册，导致runtime-argocd-appset和runtime-appset找不到目标集群； 宿主集群没有通过vault认证，导致cert manager无法获取密钥。
+2. 获取argoCD的初始密码，等待patch app和traefik app同步完成，可以访问[argoCD界面](#安装在宿主集群的argocd访问地址)。观察app状态，其中root和cert-manager两个app显示同步失败：vcluster没有在argoCD注册，导致runtime-argocd-appset和runtime-appset找不到目标集群； 宿主集群没有通过vault认证，导致cert manager无法获取密钥。
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
@@ -276,8 +280,6 @@ sh get-argocd-admin-pwd.sh
   sh get-argocd-admin-pwd.sh
   # 使用命令行登录argocd：argocd login <内网IP>:<argocd server svc的nodeport>
   argocd login 192.168.0.243:30070
-  # 切换到vcluster
-  export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
   # 使用命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
   argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
   # 验证vcluster是否注册成功
@@ -389,57 +391,6 @@ https://www.bilibili.com/video/BV1Fm4y1A7qL/
 地址：来自tekton/overlays/production/dashboard-ingress.yaml的host  
 端口：来自production/traefik-app.yaml的web.nodePort  
 示例：http://tekton.pipeline1.119-8-99-179.nip.io:30080  
-
-
-### 预置的证书和私钥
-**tls.crt**  
-----BEGIN CERTIFICATE-----
-MIIC+zCCAeOgAwIBAgIJAMv/rvOaPioGMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
-BAMMCWJsdXppbi1jYTAeFw0yMjA2MjEwMjEzNTBaFw00OTExMDYwMjEzNTBaMBQx
-EjAQBgNVBAMMCWJsdXppbi1jYTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-ggEBAKYqCk8qyWNUsvLt/61ie2CGFvdwFLdWCwfk+be0U9wp7Lq6+RR+KERQF3/E
-G15uRpZPreVO/YJpTetod5RWkJeIMho1eutyhJFdaWWxA1G7oyxL/duWJWGCCd2v
-VleQD7JjueDC5AXKFQMXBbFcMUB9dv/mPfI/1puMHQbyfvdIsdaTH9gpJGPCl2a+
-csDuI/fZJH0yJbWpDbCOhm1JmJ35GweNFIWfkluNU2K4QyH5JMk5dDcLyE4pDkdc
-MZbyhsadR4ndNbsvj8xhWv4yMXuVcSbkGekhCuzxkUv3RXGLCPgETIbf+8daX3NW
-o5T69alrFqRzB0NFZgbTHN60vrcCAwEAAaNQME4wHQYDVR0OBBYEFKw6dUhhxRxr
-DVt3qrZ5l2cWYykmMB8GA1UdIwQYMBaAFKw6dUhhxRxrDVt3qrZ5l2cWYykmMAwG
-A1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB2Z94Jbvq9pT4UfjFcV22Bf
-zF0+jPifVBe3btJdplc0ItvaQZqVWQ8CC5/lz8Xe0bK3rc95hKqxaZERsvjSqmU/
-LhlOlhHrE1Zm4fNuh+svEMFnUnk98wnUMeBed897hDRKhpaP6sX88rRdhanvBoja
-rKLTdjUcbrAT9XeTkVwBSSBG5itGUaEeUmbITZlu9juI031W8Wl28i3dRaWvTDGY
-/e+FEqu7bz9Pkfu0DKEGpINdFfpl6WV3IbMheORPZM5QNVFkybqgp/ryrRFuVM/U
-nT4uAguLdb0yB/NhUh+9iwpxkSv5/o547/nQ8JLJHotJkJ7HaXdMKliL3xvr4Qw=
------END CERTIFICATE-----
-
-**tls.key**  
------BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEApioKTyrJY1Sy8u3/rWJ7YIYW93AUt1YLB+T5t7RT3Cnsurr5
-FH4oRFAXf8QbXm5Glk+t5U79gmlN62h3lFaQl4gyGjV663KEkV1pZbEDUbujLEv9
-25YlYYIJ3a9WV5APsmO54MLkBcoVAxcFsVwxQH12/+Y98j/Wm4wdBvJ+90ix1pMf
-2CkkY8KXZr5ywO4j99kkfTIltakNsI6GbUmYnfkbB40UhZ+SW41TYrhDIfkkyTl0
-NwvITikOR1wxlvKGxp1Hid01uy+PzGFa/jIxe5VxJuQZ6SEK7PGRS/dFcYsI+ARM
-ht/7x1pfc1ajlPr1qWsWpHMHQ0VmBtMc3rS+twIDAQABAoIBAHV4qykk2pM6wfg0
-gdkWEps+sOXlev/R+KJwIorZFaBEk3O/02/FcLo61SIihibQV17Und/LZDXaNJgE
-luVr/XTjeGhG/suNfmM2Ytjdt7cErGsYnjOrhmnVARyUZLoqwq4fCr33ijT9lLVG
-hWPKBZfOG172azzkHNiCydKrhU9UFVDnyhYPKFyMK6ufqessxZZBmIAGkD+17shL
-kHgRPepyognblzZW634CpL2vG6p5PwI8DaiM3CrGEYCNyVFoCDMoiUSqIvISSO/L
-v/ZpNw0NginN4NT6ZXFS+HTERrgrz4q0HtoI8FDYJjcao6LevtKKGfbCMjtbutJe
-zwacjoECgYEA2F/v6ZZx1OveCw6J9HNxwxwQVNUtTZlsyxrRQk8PHYWkVgPkVIMx
-BmqVHh98F+4MHZnERi1Yd2bN8FtS3XJv0g6cKnXpCwoscGyNLD+IHjXWK9/WI+74
-yyt5kjWQWrlL0cuIrd+ekPAct1lW4aboZSSkeSXotJvNJC8avQ5SwkcCgYEAxJgj
-GJB6eV/G+bQEjAi2sxphRe8Oz3TC6O30eJa3MBWyspnlK1KxMbfqBqCA6yqdvghj
-QZghONwHFgRwtV72EO4augj+qsSFWWanhGAnBzydv0fk53DYhB3k8j+BqY/8g+VR
-ghB7MwwPffsCG3RH6GidFX/53OljI2tqILTvaBECgYEA1Kx3g4D8Iew0M2n27u8J
-wlyzMK7X+I31AS06wZIzqTDSdjkdFHRem4/nQdRwhJTWE8IvyUqIydOiV71rlX4F
-qtHxbUq35MH7LAWGPRe1EvyXpkg8ktUwdYIl3DAJ0yKOA4eqsDw7/voDP7PwUZtc
-kQ2THADG2b7Jw+cIwQpzDcECgYAZYLpHFX95448/9KkRmp5bCHC+Iln7FcuDXhRM
-7MfBAUwMGimnKgmNrXwcVuPNd7bdLSAC+6xuNpkDkpcqEpQZI2N32Glnie7c14+Q
-WwkuufhzFMjLx5lrlKBVVTVbuiaSsCuRaqc8s7XcQWbIPH571eVRPS/4AHi3vcn5
-ZuHwwQKBgQCg+6g8oZJMIYIDxpKnFD6LVicL1aqqbPKBVkGQctwm2rx00C7feeXh
-PvGDon8H4FdLTFRfMfSFV7Prnk2vzFFFRz5U3JVxsK77FkigEiV7WAaxM7gW5+2N
-zo9O7481Eqd1OxofiLfSJHckDNORZgNvBLBZRoPERNuLVxtacIYxFA==
------END RSA PRIVATE KEY-----
 
 ### **替换服务地址配置**
 
