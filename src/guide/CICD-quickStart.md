@@ -8,16 +8,51 @@ outline: deep
 
 ## 工具及其关系概览
 ![directive syntax graph](./images/CI-1.jpg)
-- metallb: k8s的lb工具。
-- traefik: 反向代理工具，用于ingress的实现。
-- cert-manager: 证书签发工具。
-- vault: 密钥管理工具。
-- external-secrets: 可以将外部的密钥同步为k8s的secret。
-- vcluster: 可以在物理k8s集群中创建虚拟集群的工具。
-- argo-events: 提供事件监听、转换和触发的工具。
-- tekton: k8s原生的流水线工具。
 
-【补充工具间关系、说明整体实施结构和协同关系】
+**部署结构**  
+1. 一个vault服务端：存储搭建CI环境和流水线的相关密钥。
+2. 一个kubernetes集群：宿主集群，负载所有资源。
+3. 一个vcluster集群：运行时集群，负载运行时集群的资源。
+
+**安装顺序**  
+1. 手工安装宿主集群的argoCD。
+2. 在宿主集群，手工安装根project（demo-vcluster）和根app（root）。
+3. 宿主集群的argoCD向宿主集群自动安装资源，包括cert-manager、metallb、traefik、vault、external-secretes、vcluser、以及vcluser上的argoCD。
+4. vcluser的argoCD向vcluster集群自动安装资源，包括argo-events、tekton、vault、external-secrets。
+
+**根app监听的代码库结构**
+1. cert-manager-app：cert-manager是签发证书的工具。cert-manager-app监听git代码库（相对路径参见spec.source.path），向宿主集群部署（目标集群参见spec.destination.server）；通过ExternalSecret从vault同步证书和私钥生成k8s secret，并使用ClusterIssuer给集群资源签发证书。
+
+3. metallb-app：metallb为裸金属k8s集群提供lb服务。metallb-app的配置源为helm，向宿主集群部署。
+【metallb和ingress关系？】
+
+7. traefik-app：traefik是反向代理工具，用于实现ingress。traefik-app的配置源为helm，向宿主集群部署。【作为用户要了解哪些资源关系】
+
+8. vault-app：配置源为helm，向宿主集群部署；与ExternalSecret协作，向安装在宿主集群的资源同步vault密钥。
+
+9.  vault-rbac：创建并授权k8s sa，用于vault对宿主集群的认证。
+
+9.  external-secret-app：ExternalSecret用于集成密钥管理系统（例如vault），同步为k8s secret。external-secret-app的配置源为helm，向宿主集群部署。
+
+10. patch-app：patch-app监听git代码库，向宿主集群部署；用于安装argoCD的补丁资源（Ingress和ServersTransport），以访问argoCD UI界面。
+【ingress和servertransport怎么协作？】
+
+1.   vcluster-appset：vcluster是可以在物理k8s集群中创建虚拟集群的工具。vcluster-appset监听git代码库（相对路径参见spec.template.spec.source.path），向宿主集群部署（目标集群参见spec.template.spec.destination.server）；通过创建vcluster1-app和vcluster1-patch app来安装运行时集群，其中：
+     - vcluster1-app的配置源为helm，向宿主集群部署；用于安装vcluster集群； 
+     - vcluster1-patch监听git代码库，向宿主集群部署；用于安装vcluster集群的补丁资源，包括namespace、ingress和svc等资源。【ingress和svc在哪用到？】
+
+2. runtime-appset：appset（即ApplicationSet）适用于通过多种形态的argocd app集合自动扩缩容集群、自动部署多个app到单集群或多集群等场景。runtime-appset监听git代码库（相对路径参见spec.template.spec.source.path），向运行时集群部署（目标集群参见spec.template.spec.destination.server）；通过创建demo-pipeline project和pipeline1 app来安装运行时资源，其中pipeline1 app安装的资源包括：
+   - argo-events-app：argo-events是提供事件监听、转换和触发的工具。argo-events-app监听git代码库，向运行时集群部署；【待补充，argo-events章节】
+   - external-secret-app：external-secret-app的配置源为helm，向运行时集群部署。
+   - patch-app：patch-app监听git代码库，向运行时集群部署；用于安装argoCD的补丁资源（Ingress），以访问运行时集群的argoCD UI界面。
+   - tekton-app：tekton是k8s原生的流水线工具。tekton-app监听git代码库，向运行时集群部署；安装了CI流水线需要的task以及tekton dashboard，用于编排、执行并跟踪CI流水线； 其中CI流水线task包括：git-cli（执行git操作）、git-clone（clone git代码库到workspace）、kaniko（构建并推送镜像到镜像库）、maven（执行maven构建）。
+   - user-namespaces-app：用户侧app，用于安装CI流水线需要的namespace、pvc和rbac资源。
+   - vault-app：vault是密钥管理工具。vault-app的配置源为helm，向运行时集群部署； 通过vault agent injector方式向CI流水线task提供密钥。
+   - vault-rbac：创建并授权k8s sa，用于vault对运行时集群的认证。
+
+3. runtime-argocd-appset：监听git代码库，向运行时集群部署；用于安装运行时集群的argoCD，结合ingress资源，可访问运行时集群的argoCD UI界面。
+
+【其他：运行时集群相关资源的层级排版 不超过三层】
 
 ## 准备
 以下服务有多种安装方式，下文只是其中一种方式。
@@ -92,9 +127,9 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | ----------- | ----------- |
 | Path for this secret      | root    |
 | Secret data - key  |  tls.crt  |
-| Secret data - value |  前提步骤tls.crt的值   |
+| Secret data - value |  前置步骤tls.crt的值   |
 | Secret data - key  |  tls.key  |
-| Secret data - value |  前提步骤tls.key的值   |
+| Secret data - value |  前置步骤tls.key的值   |
 
 3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写policy，点击Create policy完成新增Policy。
   ```
