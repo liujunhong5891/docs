@@ -101,37 +101,36 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 
 ## 实施步骤
 
-- **维护密钥**：在vault服务端维护本次DEMO需要的所有密钥，以及密钥的访问策略。
-- **安装argoCD**：在宿主集群安装argoCD。 
-- **安装argoCD app**： 在宿主集群上的argoCD，创建根project和根app，使得argoCD通过[app of apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
-- **向vault同步宿主集群和运行时集群的认证信息**: 同步集群的认证信息，用于kubernetes资源使用存储在vault的密钥。
+- **维护密钥**：在Vault中维护本次DEMO需要的所有密钥及其访问策略。
+- **安装Argo CD**：在宿主集群安装Argo CD。
+- **安装Argo CD app**： 在宿主集群上的Argo CD，创建根Project和根App，Argo CD将通过[App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
+- **同步集群认证**: 在Vault中配置宿主集群和运行时集群的认证，用于Kubernetes资源获取Vault密钥。
 - **执行流水线**：向fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)的目标代码库推送代码，触发流水线自动执行。
 
 
 ### 维护密钥
 **cert-manager**  
 
-用于生成包含tls证书和tls私钥的kubernetes secret，进一步构成ca类别的issuer来签发证书。
+维护TLS私钥和证书，用于cert-mananger签发证书。
 
 
-1. 新增私钥和自签证书：回答CSR信息提问，完成新增私钥和证书。
+1. 新增私钥和自签证书：使用下文命令，应答CSR提示信息，生成私钥和证书。
   ```Shell
   openssl req \
     -newkey rsa:2048 -nodes -keyout tls.key \
     -x509 -days 365 -out tls.crt
   ```
-
-2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为pki，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+2. 新增Secret：访问Vault界面，点击Secrets，点击 Enable new engine，选择KV，点击Next；填写Path为pki，点击Enable Engine；点击Create secret，参见下表填写属性值，点击Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | root    |
 | Secret data - key  |  tls.crt  |
-| Secret data - value |  前置步骤tls.crt的值   |
+| Secret data - value |  tls.crt的内容   |
 | Secret data - key  |  tls.key  |
-| Secret data - value |  前置步骤tls.key的值   |
+| Secret data - value |  tls.key的内容   |
 
-3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写policy，点击Create policy完成新增Policy。
+3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写policy，点击Create policy。
   ```
   path "pki/data/root" {
     capabilities = ["read"]
@@ -139,26 +138,26 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   ```
 
 **argo-events**  
-用于argoevents创建webhook。包括：创建github webhook的accesstoken、防止webhook被非法调用的github secret。
-1. 新增github accesstoken：访问github界面，在“账号Settings - Developer settings - Personal access token - Token(classic)”操作路径下，点击Generate new token(classic)，参见下表填写属性值，点击Generate token完成新增accesstoken。保存生成的token，关闭界面之后将不再显示。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
+创建GitHub access token和GitHub secret，用Argo Event创建Webhook。
+1. 新增GitHub access token：访问GitHub任意界面，点击右上角的头像，点击 Settings > Developer settings > Personal access token > Token(classic)，点击 Generate new token(classic) ； 填写GitHub账号的密码，点击 Confirm；参见下表填写属性值，点击 Generator token。请保存好Token，后续将无法再次查看。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Note      |  自定义描述    |
 | Expiration   |  30days(默认值)  |
-| Select scopes(复选框)   |  admin:repo_hook<br>write:packages(复用该accesstoken用于pipeline推送镜像) |
+| Select scopes(复选框)   |  admin:repo_hook<br>write:packages（用于Pipeline向GitHub Package推送镜像） |
 
-2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为git，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+2. 新增Secret：访问Vault界面，点击Secrets，点击 Enable new engine，选择KV，点击Next；填写Path为git，点击Enable Engine；点击Create secret，参见下表填写属性值，点击Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | github/user-project/argoevents/webhook-access    |
 | Secret data - key  |  token  |
-| Secret data - value |  github accesstoken的值   |
+| Secret data - value |  GitHub access token的内容   |  
 | Secret data - key   |  secret  |
-| Secret data - value |  github secret的值，使用随机字符串，例如uuid   |
+| Secret data - value |  GitHub secret的内容，可以使用随机字符串（例如UUID）   |
 
-3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为git-github-user-project-argoevents-webhook-access，参见下文代码块填写policy，点击Create policy完成新增Policy。
+3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为git-github-user-project-argoevents-webhook-access，参见下文代码块填写Policy，点击Create policy。
   ```
   path "git/data/github/user-project/argoevents/webhook-access" {
     capabilities = ["read"]
@@ -166,18 +165,19 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   ```
 
 **pipeline-推送镜像**  
-用于向github package推送镜像。
-1. 准备推送镜像的账号信息：这里使用了和argo-events相同的accesstoken，具备packages的写入权限，组成 &lt;github account&gt;:&lt;github access token&gt; 格式的字符。再通过base64转码，用于后续写入密钥。
+使用GitHub access token，用于Pipeline向GitHub package推送镜像。
+1. 配置与GitHub package进行身份认证的账号：重用argo-events章节的GitHub access token，组成 &lt;GitHub account&gt;:&lt;GitHub access token&gt; 格式的字符，并对字符进行base64转码。
 
-2. 新增secret：访问vault界面，点击“Secrets”一级菜单，启用Secrets Engines，选择类别为KV，点击Next；进入Enable KV Secrets Engine的配置界面，填写Path为repo，点击Enable Engine；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+2. 新增secret：访问Vault界面，点击Secrets，点击 Enable new engine，选择KV，点击Next；填写Path为repo，点击Enable Engine；点击Create secret，参见下表填写属性值，点击Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | github/container/lanbing/default/readwrite    |
 | Secret data - key   |  auth  |
-| Secret data - value |  对github access token进行base64转码后的值   |
+| Secret data - value |  &lt;GitHub account&gt;:&lt;GitHub access token&gt;通过base64转码后的字符  |
 
-3. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
+3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写Policy，点击Create policy。
+
   ```  
   path "repo/data/github/container/lanbing/default/readwrite" {
       capabilities = ["read"]
@@ -185,30 +185,31 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   ```
 
 **pipeline-推送代码**  
-用于向github代码库推送代码。
-1. 新增ssh密钥：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
+使用SSH keys，用于Pipeline向GitHub代码库推送代码。
+1. 新增SSH keys：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
-  # 使用git客户端生成密钥，其中邮箱替换为github账号的邮箱 
+  # 使用git客户端生成SSH keys，邮箱替换为github账号的邮箱 
   ssh-keygen -t ed25519 -C "your_email@example.com"
   ```
-2. 新增deploy key：在目标代码库(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))的github界面，点击顶部的Settings，进入设置界面；点击左侧菜单的Deploy keys，进入Deploy keys的维护界面； 点击Add deploy key，参考下表填写属性值，点击Add key完成新增deploy key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+2. 新增Deploy key： 访问GitHub任意界面，点击右上角的头像，点击 Your profile；点击 Repositories，点击目标代码库名称(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))；进入代码库界面，点击 Settings； 在左侧导航栏，点击 Deploy Keys，然后点击 Add deploy key，参考下表填写属性值，点击 Add key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Title      |   自定义     |
-| Key   |  ssh公钥  |
-| Allow write access(复选框)   |  选中  |
+| Key   |  SSH公钥内容  |
+| Allow write access   |  选中复选框  |
 
 
-3. 新增secret：访问vault界面，点击“Secrets”一级菜单，进入Secrets Engine的维护界面，点击Path为git的Secrets Engine链接；进入当前Secrets Engine的secrets配置界面，点击Create secret，参见下表填写属性值，点击Save完成新增secret。
+3. 新增Secret：访问Vault界面，点击Secrets，点击Path为git的Secrets Engine；点击Create secret，参见下表填写属性值，点击Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | github/user-deployments/default/readwrite       |
 | Secret data - key   |  deploykey  |
-| Secret data - value |  ssh私钥   |
+| Secret data - value |  SSH私钥内容   |
 
-4. 新增Policy：访问vault界面，点击“Policies”一级菜单，点击Create ACL policy，填写Name为git-github-user-deployments-default-readwrite，参见下文代码块填写policy，点击Create policy完成新增Policy。
+4. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写Policy，点击Create policy。
   ```  
   path "git/data/github/user-deployments/default/readwrite" {
       capabilities = ["read"]
@@ -310,11 +311,11 @@ sh get-argocd-admin-pwd.sh
   ```
 2. 使用argocd命令注册vcluster。
   ``` 
-  # 切换到宿主集群，修改argocd server的svc类型为NodePort（步骤略）
+  # 切换到宿主集群，查看argocd server的svc类型的clusterIP
   # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取argoCD初始密码
   sh get-argocd-admin-pwd.sh
-  # 使用命令行登录argocd：argocd login <内网IP>:<argocd server svc的nodeport>
-  argocd login 192.168.0.243:30070
+  # 使用命令行登录argocd：argocd login <argocd server的svc类型的clusterIP>
+  argocd login xxx.xxx.xxx.xxx
   # 使用命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
   argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
   # 验证vcluster是否注册成功
