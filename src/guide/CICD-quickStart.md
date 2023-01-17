@@ -253,7 +253,7 @@ kubectl get apps -n argocd
 
 
 ### 注册 Vcluster
-向 Kubernetes 集群的 ArgoCD 注册 Vcluster，用于 ArgoCD 向 Vcluster 集群安装运行时资源，包括 runtime-argocd-appset 和 runtime-appset 定义的资源。
+向 Kubernetes 集群的 ArgoCD 注册 Vcluster，用于 ArgoCD 向 Vcluster 集群安装运行Pipeline的资源，包括 runtime-argocd-appset 和 runtime-appset 定义的资源。
 
 1. 准备注册 Vcluster 集群需要的 kubeconfig 文件。
   ```Shell
