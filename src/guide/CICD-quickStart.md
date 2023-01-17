@@ -903,7 +903,7 @@ spec:
 
 #### 代码库：demo-user-deployments
 
-fork demo-user-deployments 代码库，修改目标代码库。替换应用 Svc 的外部访问地址。
+Fork demo-user-deployments 代码库，修改目标代码库。替换应用 Svc 的外部访问地址。
 
 相对路径：deployments/test/devops-sample-svc.yaml
 ```yaml{8}
