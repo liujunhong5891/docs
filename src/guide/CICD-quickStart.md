@@ -3,62 +3,30 @@ footer: false
 outline: deep
 ---
 
-## 目标
-基于开源工具搭建CI环境，并实现一个代码提交即构建的流水线。
+## 概览
 
-## 工具及其关系概览
+近几年随着以 Kubernetes 为核心的云原生技术和工具的发展，开源社区涌现出大量可以实现 CI/CD 的 Kubernetes 原生工具，但我们在引入这些工具的过程中往往会发现，单一工具难以完成所有过程，通常需要多种工具的协同工作才能支撑全流程的 CI/CD 场景，那么如何将多个异构开源工具集成起来，并打通这些工具的认证、权限、数据、流程等壁垒，就成为我们在引入这些工具过程中最大的挑战。本文会用一个 demo 向大家展示，如何通过集成多个 Kubernetes 原生的开源工具，构建一个可以通过代码提交触发的 CI/CD 流水线，完成拉取代码、编译、构建镜像、推送镜像等几个关键任务，以最简化的形式实现软件项目的持续交付。
+
 ![directive syntax graph](./images/CI-1.jpg)
 
-**部署结构**  
-1. 一个vault服务端：存储搭建CI环境和流水线的相关密钥。
-2. 一个kubernetes集群：宿主集群，负载所有资源。
-3. 一个vcluster集群：运行时集群，负载运行时集群的资源。
+如上图所示，本 demo 的基础环境是由一个 Kubernetes 集群和一个 Vault 实例组成（demo 中没有提供这两个工具的自动化安装程序，需要大家自行安装）。其中，Kubernetes 集群承载了所有与提供 CI/CD 能力相关的工具，Vault 则是为 Kubernetes 集群承载的各个工具提供密钥的存取服务。
 
-**安装顺序**  
-1. 手工安装宿主集群的argoCD。
-2. 在宿主集群，手工安装根project（demo-vcluster）和根app（root）。
-3. 宿主集群的argoCD向宿主集群自动安装资源，包括cert-manager、metallb、traefik、vault、external-secretes、vcluser、以及vcluser上的argoCD。
-4. vcluser的argoCD向vcluster集群自动安装资源，包括argo-events、tekton、vault、external-secrets。
+本 demo 是采用了 GitOps 的管理方法，GitOps 提倡将项目所有的配置声明都存储在版本控制系统中。在本 demo 中，所有运行在 Kubernetes 中工具的安装脚本和参数配置是存储在 GitHub 中，而工具运行过程所需的密钥数据则是通过 Vault 进行存储和管理。Vault 除了能提供密钥的版本管理能力外，还能提供多样的认证方法、灵活的权限控制和密钥提取方式，同时可以和 Kubernetes 无缝集成，相较于 GitHub 更适合与 Kubernetes 及其原生工具协同工作。
 
-**根app监听的代码库结构**
-1. cert-manager-app：cert-manager是签发证书的工具。cert-manager-app监听git代码库（相对路径参见spec.source.path），向宿主集群部署（目标集群参见spec.destination.server）；通过ExternalSecret从vault同步证书和私钥生成k8s secret，并使用ClusterIssuer给集群资源签发证书。
+本 demo 只展示了流水线的执行环境，但后面我们会为这个 demo 继续扩展持续部署的能力。为了用尽量少的资源获得更好的隔离性，我们采用了在物理集群中划分虚拟集群的方式来实现不同环境之间的隔离。上图中的 vcluster 就是一种虚拟集群的实现方式，demo 中所有跟流水线运行相关的核心工具都是运行在 vcluster 中。
 
-3. metallb-app：metallb为裸金属k8s集群提供lb服务。metallb-app的配置源为helm，向宿主集群部署。
-【metallb和ingress关系？】
+除了密钥数据外，其他所有运行在 Kubernetes 中的工具均是通过 ArgoCD 进行部署和管理的。ArgoCD 会监听 GitHub 中的配置清单，向物理集群中部署CertManager、Metallb、Traefik、VaultAgent、ExternalSecrets、以及一个 vcluster，其中，CertManager 会为 Kubernetes 中各个工具所暴露的 HTTPS 服务自动签发证书；Metallb 是为 Kubernetes service 提供 LoadBalancer；Traefik 同时为物理集群和虚拟机群提供 Ingress 服务；VaultAgent 和 ExternalSecrets 则提供了不同的从 Vault 中加载密钥到 Kubernetes 集群的方式。
 
-7. traefik-app：traefik是反向代理工具，用于实现ingress。traefik-app的配置源为helm，向宿主集群部署。【作为用户要了解哪些资源关系】
+当 ArgoCD 在物理集群中部署好一个 vcluster 实例后，会继续在这个 vcluster 中部署一个 ArgoCD 实例，运行在 vcluster 中的其他工具是由这个内部的 ArgoCD 进行部署和管理的。在 vcluster 中运行的工具包括：ArgoEvents、Tekton、以及 VaultAgent 和 ExternalSecrets，其中 ArgoEvents 负责监听 GitHub 上的 Webhook 回调并触发流水线，Tekton 则负责流水线的解析和执行。
 
-8. vault-app：配置源为helm，向宿主集群部署；与ExternalSecret协作，向安装在宿主集群的资源同步vault密钥。
+我们会将需要被集成的项目代码存放到 GitHub 中，同时将流水线清单、编译脚本、Dockerfile等文件放入同一个代码库。当我们向这个代码库推送变更（git push）时，GitHub 会发送一个回调给 ArgoEvents，ArgoEvents 根据回调内容在 Kubernetes 集群中创建相应的流水线资源，Tekton 再将流水线转为多个 Kubernetes POD去执行，我们可以通过 Kubectl CLI 或 Tekton 的 dashboard  跟踪流水线的执行过程。
 
-9.  vault-rbac：创建并授权k8s sa，用于vault对宿主集群的认证。
-
-9.  external-secret-app：ExternalSecret用于集成密钥管理系统（例如vault），同步为k8s secret。external-secret-app的配置源为helm，向宿主集群部署。
-
-10. patch-app：patch-app监听git代码库，向宿主集群部署；用于安装argoCD的补丁资源（Ingress和ServersTransport），以访问argoCD UI界面。
-【ingress和servertransport怎么协作？】
-
-1.   vcluster-appset：vcluster是可以在物理k8s集群中创建虚拟集群的工具。vcluster-appset监听git代码库（相对路径参见spec.template.spec.source.path），向宿主集群部署（目标集群参见spec.template.spec.destination.server）；通过创建vcluster1-app和vcluster1-patch app来安装运行时集群，其中：
-     - vcluster1-app的配置源为helm，向宿主集群部署；用于安装vcluster集群； 
-     - vcluster1-patch监听git代码库，向宿主集群部署；用于安装vcluster集群的补丁资源，包括namespace、ingress和svc等资源。【ingress和svc在哪用到？】
-
-2. runtime-appset：appset（即ApplicationSet）适用于通过多种形态的argocd app集合自动扩缩容集群、自动部署多个app到单集群或多集群等场景。runtime-appset监听git代码库（相对路径参见spec.template.spec.source.path），向运行时集群部署（目标集群参见spec.template.spec.destination.server）；通过创建demo-pipeline project和pipeline1 app来安装运行时资源，其中pipeline1 app安装的资源包括：
-   - argo-events-app：argo-events是提供事件监听、转换和触发的工具。argo-events-app监听git代码库，向运行时集群部署；【待补充，argo-events章节】
-   - external-secret-app：external-secret-app的配置源为helm，向运行时集群部署。
-   - patch-app：patch-app监听git代码库，向运行时集群部署；用于安装argoCD的补丁资源（Ingress），以访问运行时集群的argoCD UI界面。
-   - tekton-app：tekton是k8s原生的流水线工具。tekton-app监听git代码库，向运行时集群部署；安装了CI流水线需要的task以及tekton dashboard，用于编排、执行并跟踪CI流水线； 其中CI流水线task包括：git-cli（执行git操作）、git-clone（clone git代码库到workspace）、kaniko（构建并推送镜像到镜像库）、maven（执行maven构建）。
-   - user-namespaces-app：用户侧app，用于安装CI流水线需要的namespace、pvc和rbac资源。
-   - vault-app：vault是密钥管理工具。vault-app的配置源为helm，向运行时集群部署； 通过vault agent injector方式向CI流水线task提供密钥。
-   - vault-rbac：创建并授权k8s sa，用于vault对运行时集群的认证。
-
-3. runtime-argocd-appset：监听git代码库，向运行时集群部署；用于安装运行时集群的argoCD，结合ingress资源，可访问运行时集群的argoCD UI界面。
-
-【其他：运行时集群相关资源的层级排版 不超过三层】
 
 ## 准备
 以下服务有多种安装方式，下文只是其中一种方式。
 
-**安装一个kubernetes集群**  
-通过命令安装K3s。
+**安装一个 Kubernetes 集群**  
+通过命令安装K3s。为了让K3S安装成功，请确保宿主机网络连接外网。
 ```Shell
 # 替换tls-san IP为宿主机IP
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.14+k3s1 sh -s - server --disable servicelb --disable traefik --disable metrics-server --tls-san 119.8.99.179
@@ -66,12 +34,12 @@ cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-config
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 export KUBECONFIG=~/.kube/config
 ```
-**安装一个vault实例**  
-vault有多种安装方式，包括安装包、helm、源码和docker安装。下文使用安装包安装。
+**安装一个 Vault 实例**  
+Vault 有多种安装方式，包括安装包、Helm、源码和 Docker 安装。下文使用安装包安装。
 
-- 下载并配置vault，参见[官网链接](https://developer.hashicorp.com/vault/docs/install#installing-vault)。
+- 下载并配置 Vault ，参见[官网链接](https://developer.hashicorp.com/vault/docs/install#installing-vault)。
   
-- 更新默认配置文件，启动vault服务。
+- 更新默认配置文件，启动 Vault 服务。
    ```Shell
    # config.hcl的默认路径：/opt/vault/config
    cat config.hcl
@@ -91,27 +59,27 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
    ui = true
    ```
 
-**在宿主机安装argocd命令行**  
-下载并配置argoCD命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
+**在宿主机安装 ArgoCD 命令行**  
+下载并配置 ArgoCD 命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
-**fork Github DEMO代码库**  
-- 配置CI基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
+**fork GitHub demo 代码库**  
+- 配置 CI 基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
 - 存储应用源码和流水线：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
 - 存储应用部署的资源文件：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
 
 ## 实施步骤
 
-- **维护密钥**：在Vault中维护本次DEMO需要的所有密钥及其访问策略。
-- **安装Argo CD**：在宿主集群安装Argo CD。
-- **安装Argo CD app**： 在宿主集群上的Argo CD，创建根Project和根App，Argo CD将通过[App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern)的方式自动安装宿主集群的资源、运行时集群以及运行时集群的资源。
-- **同步集群认证**: 在Vault中配置宿主集群和运行时集群的认证，用于Kubernetes资源获取Vault密钥。
+- **维护密钥**：在 Vault 中维护本次 demo 需要的所有密钥及其访问策略。
+- **安装Argo CD**：在 Kubernetes 集群安装 Argo CD 。
+- **安装Argo CD app**： 在 Kubernetes 集群上的 Argo CD ，创建根 Project 和根 App ，Argo CD 将通过 [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) 的方式自动安装 Kubernetes 集群的资源、Vcluster 集群以及 Vcluster 集群的资源。
+- **同步集群认证**: 在 Vault 中配置 Kubernetes 集群和 Vcluster 集群的认证，用于 Kubernetes 资源获取Vault密钥。
 - **执行流水线**：向fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)的目标代码库推送代码，触发流水线自动执行。
 
 
 ### 维护密钥
-**cert-manager**  
+**Cert-manager**  
 
-维护TLS私钥和证书，用于cert-mananger签发证书。
+维护 TLS 私钥和证书，用于 Cert-mananger 签发证书。
 
 
 1. 新增私钥和自签证书：使用下文命令，应答CSR提示信息，生成私钥和证书。
@@ -130,16 +98,16 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Secret data - key  |  tls.key  |
 | Secret data - value |  tls.key的内容   |
 
-3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写policy，点击Create policy。
+3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为pki-root，参见下文代码块填写Policy，点击Create policy。
   ```
   path "pki/data/root" {
     capabilities = ["read"]
   }
   ```
 
-**argo-events**  
-创建GitHub access token和GitHub secret，用Argo Event创建Webhook。
-1. 新增GitHub access token：访问GitHub任意界面，点击右上角的头像，点击 Settings > Developer settings > Personal access token > Token(classic)，点击 Generate new token(classic) ； 填写GitHub账号的密码，点击 Confirm；参见下表填写属性值，点击 Generator token。请保存好Token，后续将无法再次查看。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
+**Argo-events**  
+创建 GitHub access token 和 GitHub secret，用于 Argo Event 创建Webhook。
+1. 新增 GitHub access token：访问 GitHub 任意界面，点击右上角的头像，点击 Settings > Developer settings > Personal access token > Token(classic)，点击 Generate new token(classic) ； 填写 GitHub 账号的密码，点击 Confirm；参见下表填写属性值，点击 Generator token。请保存好Token，后续将无法再次查看。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -147,28 +115,28 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Expiration   |  30days(默认值)  |
 | Select scopes(复选框)   |  admin:repo_hook<br>write:packages（用于Pipeline向GitHub Package推送镜像） |
 
-2. 新增Secret：访问Vault界面，点击Secrets，点击 Enable new engine，选择KV，点击Next；填写Path为git，点击Enable Engine；点击Create secret，参见下表填写属性值，点击Save。
+2. 新增 Secret：访问 Vault界面，点击 Secrets，点击 Enable new engine，选择 KV，点击 Next；填写 Path 为 git，点击 Enable Engine；点击 Create secret，参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
 | Path for this secret      | github/user-project/argoevents/webhook-access    |
 | Secret data - key  |  token  |
-| Secret data - value |  GitHub access token的内容   |  
+| Secret data - value |  GitHub access token的内容   |
 | Secret data - key   |  secret  |
 | Secret data - value |  GitHub secret的内容，可以使用随机字符串（例如UUID）   |
 
-3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为git-github-user-project-argoevents-webhook-access，参见下文代码块填写Policy，点击Create policy。
+3. 新增 Policy：访问 Vault 界面，点击 Policies，点击 Create ACL policy，填写 Name 为 git-github-user-project-argoevents-webhook-access ，参见下文代码块填写 Policy ，点击 Create policy。
   ```
   path "git/data/github/user-project/argoevents/webhook-access" {
     capabilities = ["read"]
   }
   ```
 
-**pipeline-推送镜像**  
-使用GitHub access token，用于Pipeline向GitHub package推送镜像。
-1. 配置与GitHub package进行身份认证的账号：重用argo-events章节的GitHub access token，组成 &lt;GitHub account&gt;:&lt;GitHub access token&gt; 格式的字符，并对字符进行base64转码。
+**Pipeline-推送镜像**  
+使用 GitHub access token，用于 Pipeline 向 GitHub package 推送镜像。
+1. 配置与 GitHub package 进行身份认证的账号：重用 Argo-events 章节的 GitHub access token ，组成 &lt;GitHub account&gt;:&lt;GitHub access token&gt; 格式的字符，并对字符进行 Base64 转码。
 
-2. 新增secret：访问Vault界面，点击Secrets，点击 Enable new engine，选择KV，点击Next；填写Path为repo，点击Enable Engine；点击Create secret，参见下表填写属性值，点击Save。
+2. 新增 Secret：访问 Vault 界面，点击 Secrets ，点击 Enable new engine，选择 KV，点击 Next；填写 Path 为 repo ，点击 Enable Engine；点击 Create secret，参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -176,7 +144,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Secret data - key   |  auth  |
 | Secret data - value |  &lt;GitHub account&gt;:&lt;GitHub access token&gt;通过base64转码后的字符  |
 
-3. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写Policy，点击Create policy。
+3. 新增 Policy：访问 Vault 界面，点击 Policies ，点击 Create ACL policy，填写 Name 为 repo-github-container-lanbing-default-readwrite ，参见下文代码块填写 Policy，点击 Create policy。
 
   ```  
   path "repo/data/github/container/lanbing/default/readwrite" {
@@ -184,14 +152,14 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
   }
   ```
 
-**pipeline-推送代码**  
-使用SSH keys，用于Pipeline向GitHub代码库推送代码。
-1. 新增SSH keys：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
+**Pipeline-推送代码**  
+使用 SSH keys ，用于 Pipeline 向 GitHub 代码库推送代码。
+1. 新增 SSH keys ：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
-  # 使用git客户端生成SSH keys，邮箱替换为github账号的邮箱 
+  # 使用Git客户端生成SSH keys，邮箱替换为github账号的邮箱 
   ssh-keygen -t ed25519 -C "your_email@example.com"
   ```
-2. 新增Deploy key： 访问GitHub任意界面，点击右上角的头像，点击 Your profile；点击 Repositories，点击目标代码库名称(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))；进入代码库界面，点击 Settings； 在左侧导航栏，点击 Deploy Keys，然后点击 Add deploy key，参考下表填写属性值，点击 Add key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
+2. 新增 Deploy key ： 访问 GitHub 任意界面，点击右上角的头像，点击 Your profile；点击 Repositories，点击目标代码库名称(fork [demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments))；进入代码库界面，点击 Settings； 在左侧导航栏，点击 Deploy Keys，然后点击 Add deploy key，参考下表填写属性值，点击 Add key。更多细节参见[官网](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)。
 
 
 | 属性      | 取值 |
@@ -201,7 +169,7 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Allow write access   |  选中复选框  |
 
 
-3. 新增Secret：访问Vault界面，点击Secrets，点击Path为git的Secrets Engine；点击Create secret，参见下表填写属性值，点击Save。
+3. 新增 Secret：访问 Vault 界面，点击 Secrets ，点击 Path 为 git 的 Secrets Engine ；点击 Create secret ，参见下表填写属性值，点击 Save 。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -209,17 +177,17 @@ vault有多种安装方式，包括安装包、helm、源码和docker安装。�
 | Secret data - key   |  deploykey  |
 | Secret data - value |  SSH私钥内容   |
 
-4. 新增Policy：访问Vault界面，点击Policies，点击Create ACL policy，填写Name为repo-github-container-lanbing-default-readwrite，参见下文代码块填写Policy，点击Create policy。
+4. 新增 Policy：访问 Vault 界面，点击 Policies，点击 Create ACL policy，填写 Name 为 repo-github-container-lanbing-default-readwrite ，参见下文代码块填写 Policy ，点击 Create policy 。
   ```  
   path "git/data/github/user-deployments/default/readwrite" {
       capabilities = ["read"]
   }
   ```
 
-### 安装argoCD
-在宿主集群安装argoCD。
+### 安装 ArgoCD
+在 Kubernetes 集群安装 ArgoCD 。
 ```Shell  
-# 切换到宿主集群 
+# 切换到Kubernetes集群 
 export KUBECONFIG=~/.kube/config
 # clone目标代码库(fork demo-pipeline-argoevents-tekton)，cd到相对路径cmds，执行安装脚本
 sh install-argocd.sh
@@ -227,75 +195,77 @@ sh install-argocd.sh
 sh patch-argocd-server.sh
 ```
 
-### 安装argoCD app
+### 安装 ArgoCD app
 
 **替换服务地址**  
-变更范围包括：argoCD app监听的源代码库地址、宿主集群的地址、运行时集群的地址，以及变更地址的关联资源，详情参见[替换服务地址配置](#替换服务地址配置)。
+变更范围包括：ArgoCD app 监听的源代码库地址、目标集群的地址，以及变更地址的关联资源，详情参见[替换服务地址配置](#替换服务地址配置)。
 1. 根据下文模板，替换代码库地址、集群地址等，详见下文代码注释。
 
 ```Shell
 # 目标代码库(fork demo-pipeline-argoevents-tekton)
-# 批量替换argocd监听代码库地址为目标代码库
+# 批量替换Argocd监听代码库地址为目标代码库地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git#https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton-1.git#g"  `grep https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton.git -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换宿主集群IP地址、宿主机IP地址、vault服务端IP地址(这里vault也安装在同一台宿主机)
+# 批量替换宿主机IP地址、Vault服务端IP地址(这里vault也安装在同一台宿主机)
 sed -i -e "s#192.168.0.184#192.168.0.243#g"  `grep 192.168.0.184 -rl demo-pipeline-argoevents-tekton-1`
-# 批量替换ingress的域名地址
+# 批量替换Ingress的域名地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  `grep 119-8-58-20 -rl demo-pipeline-argoevents-tekton-1`
-# 替换argo-events中eventsource的repo信息，包括owner和names
+# 替换Argo-events中Eventsource的repo，包括owner和names
 sed -i -e "s#lanbingcloud#zhangsan#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
 sed -i -e "s#demo-user-project#demo-user-project-1#g"  demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/eventsource.yaml
-#  替换argo-events中init-pipeline.yaml git-clone的代码库地址
+#  替换Argo-events中Init-pipeline.yaml git-clone的代码库地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-pipeline-argoevents-tekton-1/argo-events/overlays/production/init-pipeline.yaml
 # 目标代码库(fork demo-user-project)
-# 替换pipeline task 拉取代码、推送代码、推送镜像的地址
+# 替换Pipeline task中拉取代码、推送代码、推送镜像的地址
 sed -i -e "s#https://github.com/lanbingcloud/demo-user-project.git#https://github.com/lanbingcloud/demo-user-project-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
 sed -i -e "s#git@github.com:lanbingcloud/demo-user-deployments.git#git@github.com:lanbingcloud/demo-user-deployments-1.git#g" demo-user-project-1/pipelines/test-pipeline.yaml
-# 替换推送镜像的github package
+# 替换推送镜像的GitHub package
 sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g" demo-user-project-1/pipelines/test-pipeline.yaml
 # 目标代码库(fork demo-user-deployments)
 # 替换Deployment中image地址的关键字
 sed -i -e "s#ghcr.io/lanbingcloud#ghcr.io/zhangsan#g"  demo-user-deployments-1/deployments/test/devops-sample.yaml 
-# 替换应用svc的外部访问地址
+# 替换应用Svc的外部访问地址
 sed -i -e "s#119-8-58-20#119-8-99-179#g"  demo-user-deployments-1/deployments/test/devops-sample-svc.yaml 
 ```
 
-2. clone目标代码库，执行脚本，批量替换目标代码库的服务地址。
+2. clone 目标代码库，执行脚本，批量替换目标代码库的服务地址。
 
 ```Shell
 sh sed-demo.sh
 ```
 
-3. push替换后的服务地址到目标代码库。
+3. push 替换服务地址后的代码到目标代码库。
 
-**安装根project和根app**
-1. 使用命令安装根project和根app。
+**安装根 Project 和根 App**
+1. 执行命令安装根 Project 和根 App 。
 ``` Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的根目录，安装根project
 kubectl -nargocd apply -f project.yaml
 # 安装根app
 kubectl -nargocd apply -f app.yaml
 ```
-2. 获取argoCD的初始密码，等待patch app和traefik app同步完成，可以访问[argoCD界面](#安装在宿主集群的argocd访问地址)。观察app状态，其中root和cert-manager两个app显示同步失败：vcluster没有在argoCD注册，导致runtime-argocd-appset和runtime-appset找不到目标集群； 宿主集群没有通过vault认证，导致cert manager无法获取密钥。
+2. 获取 ArgoCD 的初始密码，等待 Patch app 和 Traefik app 同步完成，可以访问 [ArgoCD界面](#安装在宿主集群的argocd访问地址)。观察 app 状态，其中 root 和 cert-manager 两个 app 显示同步失败：Vcluster没有在ArgoCD注册，导致Runtime-argocd-appset 和 Runtime-appset 找不到目标集群； Kubernetes 集群没有通过 Vault 认证，导致 Cert-manager 无法获取密钥。
 ```Shell
 # cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
+# 查看Argocd app状态
+kubectl get apps -n argocd
 ```
 
 
-### 向argoCD注册虚拟集群
-用于argoCD向vcluster集群安装运行时资源，包括root app中runtime-argocd-appset和runtime-appset定义的资源。
+### 向 ArgoCD 注册 Vcluster
+用于 ArgoCD 向 Vcluster 集群安装运行时资源，包括 Runtime-argocd-appset 和 Runtime-appset 定义的资源。
 
-1. 准备注册vcluster集群需要的kubeconfig文件。
+1. 准备注册 Vcluster 集群需要的 Kubeconfig 文件。
   ```Shell
-  # 切换到宿主集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取vcluster的kubeconfig
+  # 切换到Kubernetes集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取Vcluster的Kubeconfig
   export KUBECONFIG=~/.kube/config
   sh get-vcluster-kubeconfig.sh vcluster1
-  # 修改kubeconfig文件，保存到宿主机指定目录
+  # 修改Kubeconfig文件，保存到宿主机指定目录
   ...
   clusters:
   - cluster:
       certificate-authority-data: ...
-      # 修改为:<宿主机内网IP:vcluster1的svc nodePort>
+      # 修改为:<宿主机内网IP:Vcluster1的Svc nodePort>
       server: https://192.168.0.243:31543    
   ...
   contexts:
@@ -309,27 +279,28 @@ sh get-argocd-admin-pwd.sh
   current-context: Default31543  
   ...
   ```
-2. 使用argocd命令注册vcluster。
+2. 使用 Argocd 命令注册 Vcluster。
   ``` 
-  # 切换到宿主集群，查看argocd server的svc类型的clusterIP
-  # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取argoCD初始密码
+  # 切换到Kubernetes集群，查看Svc为Argocd server的ClusterIP
+  kubectl get svc argocd-server -n argocd
+  # 执行cmds目录下的get-argocd-admin-pwd.sh脚本获取ArgoCD初始密码
   sh get-argocd-admin-pwd.sh
-  # 使用命令行登录argocd：argocd login <argocd server的svc类型的clusterIP>
+  # 执行命令行登录Argocd：argocd login <Argocd server的ClusterIP>
   argocd login xxx.xxx.xxx.xxx
-  # 使用命令行注册vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
+  # 执行命令行注册Vcluster：argocd cluster add <cluster-name> --kubeconfig=<kubeconfig.yaml>
   argocd cluster add Default31543 --kubeconfig=/opt/vcluster/kubeconfig-31543.yaml
-  # 验证vcluster是否注册成功
+  # 验证Vcluster是否注册成功
   argocd cluster list
   ```
-3. 访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，等待argoCD自动同步，直到root app状态更新为已同步。如果想立即验证效果，删除runtime-appset和runtime-argocd-appset，等待argoCD重新生成资源，观察root app状态更新为已同步。
+3. 访问[安装在Kuberetes集群的ArgoCD界面](#安装在Kubernetes集群的Argocd访问地址)，等待 ArgoCD 自动同步，直到 Root app 状态更新为已同步。如果想立即验证效果，删除 Runtime-appset 和 Runtime-argocd-appset ，等待 ArgoCD 重新生成资源，观察 Root app 状态更新为已同步。
 
 
-### 向vault同步宿主集群和运行时集群的认证信息  
-**同步宿主集群的认证信息**  
-用于安装在宿主集群上的资源获取存储在vault的密钥。
-1. 准备配置宿主集群认证需要的信息：包括集群的CA证书、授权sa的token、集群host地址。
+### 同步集群认证  
+**同步 Kubernetes 集群的认证**  
+向 Vault 同步 Kubernetes 集群的认证，用于安装在 Kubernetes 集群上的资源获取 Vault 密钥。
+1. 准备配置 Kubernetes 集群认证需要的信息：包括 CA 证书、授权 SA 的 Token、Host 地址。
 ``` Shell
-# 切换到宿主集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
+# 切换到Kubernetes集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
 export KUBECONFIG=~/.kube/config
 sh get-cluster-ca.sh $KUBECONFIG
 # 执行get-vault-auth-token.sh获取token
@@ -338,15 +309,15 @@ sh get-vault-auth-token.sh
 cat ~/.kube/config
 ```
 
-2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为host-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证方法。
+2. 启用 Kubernetes 认证方法：访问 Vault界面，点击 Access ，点击 Enable new method，选择 Kubernetes ，点击Next ; 填写 Path 为 host-cluster ，点击 Enable Method ；参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
-| Kubernetes host   |  宿主集群的host地址  |
-| Kubernetes CA Certificate |  宿主集群的CA证书   |
-| Token Reviewer JWT |  宿主集群的sa token   |
+| Kubernetes host   |  Kubernetes 的 Host 地址  |
+| Kubernetes CA Certificate |  Kubernetes 的 CA 证书   |
+| Token Reviewer JWT |  Kubernetes 的 SA Token   |
 
-3. 新增特定kubernetes认证方法的role：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Path为host-cluster的认证方法链接； 进入role的维护界面，点击Create role，参见下表填写属性值，点击Save完成新增role。
+3. 新增 Role ：访问 Vault 界面，点击 Access ，点击 Path 为 host-cluster 的认证方法链接；点击 Create role ，参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -355,13 +326,13 @@ cat ~/.kube/config
 | Bound service account namespaces |  cert-manager   |
 | Generated Token's Policies |  pki-root   |
 
-4. 验证cert-manager获取密钥：访问[安装在宿主集群的argoCD界面](#安装在宿主集群的argocd访问地址)，等待argoCD自动同步，直到cert-manager app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的cert-manager-secretstore、类型为ExternalSecret的root-issuer、类型为ClusterIssuer的org-issuer，等待argoCD重新生成资源，观察cert-manager app的状态更新为已同步。
+4. 验证 Cert-manager 获取密钥：访问[安装在 Kubernetes 的 ArgoCD 界面](#安装在宿主集群的argocd访问地址)，等待 ArgoCD 自动同步，直到 Cert-manager app 状态更新为已同步。如果想立即验证效果，删除以下资源：类型为 SecretStore 的 cert-manager-secretstore、类型为 ExternalSecret 的 root-issuer 、类型为 ClusterIssuer 的 org-issuer ，等待 ArgoCD 重新生成资源，观察 Cert-manager app 的状态更新为已同步。
 
-**同步vcluster的认证信息**  
-用于安装在vcluster集群上的资源获取存储在vault的密钥。
-1. 准备配置vcluster集群认证需要的信息。包括：集群的CA证书、授权sa的token、集群host地址。
+**同步 Vcluster集群 的认证**  
+向 Vault 同步 Vcluster 集群的认证信息，用于安装在 Vcluster 集群上的资源获取 Vault 密钥。
+1. 准备配置 Vcluster 集群认证需要的信息：包括 CA 证书、授权 SA 的 Token、Host地址。
 ``` Shell
-# 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
+# 切换到 Vcluster 集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本get-cluster-ca.sh获取CA证书
 export KUBECONFIG=/opt/vcluster/kubeconfig-31543.yaml
 sh get-cluster-ca.sh $KUBECONFIG
 # 执行get-vault-auth-token.sh获取token
@@ -369,15 +340,15 @@ sh get-vault-auth-token.sh
 # 查看kubeconfig文件获取host地址
 cat /opt/vcluster/kubeconfig-31543.yaml
 ```
-2. 启用kubernetes认证方法：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Enable new method，选择类别为Kubernetes，点击Next; 进入Enable Kubernetes Authentication Method的配置界面，设置Path为pipeline1-cluster，点击Enable Method; 进入Configure Kubernetes的配置界面，参见下表填写属性值，点击Save完成启用kubernetes认证方法。
+2. 启用 Kubernetes 认证方法：访问 Vault界面，点击 Access ，点击 Enable new method，选择 Kubernetes ，点击 Next ; 填写 Path 为 pipeline1-cluster ，点击 Enable Method ；参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
-| Kubernetes host   |  vcluster的host地址  |
-| Kubernetes CA Certificate |  vcluster的CA证书   |
-| Token Reviewer JWT |  vcluster的sa token   |
+| Kubernetes host   |  Vcluster 的 Host 地址  |
+| Kubernetes CA Certificate |  Vcluster 的 CA 证书   |
+| Token Reviewer JWT |  Vcluster 的 SA Token   |
 
-3. 新增特定kubernetes认证方法的role：访问vault界面，点击"Access"一级菜单,进入Authentication Methods的配置界面，点击Path为pipeline1-cluster的认证方法链接； 进入role的维护界面，点击Create role，参见下表填写属性值，点击Save完成新增role。
+3. 新增 Role：访问 Vault 界面，点击 Access ，点击 Path 为 pipeline1-cluster 的认证方法链接；点击 Create role ，参见下表填写属性值，点击 Save。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
@@ -390,19 +361,19 @@ cat /opt/vcluster/kubeconfig-31543.yaml
 | Bound service account namespaces |  user-pipelines   |
 | Generated Token's Policies |  git-github-user-deployments-default-readwrite<br>repo-github-container-lanbing-default-readwrite   |
 
-4. 验证argo-events获取密钥：访问[安装在vcluster集群的argoCD界面](#安装在vcluster集群的argocd访问地址)，等待argoCD自动同步，直到argo-events app状态更新为已同步。如果想立即验证效果，删除以下资源：类型为SecretStore的webhook-secretstore、类型为ExternalSecret的github-access、类型为EventSource的webhook，等待argoCD重新生成资源，观察argo-events app的状态更新为已同步。
+4. 验证 Argo-events 获取密钥：访问[安装在 Vcluster 集群的 ArgoCD 界面](#安装在 Vcluster 集群的 ArgoCD 访问地址)，等待 ArgoCD 自动同步，直到 Argo-events app 状态更新为已同步。如果想立即验证效果，删除以下资源：类型为 SecretStore 的 webhook-secretstore 、类型为 ExternalSecret 的 github-access 、类型为 EventSource 的 webhook ，等待 ArgoCD 重新生成资源，观察 Argo-events app 的状态更新为已同步。
 ```Shell
-# 切换到vcluster集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
+# 切换到 Vcluster 集群，cd到目标代码库(fork demo-pipeline-argoevents-tekton)的相对路径cmds，执行脚本获取初始密码
 sh get-argocd-admin-pwd.sh
 ```
 
 ### 执行流水线
-fork 代码库demo-user-project，并向目标代码库提交代码（例如修改pom文件中项目的版本），[访问tekton-dashboard](#tekton-dashboard访问地址)观察流水线已经自动执行。
+fork 代码库 demo-user-project ，并向目标代码库提交代码（例如修改pom文件中项目的版本），[访问 Tekton-dashboard ](#Tekton-dashboard访问地址) 观察流水线已经自动执行。
 ![directive syntax graph](./images/CI-10.jpg)
 
 ## 附件
 ### 参考链接
-**Github DEMO示例：**  
+**GitHub demo 示例：**  
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets  
 https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
 
@@ -410,19 +381,19 @@ https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
 https://www.bilibili.com/video/BV1yP4y1U7mS/  
 https://www.bilibili.com/video/BV1Fm4y1A7qL/
 
-### 安装在宿主集群的argoCD访问地址
+### 安装在 Kubernetes 集群的 ArgoCD 访问地址
 协议：https  
 地址：来自production/patch/ingress-argocd.yaml的hosts  
 端口：来自production/traefik-app.yaml的websecure.nodePort  
 示例：https://argocd.119-8-99-179.nip.io:30443  
 
-### 安装在vcluster集群的argoCD访问地址
+### 安装在 Vcluster 集群的 ArgoCD 访问地址
 协议：https  
 地址：来自runtimes/pipeline1-runtime/production/patch/ingress-argocd.yaml的hosts  
 端口：来自production/traefik-app.yaml的websecure.nodePort  
 示例：https://argocd.pipeline1.119-8-99-179.nip.io:30443
 
-### tekton-dashboard访问地址
+### Tekton-dashboard 访问地址
 协议：http  
 地址：来自tekton/overlays/production/dashboard-ingress.yaml的host  
 端口：来自production/traefik-app.yaml的web.nodePort  
@@ -431,7 +402,7 @@ https://www.bilibili.com/video/BV1Fm4y1A7qL/
 ### **替换服务地址配置**
 
 #### 代码库：demo-pipeline-argoevents-tekton
-fork demo-pipeline-argoevents-tekton代码库，修改目标代码库的服务地址。
+fork demo-pipeline-argoevents-tekton 代码库，修改目标代码库的服务地址。
 
 ##### 替换监听的代码库地址
 相对路径：app.yaml
@@ -599,7 +570,7 @@ spec:
 ...
 ```
 
-##### 替换宿主集群IP地址、宿主机IP、vault服务端IP
+##### 替换宿主机 IP 、Vault 服务端 IP
 相对路径：vclusters/vcluster1/vcluster1-app.yaml
 ```yaml{12}
 ...
@@ -623,7 +594,7 @@ spec:
 spec:
   provider:
     vault:
-      # 替换为vault服务端的IP和端口
+      # 替换为Vault服务端的IP和端口
       server: "http://192.168.0.243:31820"
       path: "git"
       version: "v2"
@@ -636,7 +607,7 @@ spec:
 spec:
   provider:
     vault:
-      # 替换为vault服务端的IP和端口
+      # 替换为Vault服务端的IP和端口
       server: "http://192.168.0.243:31820"
       path: "pki"
       version: "v2"
@@ -699,7 +670,7 @@ spec:
         injector:
           enabled: true
           authPath: auth/host-cluster
-          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+          externalVaultAddr: http://192.168.0.243:31820  #替换为Vault服务的IP和端口
 ...
 ```
 
@@ -741,11 +712,11 @@ spec:
         injector:
           enabled: true
           authPath: auth/pipeline1-cluster
-          externalVaultAddr: http://192.168.0.243:31820  #替换为vault服务的IP和端口
+          externalVaultAddr: http://192.168.0.243:31820  #替换为Vault服务的IP和端口
 ...
 ```
 
-##### 替换ingress的域名地址
+##### 替换 Ingress 的域名地址
 相对路径：argo-events/overlays/production/eventsource.yaml
 ```yaml{11}
 ...
@@ -819,7 +790,7 @@ spec:
 ...
 ```
 
-##### 替换argo-events eventsource的repo信息
+##### 替换 Argo-events Eventsource 的 repo
 相对路径：argo-events/overlays/production/eventsource.yaml
 ```yaml{6,8}
 ...
@@ -833,11 +804,11 @@ spec:
 ...
 ```
 
-##### 替换init-pipeline中git clone任务的代码库地址
+##### 替换 Init-pipeline 中 git clone 任务的代码库地址
 相对路径：argo-events/overlays/production/init-pipeline.yaml
 ```yaml{29}
 ...
-spec:
+spec
   ...
   triggers:
     - template:
@@ -868,8 +839,7 @@ spec:
 ```
 
 #### 代码库：demo-user-project
-fork demo-user-project代码库，修改目标代码库。
-替换流水线task拉取代码、推送代码、推送镜像的地址。  
+fork demo-user-project 代码库，修改目标代码库。替换流水线 Task 拉取代码、推送代码、推送镜像的地址。  
 
 相对路径：pipelines/test-pipeline.yaml
 ```yaml{12,19,33,53}
@@ -933,7 +903,7 @@ spec:
 
 #### 代码库：demo-user-deployments
 
-fork demo-user-deployments代码库，修改目标代码库。替换应用svc的外部访问地址。
+fork demo-user-deployments 代码库，修改目标代码库。替换应用 Svc 的外部访问地址。
 
 相对路径：deployments/test/devops-sample-svc.yaml
 ```yaml{8}
