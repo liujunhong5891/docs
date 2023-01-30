@@ -37,7 +37,7 @@ export KUBECONFIG=~/.kube/config
 **安装一个 Vault 实例**  
 支持安装包、Helm、源码、Docker 等安装方式。下文使用安装包安装。
 
-1. 下载并配置 Vault ，参见[官网链接](https://developer.hashicorp.com/vault/docs/install#installing-vault)。
+1. 下载并配置 Vault ，参见[官网](https://developer.hashicorp.com/vault/docs/install#installing-vault)。
 2. 更新默认配置文件，启动 Vault 。
    ```Shell
    # config.hcl的默认路径：/opt/vault/config
@@ -59,7 +59,7 @@ export KUBECONFIG=~/.kube/config
    ```
 
 **在宿主机上安装 ArgoCD 命令行**  
-下载并配置 ArgoCD 命令行，参见[官网链接](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
+下载并配置 ArgoCD 命令行，参见[官网](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
 **Fork GitHub demo 代码库**  
 - 配置 CI 基础环境和代码提交即触发流水线：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
@@ -72,7 +72,7 @@ export KUBECONFIG=~/.kube/config
 3. **安装ArgoCD app**：在 Kubernetes 集群上的 ArgoCD ，创建根 project 和根 app ，ArgoCD 将通过 [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) 的方式自动安装 Kubernetes 集群的资源、vcluster 集群、vcluster 集群的资源。
 4. **注册 vcluster**： vcluster 向 ArgoCD 注册，用于 ArgoCD 在 vcluster 集群中安装资源。
 5. **同步集群认证**: 在 Vault 中配置 Kubernetes 集群和 vcluster 集群的认证，用于 Kubernetes 资源和 vcluster 资源获取 Vault 密钥。
-6. **执行流水线**：向Fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project)的目标代码库推送代码，触发流水线自动执行。
+6. **执行流水线**：向 Fork [demo-user-project](https://github.com/lanbingcloud/demo-user-project) 的目标代码库推送代码，触发流水线自动执行。
 
 ### 维护密钥
 
@@ -153,7 +153,7 @@ export KUBECONFIG=~/.kube/config
 
 **pipeline-推送代码**  
 在 Vault 中维护 SSH key ，用于 pipeline 向 GitHub 代码库推送代码。
-1. 新增 SSH key ：更多细节参见[官网](https://docs.github.com/zh/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
+1. 新增 SSH key ：更多细节参见[官网](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)。
   ```Shell 
   # 使用Git客户端生成SSH key，邮箱替换为GitHub账号的邮箱 
   ssh-keygen -t ed25519 -C "your_email@example.com"
@@ -393,7 +393,7 @@ https://www.bilibili.com/video/BV1Fm4y1A7qL/
 示例：https://argocd.pipeline1.119-8-99-179.nip.io:30443
 
 ### Tekton dashboard 访问地址
-协议：HTTP 
+协议：HTTP  
 地址：来自tekton/overlays/production/dashboard-ingress.yaml的host  
 端口：来自production/traefik-app.yaml的web.nodePort  
 示例：http://tekton.pipeline1.119-8-99-179.nip.io:30080  
