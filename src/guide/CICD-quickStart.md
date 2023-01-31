@@ -902,7 +902,7 @@ spec:
 
 #### 代码库：demo-user-deployments
 
-clone [目标代码库 FD](#准备)，修改服务配置。替换应用的Ingress域名。
+clone [目标代码库 FD](#准备)，修改服务配置。替换应用的 Ingress 域名。
 
 
 相对路径：deployments/test/devops-sample-svc.yaml
