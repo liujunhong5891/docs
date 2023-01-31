@@ -62,9 +62,9 @@ export KUBECONFIG=~/.kube/config
 下载并配置 ArgoCD 命令行，参见[官网](https://argo-cd.readthedocs.io/en/stable/cli_installation/#download-with-curl)。
 
 **Fork GitHub demo 代码库**  
-- 配置 CI 基础环境和代码提交即触发流水线（下文简称FT）：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
-- 存储应用源码和流水线（下文简称FP）：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
-- 存储应用部署的资源文件（下文简称FD）：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
+- 配置 CI 基础环境和代码提交即触发流水线（简称FT）：[demo-pipeline-argoevents-tekton](https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton)
+- 存储应用源码和流水线（简称FP）：[demo-user-project](https://github.com/lanbingcloud/demo-user-project)
+- 存储应用部署的资源文件（简称FD）：[demo-user-deployments](https://github.com/lanbingcloud/demo-user-deployments)
 
 ## 实施步骤
 1. **维护密钥**：在 Vault 中维护本 demo 所需密钥及其访问策略。
@@ -72,7 +72,7 @@ export KUBECONFIG=~/.kube/config
 3. **安装ArgoCD app**：在 Kubernetes 集群的 ArgoCD 上 ，创建根 project 和根 app ，ArgoCD 将通过 [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) 的方式在 Kubernetes 集群中部署工具，详情参见[概览](#概览)。
 4. **注册 vcluster**： 向 ArgoCD 注册 vcluster 集群，用于 ArgoCD 在 vcluster 集群中安装工具。
 5. **同步集群认证**: 在 Vault 中配置 Kubernetes 集群和 vcluster 集群的认证，用于 Kubernetes 集群和 vcluster 集群中的工具获取 Vault 密钥。
-6. **执行流水线**：向[代码库FP](#准备) 推送代码，触发流水线自动执行。
+6. **执行流水线**：向[代码库 FP](#准备) 推送代码，触发流水线自动执行。
 
 ### 维护密钥
 
@@ -106,7 +106,7 @@ export KUBECONFIG=~/.kube/config
 
 **ArgoEvents**  
 在 Vault 中维护 GitHub access token 和 GitHub secret，用于 ArgoEvents 创建 Webhook。
-1. 新增 GitHub access token：访问 GitHub 任意界面，点击右上角的头像，点击 settings > developer settings > personal access token > token(classic)，点击 generate new token(classic) ； 填写 GitHub 账号的密码，点击 confirm；参见下表填写属性值，点击 generator token。请保存好 token，后续将无法再次查看。更多细节[参见官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
+1. 新增 GitHub access token：访问 GitHub 任意界面，点击右上角的头像，点击 settings > developer settings > personal access token > token(classic)，点击 generate new token(classic) ； 填写 GitHub 账号的密码，点击 confirm；参见下表填写属性值，点击 generator token。请保存好 token，后续将无法再次查看。更多细节参见[官网](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
 
 | 属性      | 取值 |
 | ----------- | ----------- |
