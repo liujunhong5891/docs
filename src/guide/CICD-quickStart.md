@@ -388,8 +388,8 @@ https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
 https://github.com/lanbingcloud/demo-cicd-tekton-argocd
 
 **B站讲解视频**  
-[部署基础环境](https://www.bilibili.com/video/BV1yP4y1U7mS/)
-[构建CI流水线](https://www.bilibili.com/video/BV1Fm4y1A7qL/)
+[部署基础环境](https://www.bilibili.com/video/BV1yP4y1U7mS/)  
+[构建CI流水线](https://www.bilibili.com/video/BV1Fm4y1A7qL/)  
 [集成CD环境](https://www.bilibili.com/video/BV1Be411G7H6/)
 
 ### 安装在 Kubernetes 集群的 ArgoCD 访问地址
