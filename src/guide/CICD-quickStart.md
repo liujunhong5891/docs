@@ -384,7 +384,7 @@ sh get-argocd-admin-pwd.sh
 ### 参考链接
 **GitHub demo 示例**  
 https://github.com/lanbingcloud/demo-vcluster-tekton-argoevents-vaultagent-externalsecrets  
-https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton
+https://github.com/lanbingcloud/demo-pipeline-argoevents-tekton  
 https://github.com/lanbingcloud/demo-cicd-tekton-argocd
 
 **B站讲解视频**  
