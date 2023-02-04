@@ -5,7 +5,7 @@ outline: deep
 
 ## 概览
 
-近几年随着以 Kubernetes 为核心的云原生技术和工具的发展，开源社区涌现出大量可以实现 CI/CD 的 Kubernetes 原生工具，但我们在引入这些工具的过程中往往会发现，单一工具难以完成所有过程，通常需要多种工具的协同工作才能支撑全流程的 CI/CD 场景，那么如何将多个异构开源工具集成起来，并打通这些工具的认证、权限、数据、流程等壁垒，就成为我们在引入这些工具过程中最大的挑战。本文会用一个 demo 向大家展示，如何通过集成多个 Kubernetes 原生的开源工具，构建一个可以通过代码提交触发的 CI/CD 流水线，完成拉取代码、编译、构建镜像、推送镜像、部署等几个关键任务，以最简化的形式实现软件项目的持续交付。
+近几年随着以 Kubernetes 为核心的云原生技术和工具的发展，开源社区涌现出大量可以实现 CI/CD 的 Kubernetes 原生工具，但我们在引入这些工具的过程中往往会发现，单一工具难以完成所有过程，通常需要多种工具的协同工作才能支撑全流程的 CI/CD 场景，那么如何将多个异构开源工具集成起来，并打通这些工具的认证、权限、数据、流程等壁垒，就成为我们在引入这些工具过程中最大的挑战。本文会用一个 demo 向大家展示，如何通过集成多个 Kubernetes 原生的开源工具，构建一个可以通过代码提交触发的 CI/CD 流水线，完成拉取代码、编译、构建镜像、推送镜像等几个关键任务，以最简化的形式实现软件项目的持续交付。
 
 ![directive syntax graph](./images/CI-1.jpg)
 
@@ -13,15 +13,14 @@ outline: deep
 
 本 demo 是采用了 GitOps 的管理方法，GitOps 提倡将项目所有的配置声明都存储在版本控制系统中。在本 demo 中，所有运行在 Kubernetes 中工具的安装脚本和参数配置是存储在 GitHub 中，而工具运行过程所需的密钥数据则是通过 Vault 进行存储和管理。Vault 除了能提供密钥的版本管理能力外，还能提供多样的认证方法、灵活的权限控制和密钥提取方式，同时可以和 Kubernetes 无缝集成，相较于 GitHub 更适合与 Kubernetes 及其原生工具协同工作。
 
-本 demo 展示了流水线和持续部署的运行环境。为了用尽量少的资源获得更好的隔离性，我们采用了在物理集群中划分虚拟集群的方式来实现不同环境之间的隔离。上图中的 vcluster 就是一种虚拟集群的实现方式，demo 中所有跟流水线运行相关的核心工具都在流水线运行集群中（vcluster1-pipeline） 、跟部署运行相关的工具则在部署运行集群中（vcluster2-deployment） 。
+本 demo 只展示了流水线的执行环境，但后面我们会为这个 demo 继续扩展持续部署的能力。为了用尽量少的资源获得更好的隔离性，我们采用了在物理集群中划分虚拟集群的方式来实现不同环境之间的隔离。上图中的 vcluster 就是一种虚拟集群的实现方式，demo 中所有跟流水线运行相关的核心工具都是运行在 vcluster 中。
 
-除了密钥数据外，其他所有运行在 Kubernetes 中的工具均是通过 ArgoCD 进行部署和管理的。ArgoCD 会监听 GitHub 中的配置清单，向物理集群中部署CertManager、Metallb、Traefik、VaultAgent、ExternalSecrets、以及两个 vcluster，其中，CertManager 会为 Kubernetes 中各个工具所暴露的 HTTPS 服务自动签发证书；Metallb 是为 Kubernetes service 提供 LoadBalancer；Traefik 同时为物理集群和虚拟集群提供 Ingress 服务；VaultAgent 和 ExternalSecrets 则提供了从 Vault 中加载密钥到 Kubernetes 集群的不同方式。
+除了密钥数据外，其他所有运行在 Kubernetes 中的工具均是通过 ArgoCD 进行部署和管理的。ArgoCD 会监听 GitHub 中的配置清单，向物理集群中部署CertManager、Metallb、Traefik、VaultAgent、ExternalSecrets、以及一个 vcluster，其中，CertManager 会为 Kubernetes 中各个工具所暴露的 HTTPS 服务自动签发证书；Metallb 是为 Kubernetes service 提供 LoadBalancer；Traefik 同时为物理集群和虚拟机群提供 Ingress 服务；VaultAgent 和 ExternalSecrets 则提供了不同的从 Vault 中加载密钥到 Kubernetes 集群的方式。
 
-当 ArgoCD 在物理集群部署好两个 vcluster 实例之后，会继续在这两个 vcluster 中分别部署一个 ArgoCD 实例，运行在 vcluster 中的其他工具是由这个内部的 ArgoCD 进行部署和管理的。在流水线运行集群（vcluster1-pipeline）中，包括工具：ArgoEvents、Tekton、以及 VaultAgent 和 ExternalSecrets，其中 ArgoEvents 负责监听 GitHub 上的 Webhook 回调并触发流水线，Tekton 则负责流水线的解析和执行。在部署运行集群中（vcluster2-deployment），只需要部署 ArgoCD ，无需其他工具。
+当 ArgoCD 在物理集群中部署好一个 vcluster 实例后，会继续在这个 vcluster 中部署一个 ArgoCD 实例，运行在 vcluster 中的其他工具是由这个内部的 ArgoCD 进行部署和管理的。在 vcluster 中运行的工具包括：ArgoEvents、Tekton、以及 VaultAgent 和 ExternalSecrets，其中 ArgoEvents 负责监听 GitHub 上的 Webhook 回调并触发流水线，Tekton 则负责流水线的解析和执行。
 
-我们会将需要被集成的项目代码存放到 GitHub 中，同时将流水线清单、编译脚本、Dockerfile等文件放入同一个代码库。当我们向这个代码库推送变更（git push）时，GitHub 会发送一个回调给 ArgoEvents，ArgoEvents 根据回调内容在 Kubernetes 集群中创建相应的流水线资源，Tekton 再将流水线转为多个 Kubernetes POD去执行。
+我们会将需要被集成的项目代码存放到 GitHub 中，同时将流水线清单、编译脚本、Dockerfile等文件放入同一个代码库。当我们向这个代码库推送变更（git push）时，GitHub 会发送一个回调给 ArgoEvents，ArgoEvents 根据回调内容在 Kubernetes 集群中创建相应的流水线资源，Tekton 再将流水线转为多个 Kubernetes POD去执行，我们可以通过 Kubectl CLI 或 Tekton 的 dashboard  跟踪流水线的执行过程。
 
-流水线中编排的任务包括：clone 代码、编译构建、构建并推送镜像、更新部署资源的镜像地址、应用部署（接收部署通知）。当流水线更新镜像地址之后，部署运行环境中 ArgoCD app 的部署状态一旦变更，通过协同 ArgoCD Notifications 和 ArgoEvents，ArgoCD Notifications 回调流水线运行环境中的 Webhook 并向流水线发送消息，流水线中的部署任务捕获并解析消息，进一步判断部署状态是挂起、失败或者成功。可以通过 Kubectl CLI 或 Tekton dashboard  跟踪流水线中所有任务的执行过程。
 
 ## 准备
 以下工具有多种安装方式，下文只是其中一种。
