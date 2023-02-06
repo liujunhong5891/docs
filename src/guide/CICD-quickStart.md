@@ -666,7 +666,7 @@ spec:
 ```
 
 相对路径：vclusters/vcluster2/vcluster2-app.yaml
-```yaml{13}
+```yaml{12}
 ...
 spec:
   project: demo-vcluster
@@ -1041,7 +1041,7 @@ spec:
 clone [目标代码库 FD](#准备)，修改服务配置。替换镜像地址、应用的 Ingress 域名。
 
 相对路径：deployments/test/devops-sample.yaml
-```yaml{8}
+```yaml{12}
 ...
 spec:
   ...
@@ -1071,4 +1071,5 @@ spec:
       paths:
       - path: /
         pathType: ImplementationSpecific
+...
 ```
