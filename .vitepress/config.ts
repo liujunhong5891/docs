@@ -107,23 +107,6 @@ export const sidebar: ThemeConfig['sidebar'] = {
       ]
     },
     {
-      text: '基础知识',
-      items: [
-        {
-          text: 'kubernetes',
-          link: '/guide/default'
-        },
-        {
-          text: 'vault',
-          link: '/guide/default'
-        },
-        {
-          text: 'vcluster',
-          link: '/guide/default'
-        },
-      ]
-    },
-    {
       text: '核心概念',
       items: [
         {
@@ -131,6 +114,56 @@ export const sidebar: ThemeConfig['sidebar'] = {
           link: '/guide/default'
         },
         { text: 'operator', link: '/guide/default' }
+      ]
+    },
+    {
+      text: '快速入门',
+      items: [
+        {
+          text: '安装 Nautes-XXXX',
+          link: '/guide/default'
+        },
+        { text: '自动安装部署运行时环境', link: '/guide/default' },
+        { text: '自动销毁部署运行时环境', link: '/guide/default' }
+      ]
+    },
+    {
+      text: '用户指南',
+      items: [
+        { text: '注册集群', link: '/guide/default' },
+        { text: '维护产品', link: '/guide/default' },
+        { text: '维护项目', link: '/guide/default' },
+        { text: '维护代码库', link: '/guide/default' },
+        { text: '维护环境', link: '/guide/default' },
+        { text: '维护部署运行时', link: '/guide/default' },
+        { text: '跟踪部署过程和结果', link: '/guide/default' }
+      ]
+    },
+    {
+      text: '开发指南',
+      items: [
+        { text: '筹备中', link: '/guide/default' }
+      ]
+    },
+    {
+      text: '运维指南',
+      items: [
+        { text: '筹备中', link: '/guide/default' }
+      ]
+    },
+    {
+      text: 'API参考',
+      items: [
+        {
+          text: '筹备中',
+          link: '/guide/default'
+        }
+      ]
+    },
+    {
+      text: '常见问题',
+      items: [
+        { text: '筹备中', link: '/guide/default' }
       ]
     },
     {
@@ -149,34 +182,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         { text: '实现Kubernetes/Tekton/ArgoCD的统一认证', link: '/guide/default' },
         { text: '实现Kubernetes/Tekton/ArgoCD的统一权限', link: '/guide/default' }
       ]
-    },
-    {
-      text: '开发篇',
-      items: [
-        { text: '筹备中', link: '/guide/default' }
-      ]
-    },
-    {
-      text: '运维篇',
-      items: [
-        { text: '筹备中', link: '/guide/default' }
-      ]
-    },
-    {
-      text: '测试篇',
-      items: [
-        {
-          text: '筹备中',
-          link: '/guide/default'
-        }
-      ]
-    },
-    {
-      text: 'FAQ',
-      items: [
-        { text: '筹备中', link: '/guide/default' }
-      ]
-    },
+    }
   ],
   '/api/': [
     {
