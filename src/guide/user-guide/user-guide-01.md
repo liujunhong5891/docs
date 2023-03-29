@@ -12,7 +12,7 @@
 维护产品有多种方式，包括命令行、API 接口等。下文将描述通过 API 接口的方式维护产品。
 
 ### 创建产品
-在开展 CI/CD 活动之前，需要先创建一个新的产品。
+在开展 CI/CD 活动之前，需要先创建一个新的产品。  
 以下是创建产品的步骤：
 1. 访问 Swagger UI，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例；  
    ```Shell
@@ -62,7 +62,7 @@
     请求成功后，将生成一个产品，同时在 GitLab 中根据产品参数生成对应的 group、以及这个 group 中名称为 default.project 的代码库，一个产品有且只有一个 default.project 代码库。default.project 代码库用于存储产品的环境、项目、资源的配置，根据这些资源文件，系统将自动生成执行 CI/CD 活动的运行时环境。
 
 ### 删除产品
-由于产品可能关联实施 CI/CD 活动的多种资源，在删除产品之前，需要先删除与该产品相关的所有资源，例如项目、代码库和环境等。通常这种情况发生在产品生命周期结束之后，产品只会剩下一个名称为 default.project 的空代码库。  
+由于产品可能关联实施 CI/CD 活动的多种资源，在删除产品之前，需要先删除与该产品相关的所有资源，例如项目、代码库和环境等。通常这种情况发生在产品生命周期结束之后，产品只会剩下一个名称为 default.project 的空代码库。    
 以下是删除产品的步骤：
 1. 访问 Swagger UI，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 DELETE 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。与 [创建产品的步骤1](#创建产品) 类似，不再赘述。
 2. 访问 GitLab Web UI，同样需要获取请求 API 的 access token，作为 API 请求的请求头参数。参见 [创建产品的步骤2](#创建产品)。只有拥有产品的 owner 角色权限或者是 GitLab 管理员权限的用户账号可以删除产品。
@@ -70,7 +70,7 @@
 
 
 ### 查询产品
-查询产品有两个 API 接口，分别是查询产品列表、查询产品详情，用于查询用户被授权的产品信息。
+查询产品有两个 API 接口，分别是查询产品列表、查询产品详情，用于查询用户被授权的产品信息。  
 以下是查询产品列表的步骤：
 1. 访问 Swagger UI，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products 的 GET 接口，点击 try it out，点击 execute，生成 API 请求的代码示例。与 [创建产品的步骤1](#创建产品) 类似，不再赘述。
 2. 访问 GitLab Web UI，同样需要获取请求 API 的 access token，作为 API 请求的请求头参数。参见 [创建产品的步骤2](#创建产品)。只有当用户是产品成员时，才能查询到相关产品信息。
