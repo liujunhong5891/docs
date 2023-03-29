@@ -120,7 +120,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       text: '快速入门',
       items: [
         {
-          text: '安装 Nautes-XXXX',
+          text: '安装 Nautes',
           link: '/guide/default'
         },
         { text: '自动安装部署运行时环境', link: '/guide/default' },
@@ -130,6 +130,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '用户指南',
       items: [
+        { text: '概述', link: '/guide/default' },
         { text: '注册集群', link: '/guide/default' },
         { text: '维护产品', link: '/guide/user-guide/user-guide-01' },
         { text: '维护项目', link: '/guide/default' },
