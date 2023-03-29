@@ -19,7 +19,8 @@ jobs:
         run: npm install -g pnpm
       - name: Build-1
         # run : npm run build
-        run: pnpm i 
+        # run: pnpm i 
+        run: pnpm install --no-frozen-lockfile
       - name: Build-3
         run: npm run build
       - name: Deploy
