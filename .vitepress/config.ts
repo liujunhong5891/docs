@@ -130,7 +130,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '用户指南',
       items: [
-        { text: '概述', link: '/guide/default' },
+        { text: '概述', link: '/guide/user-guide/user-guide-00' },
         { text: '注册集群', link: '/guide/default' },
         { text: '维护产品', link: '/guide/user-guide/user-guide-01' },
         { text: '维护项目', link: '/guide/default' },
