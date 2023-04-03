@@ -120,7 +120,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       text: '快速入门',
       items: [
         { text: '从零安装部署运行时环境', link: '/guide/user-guide/quickstart-01' },
-        { text: '销毁部署运行时环境', link: '/guide/default' }
+        { text: '销毁部署运行时环境', link: '/guide/user-guide/quickstart-02' }
       ]
     },
     {
