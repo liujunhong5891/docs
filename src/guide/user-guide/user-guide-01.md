@@ -2,7 +2,7 @@
 outline: deep
 ---
 ## 简介
-在开始本节之前，请确保您已阅读 [用户指南的概述](https://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节，了解 Nautes 的主流程和相关术语。
+在开始本节之前，请确保您已阅读 [用户指南的概述](HTTPs://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节，了解 Nautes 的主流程和相关术语。
 
 在微服务架构中，一个IT系统由多个微服务组成，每个微服务有独立的代码库。在Nautes中，“产品”表示一个IT系统，“项目”表示一个微服务。因此，一个产品可以包含多个项目，每个项目有独立的代码库。
 实施CI/CD活动时，所有操作都基于产品和项目进行，这意味着需要维护与之相关的信息以供实施 CI/CD 活动使用，并确保这些信息与IT系统的微服务架构保持一致。此外，用户可以是产品成员或者项目成员，用户所属的产品或项目将决定其拥有哪些权限和角色。
@@ -19,7 +19,7 @@ outline: deep
    # 由于Nautes暂时只支持 GitLab 的代码库，因此去掉了 GitHub 相关参数
    # 实操过程中根据实际情况替换 URL 地址和相关参数
    curl -X 'POST' \
-    'http://10.204.118.221:32159/api/v1/products/demo-product' \
+    'HTTP://10.204.118.221:32159/api/v1/products/demo-product' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -d '{
@@ -44,7 +44,7 @@ outline: deep
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数
     curl -X 'POST' \
-    'http://10.204.118.221:32159/api/v1/products/demo-product' \
+    'HTTP://10.204.118.221:32159/api/v1/products/demo-product' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
