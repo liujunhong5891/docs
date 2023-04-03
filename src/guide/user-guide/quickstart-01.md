@@ -114,7 +114,7 @@ spec:
   projectsRef:
     - project-demo-0329
 ```
-2. 在 Windows 操作系统下，将 [nautes.exe]() 文件存放于某个目录，执行下文的 cmd 命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。
+2. 在 Windows 操作系统下，将 [nautes.exe] 文件存放于某个目录，执行下文的 cmd 命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。
 ```cmd
 REM apply 后面的三个参数分别表示：产品配置库模板在模板代码库中的相对路径； GitLab 用户账号对应的 access token； Nautes API 的访问地址； 
 nautes apply -f examples/demo.yaml -t access-token -s http://10.204.118.221:32159/
