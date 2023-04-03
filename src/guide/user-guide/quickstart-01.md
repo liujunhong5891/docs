@@ -3,16 +3,16 @@ outline: deep
 ---
 ## 从零搭建部署运行时环境
 
-下文将描述从零开始安装集群到自动执行部署的执行过程。包括以下步骤：
-[准备前置条件](#准备前置条件)
-[安装租户管理集群](#安装租户管理集群)
-[注册部署集群](#注册部署集群)
-[提交产品配置清单](#提交产品配置清单)
-[提交部署配置清单](#提交部署配置清单)
+下文将描述从零开始安装集群到自动执行部署的执行过程。包括以下步骤：  
+[准备前置条件](#准备前置条件)  
+[安装租户管理集群](#安装租户管理集群)  
+[注册部署集群](#注册部署集群)  
+[提交产品配置清单](#提交产品配置清单)  
+[提交部署配置清单](#提交部署配置清单)  
 [跟踪部署过程和结果](#跟踪部署过程和结果)
 
 ### 准备前置条件
-在开始本节之前，请确保您已阅读“用户指南的概述”章节。
+在开始本节之前，请确保您已阅读 [用户指南的概述](https://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节。
 待补充。
 
 
@@ -25,7 +25,7 @@ outline: deep
 待补充。
 
 ### 提交产品配置清单
-通过 Nautes CLI 自动提交产品、环境、项目、部署运行时等资源文件，这些资源文件组成了“产品配置清单”。提交成功后，Nautes 将监听产品配置清单向部署集群实施自动部署，以安装产品的部署运行时环境。
+通过 Nautes CLI 自动提交产品、环境、项目、代码库、部署运行时等资源文件，这些资源文件组成了“产品配置清单”。提交成功后，Nautes 将监听产品配置清单向部署集群实施自动部署，以安装产品的部署运行时环境。
 
 1. clone 存储产品配置库模板的代码库，批量替换资源的参数值。产品配置库模板的内容如下：
 ```yaml
@@ -108,15 +108,15 @@ spec:
     codeRepo: coderepo-demo-0329
     # 部署运行时监听的代码库相对路径
     path: deployments
-    # 部署运行时监听的代码库版本或分支
+    # 部署运行时监听的代码库版本或代码库分支
     targetRevision: main
   product: demo-0329
   projectsRef:
     - project-demo-0329
 ```
-2. 在 Windows 操作系统下，将 [nautes.exe] 文件存放于某个目录，执行下文的 cmd 命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。
+2. 在 Windows 操作系统下，将 [nautes.exe] 文件保存于本地某个目录，执行下文的 cmd 命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。
 ```cmd
-REM apply 后面的三个参数分别表示：产品配置库模板在模板代码库中的相对路径； GitLab 用户账号对应的 access token； Nautes API 的访问地址； 
+:: apply 后面的三个参数分别表示：产品配置库模板在模板代码库中的相对路径； GitLab 用户账号对应的 access token； Nautes API 的访问地址； 
 nautes apply -f examples/demo.yaml -t access-token -s http://10.204.118.221:32159/
 ```
 
@@ -139,7 +139,7 @@ nautes apply -f examples/demo.yaml -t access-token -s http://10.204.118.221:3215
 ```Shell
 # 使用命令获取部署集群的 kubeconfig 文件
 kubectl get secret vc-$VCLUSTER-vcluster -n $VCLUSTER --template={{.data.config}} | base64 -d
-#以集群名称 test-deployment-runtime 替换变量 $VCLUSTER 为例
+#将集群名称 test-deployment-runtime 替换变量 $VCLUSTER 为例
 kubectl get secret vc-test-deployment-runtime-vcluster -n test-deployment-runtime --template={{.data.config}} | base64 -d
 ```
 ```yaml
@@ -169,7 +169,7 @@ users:
 ```Shell
 # 切换集群为上文修改后的 kubeconfig 文件
 export KUBECONFIG=/opt/vcluster/kubeconfig-dex.yaml
-# 使用kubectl命令行管理被授权的资源，以下命令仅为示例
+# 使用kubectl命令行管理被授权的资源，以下命令行仅为示例
 kubectl get deployment -n deployment-runtime-1
 kubectl delete deployment deployment-test -n deployment-runtime-1
 ```
