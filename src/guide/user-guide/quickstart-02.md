@@ -11,12 +11,12 @@ outline: deep
 
 
 ### 准备前置条件
-在开始本节之前，请确保您已阅读 [用户指南的概述](/user-guide-00.html) 章节，了解 Nautes 的主流程和相关术语。此外，请确保已经通过 Nautes 生成产品的部署运行时环境。
+在开始本节之前，请确保您已阅读 [用户指南的概述](https://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节，了解 Nautes 的主流程和相关术语。此外，请确保已经通过 Nautes 生成产品的部署运行时环境。
 
 ### 删除产品配置清单
 通过 Nautes CLI 可以自动删除产品配置清单，包括部署运行时、代码库、项目、环境、产品。
 
-1. 克隆存储产品配置库模板的代码库，批量替换资源的参数值，详情参考 [从零安装部署运行时环境](/quickstart-01.md)。
+1. 克隆存储产品配置库模板的代码库，批量替换资源的参数值，详情参考 [从零安装部署运行时环境](https://liujunhong5891.github.io/docs/guide/user-guide/quickstart-01.html)。
 
 2. 将 [nautes.exe] 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将自动删除产品配置清单，并销毁产品的部署运行时环境。
 ```cmd
