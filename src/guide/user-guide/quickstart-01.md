@@ -1,7 +1,7 @@
 ---
 outline: deep
 ---
-## 从零搭建部署运行时环境
+## 从零安装部署运行时环境
 
 下文将描述从零开始安装集群到自动执行部署的执行过程。包括以下步骤：  
 [准备前置条件](#准备前置条件)  
@@ -12,7 +12,7 @@ outline: deep
 [跟踪部署过程和结果](#跟踪部署过程和结果)
 
 ### 准备前置条件
-在开始本节之前，请确保您已阅读 [用户指南的概述](https://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节。
+在开始本节之前，请确保您已阅读 [用户指南的概述](/user-guide-00.html) 章节。
 待补充。
 
 
@@ -139,7 +139,7 @@ nautes apply -f examples/demo.yaml -t access-token -s http://10.204.118.221:3215
 ```Shell
 # 使用命令获取部署集群的 kubeconfig 文件
 kubectl get secret vc-$VCLUSTER-vcluster -n $VCLUSTER --template={{.data.config}} | base64 -d
-#将集群名称 test-deployment-runtime 替换变量 $VCLUSTER 为例
+# 将集群名称 test-deployment-runtime 替换变量 $VCLUSTER 为例
 kubectl get secret vc-test-deployment-runtime-vcluster -n test-deployment-runtime --template={{.data.config}} | base64 -d
 ```
 ```yaml
