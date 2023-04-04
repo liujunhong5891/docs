@@ -42,7 +42,9 @@ outline: deep
         }
     }'
     ```
+
     请求成功后，将在产品对应的 GitLab group 中新增代码库，并在产品对应的 default.project 代码库中生成关联产品的代码库资源文件。
+    
     ```yaml
     apiVersion: nautes.resource.nautes.io/v1alpha1
     kind: CodeRepo

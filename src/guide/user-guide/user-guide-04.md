@@ -30,7 +30,9 @@ outline: deep
             "env_type": "test"
         }'
     ```
+    
     相同产品内的环境不能共享一个 kubernetes 集群，不同产品间的环境可以共享一个 kubernetes 集群。请求成功后，在产品对应的 default.project 代码库中生成关联产品的环境资源文件。
+
     ```yaml
     apiVersion: nautes.resource.nautes.io/v1alpha1
     kind: Environment

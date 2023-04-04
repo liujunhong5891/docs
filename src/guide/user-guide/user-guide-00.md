@@ -1,7 +1,9 @@
 ---
 outline: deep
 ---
-# Nautes 简介
+# 概述
+
+## Nautes 简介
 Nautes是一个开源的CI/CD持续交付平台，融合了DevOps理念和GitOps实践。
 
 具有以下特性：

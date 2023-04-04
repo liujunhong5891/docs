@@ -37,7 +37,9 @@ outline: deep
         "destination": "environment-demo"
     }'    
     ```
+    
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的部署运行时资源文件，并根据部署运行时的配置找到环境关联的部署集群实施自动部署。
+
     ```yaml
     apiVersion: nautes.resource.nautes.io/v1alpha1
     kind: DeploymentRuntime
