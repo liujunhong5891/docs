@@ -32,12 +32,13 @@ outline: deep
         "manifest_source": {
             "code_repo": "coderepo-demo",
             "target_revision": "master",
-            "path": "coderepo-demo"
+            "path": "/path/to/manifests"
         },
         "destination": "environment-demo"
     }'    
     ```
     
+    其中，“manifest_source.code_repo”是部署运行时监听的代码库名称，“manifest_source.target_revision” 是部署运行时监听的代码库版本，“manifest_source.path”是部署运行时监听的代码库路径。“destination”是部署运行时即将部署的目标环境。  
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的部署运行时资源文件，并根据部署运行时的配置找到环境关联的部署集群实施自动部署。
 
     ```yaml

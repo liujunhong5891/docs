@@ -31,7 +31,9 @@ outline: deep
         }'
     ```
     
-    相同产品内的环境不能共享一个 kubernetes 集群，不同产品间的环境可以共享一个 kubernetes 集群。请求成功后，在产品对应的 default.project 代码库中生成关联产品的环境资源文件。
+    其中，“cluster”是关联集群，指注册到租户管理集群的部署集群名称。“env_type”是环境类型。
+    相同产品内的环境不能共享一个 kubernetes 集群，不同产品间的环境可以共享一个 kubernetes 集群。  
+    请求成功后，在产品对应的 default.project 代码库中生成关联产品的环境资源文件。
 
     ```yaml
     apiVersion: nautes.resource.nautes.io/v1alpha1

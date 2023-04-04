@@ -42,7 +42,7 @@ outline: deep
         }
     }'
     ```
-
+    其中，“project”是代码库的关联项目，“webhook.events”是代码库 webhook 的监听事件，“deployment_runtime、pipeline_runtime”表示是否用于特定类型的运行时。“git.gitlab.name”是代码库名称，“git.gitlab.path” 是代码库路径，“git.gitlab.visibility”是代码库可见性，比如 private 或者 public。  
     请求成功后，将在产品对应的 GitLab group 中新增代码库，并在产品对应的 default.project 代码库中生成关联产品的代码库资源文件。
 
     ```yaml
