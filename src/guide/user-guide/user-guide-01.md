@@ -1,6 +1,8 @@
 ---
 outline: deep
 ---
+# 维护产品
+
 ## 简介
 在开始本节之前，请确保您已阅读 [用户指南的概述](user-guide-00.md) 章节，了解 Nautes 的主流程和相关术语。
 
@@ -13,41 +15,23 @@ outline: deep
 
 ### 创建产品
 在开展 CI/CD 活动之前，需要先创建一个新的产品。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例；  
-   ```Shell
-   # 由于Nautes暂时只支持 GitLab 的代码库，因此去掉了 GitHub 相关参数
-   # 实操过程中根据实际情况替换 URL 地址和相关参数
-   curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/demo-product' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/json' \
-    -d '{
-    "git": {
-        "gitlab": {
-            "name": "demo-product",
-            "path": "demo-product",
-            "visibility": "private",
-            "description": "demo-product"
-            }
-        }
-    }'
-   ```
+1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。 
 2. 访问 GitLab Web UI【补充访问地址】，获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增产品。更新后的 API 请求的代码示例：
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数
     curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/demo-product' \
+    'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
     -d '{
     "git": {
         "gitlab": {
-            "name": "demo-product",
-            "path": "demo-product",
+            "name": "product-demo",
+            "path": "product-demo",
             "visibility": "private",
-            "description": "demo-product"
+            "description": "product-demo"
             }
         }
     }'

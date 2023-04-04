@@ -15,32 +15,31 @@ outline: deep
 
 ### 创建项目
 产品创建成功之后，使用项目表示产品的微服务组件。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.project.v1.Projet；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 project_name 参数中输入项目名称，点击 execute，生成 API 请求的代码示例；  
-   ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
-    curl -X 'POST' \
-        'HTTP://10.204.118.221:32159/api/v1/products/product-demo/projects/project-demo' \
-        -H 'accept: application/json' \
-        -H 'Content-Type: application/json' \
-        -d '{
-        "language": "string"
-        }'
-   ```
+1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.project.v1.Projet；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 project_name 参数中输入项目名称，点击 execute，生成 API 请求的代码示例。  
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。只有产品成员才可以创建特定产品的项目。  
-
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增项目。更新后的 API 请求的代码示例：
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数； 
     curl -X 'POST' \
-        'HTTP://10.204.118.221:32159/api/v1/products/product-demo/projects/project-demo' \
+        'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/projects/project-demo' \
         -H 'accept: application/json' \
         -H 'Content-Type: application/json' \
         -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
         -d '{
-        "language": "string"
+        "language": "Go"
         }'
     ```
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的项目资源文件。
+    ```yaml
+    apiVersion: nautes.resource.nautes.io/v1alpha1
+    kind: Project
+    metadata:
+        name: project-demo
+        namespace: my-namespace
+    spec:
+        language: "Go"
+        product: "product-demo"
+    ```
 
 ### 更新项目
 项目创建成功后，可以修改项目。详情参考 [创建项目](#创建项目)。只有产品成员才可以更新对应产品的项目资源。  

@@ -15,42 +15,18 @@ outline: deep
 
 ### 创建代码库
 产品创建成功之后，使用代码库以存储产品的相关代码。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.coderepo.v1.CodeRepo；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 coderepo_name 参数中输入代码库名称，点击 execute，生成 API 请求的代码示例；  
-   ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
-    curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/product-demo/coderepos/coderepo-demo' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/json' \
-    -d '{
-    "project": "demo-project",
-    "webhook": {
-        "events": ["push_events"]
-    },
-    "deployment_runtime": true,
-    "pipeline_runtime": false,
-    "git": {
-        "gitlab": {
-            "name": "demo-coderepo",
-            "path": "demo-coderepo",
-            "visibility": "private",
-            "description": "demo-coderepo"
-            }
-        }
-    }'
-   ```
+1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.coderepo.v1.CodeRepo；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 coderepo_name 参数中输入代码库名称，点击 execute，生成 API 请求的代码示例。  
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。只有 owner 和 maintainer 角色的产品成员、GitLab 管理员才可以创建代码库。  
-
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增代码库。更新后的 API 请求的代码示例：
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数； 
     curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/product-demo/coderepos/coderepo-demo' \
+    'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/coderepos/coderepo-demo' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
     -d '{
-    "project": "demo-project",
+    "project": "project-demo",
     "webhook": {
         "events": ["push_events"]
     },
@@ -58,15 +34,35 @@ outline: deep
     "pipeline_runtime": false,
     "git": {
         "gitlab": {
-            "name": "demo-coderepo",
-            "path": "demo-coderepo",
+            "name": "coderepo-demo",
+            "path": "coderepo-demo",
             "visibility": "private",
-            "description": "demo-coderepo"
+            "description": "coderepo-demo"
             }
         }
     }'
     ```
     请求成功后，将在产品对应的 GitLab group 中新增代码库，并在产品对应的 default.project 代码库中生成关联产品的代码库资源文件。
+    ```yaml
+    apiVersion: nautes.resource.nautes.io/v1alpha1
+    kind: CodeRepo
+    metadata:
+        name: coderepo-demo
+        namespace: my-namespace
+    spec:
+        codeRepoProvider: "gitlab"
+        deploymentRuntime: true
+        pipelineRuntime: false
+        product: "product-demo"
+        project: "project-demo"
+        repoName: "coderepo-demo"
+        url: "https://github.com/myusername/coderepo-demo.git"
+        webhook:
+            events:
+            - "push"
+            - "pull_request"
+            isolation: "default"
+    ```
 
 ### 更新代码库
 代码库创建成功后，可以修改代码库。详情参考 [创建代码库](#创建代码库)。只有 owner 和 maintainer 角色的产品成员、GitLab 管理员才可以更新代码库资源。    

@@ -15,32 +15,13 @@ outline: deep
 
 ### 创建部署运行时
 产品、环境和代码库创建成功之后，创建部署运行时资源以自动部署产品的运行时环境。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.deploymentruntime.v1.Deploymentruntime POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 deploymentruntime_name 参数中输入部署运行时的名称，点击 execute，生成 API 请求的代码示例；  
-   ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
-    curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/product-demo/deploymentruntimes/dr-demo' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/json' \
-    -d '{
-        "projects_ref": [
-            "project-demo"
-        ],
-        "manifest_source": {
-            "code_repo": "coderepo-demo",
-            "target_revision": "HEAD",
-            "path": "coderepo-demo"
-        },
-        "destination": "environment-demo"
-    }'
-   ```
+1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.deploymentruntime.v1.Deploymentruntime POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 deploymentruntime_name 参数中输入部署运行时的名称，点击 execute，生成 API 请求的代码示例。  
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员都可以创建特定产品的部署运行时。   
-
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增部署运行时。更新后的 API 请求的代码示例：  
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数； 
     curl -X 'POST' \
-    'HTTP://10.204.118.221:32159/api/v1/products/product-demo/deploymentruntimes/dr-demo' \
+    'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/deploymentruntimes/dr-demo' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
@@ -50,13 +31,29 @@ outline: deep
         ],
         "manifest_source": {
             "code_repo": "coderepo-demo",
-            "target_revision": "HEAD",
+            "target_revision": "master",
             "path": "coderepo-demo"
         },
         "destination": "environment-demo"
     }'    
     ```
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的部署运行时资源文件，并根据部署运行时的配置找到环境关联的部署集群实施自动部署。
+    ```yaml
+    apiVersion: nautes.resource.nautes.io/v1alpha1
+    kind: DeploymentRuntime
+    metadata:
+        name: dr-demo
+        namespace: my-namespace
+    spec:
+        destination: "environment-demo"
+        manifestSource:
+            codeRepo: "coderepo-demo"
+            path: "/path/to/manifests"
+            targetRevision: "master"
+        product: "product-demo"
+        projectsRef:
+            - "project-demo"
+    ```
 
 ### 更新部署运行时
 部署运行时创建成功后，可以修改部署运行时。详情参考 [创建部署运行时](#创建部署运行时) 。
