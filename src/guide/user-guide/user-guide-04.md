@@ -15,7 +15,7 @@ outline: deep
 
 ### 创建环境
 产品创建成功之后，创建关联集群的环境以部署指定产品。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 environment_name  参数中输入环境名称，点击 execute，生成 API 请求的代码示例。  
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，在 environment_name  参数中输入环境名称，点击 execute，生成 API 请求的代码示例。  
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员都可以创建特定产品的环境。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增环境。更新后的 API 请求的代码示例：
    ```Shell
@@ -53,19 +53,19 @@ outline: deep
 
 ### 删除环境
 由于环境可能关联多个资源，在删除环境之前，需要先删除关联该环境的所有相关资源，例如部署运行时等。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择 DELETE 接口，点击 try it out，在 product_name 参数中输入产品名称，在 environment_name 参数中输入环境名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境) 。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择 DELETE 接口，点击 try it out，在 product_name 参数中输入产品名称，在 environment_name 参数中输入环境名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境) 。
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员才可以删除特定产品的环境。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 来删除环境。请求成功后，环境资源文件将被删除。
 
 ### 查询环境
 查询环境有两个 API 接口，分别是查询环境列表、查询环境详情。  
 查询环境列表的步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择相对路径是 /api/v1/products/{products_name}/environments 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境)。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择相对路径是 /api/v1/products/{products_name}/environments 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境)。
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员才可以查询特定产品的环境。
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 以查询代码库。请求成功后，如果用户是产品成员，将返回环境信息。
    
 查询环境详情的步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择相对路径是 /api/v1/products/{products_name}/environments/{enviroment_name} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，在 enviroment_name 参数中输入环境名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境)。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择相对路径是 /api/v1/products/{products_name}/environments/{enviroment_name} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，在 enviroment_name 参数中输入环境名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境)。
 2. 其余步骤与“查询环境列表”相同，不再赘述。
 
 ## 强制提交环境（API 接口）

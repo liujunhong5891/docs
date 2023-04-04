@@ -112,7 +112,7 @@ spec:
   projectsRef:
     - project-demo-0329
 ```
-2. 将 nautes.exe【补充下载路径】 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。其中，“examples/demo.yaml”是存储产品配置库模板的代码库的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 Nautes API 的访问地址。
+2. 将 nautes.exe【补充下载链接】 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。其中，“examples/demo.yaml”是存储产品配置库模板的代码库的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 Nautes API 的访问地址。
 ```cmd
 nautes apply -f examples/demo.yaml -t $gitlab-access-token -s $api-server-address
 ```

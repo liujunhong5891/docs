@@ -28,6 +28,7 @@ const excludedPages = [
   'guide/default.md',
   'guide/user-guide/quickstart-01.md',
   'guide/user-guide/quickstart-02.md',
+  'guide/user-guide/quickstart-03.md',
   'guide/user-guide/user-guide-00.md',
   'guide/user-guide/user-guide-01.md',
   'guide/user-guide/user-guide-02.md',

@@ -18,7 +18,7 @@ outline: deep
 
 1. 克隆存储产品配置库模板的代码库，批量替换资源的参数值，详情参考 [从零安装部署运行时环境](quickstart-01.md)。
 
-2. 将 [nautes.exe] 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将自动删除产品配置清单，并销毁产品的部署运行时环境。
+2. 将 nautes.exe 【补充下载链接】文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将自动删除产品配置清单，并销毁产品的部署运行时环境。
 ```cmd
 nautes remove -f examples/demo.yaml -t $gitlab-access-token -s $api-server-address
 ```

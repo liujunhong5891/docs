@@ -15,8 +15,8 @@ outline: deep
 
 ### 创建产品
 在开展 CI/CD 活动之前，需要先创建一个新的产品。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。 
-2. 访问 GitLab Web UI【补充访问地址】，获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。  
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 POST 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。 
+2. 访问 [GitLab Web UI](quickstart-03.md)，获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增产品。更新后的 API 请求的代码示例：
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数
@@ -41,18 +41,18 @@ outline: deep
 
 ### 删除产品
 由于产品可能关联多个资源，在删除产品之前，需要先删除与该产品相关的所有资源，例如项目、代码库和环境等。通常这种情况发生在产品生命周期结束之后，产品只会剩下一个名称为 default.project 的空代码库。步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 DELETE 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品) 。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择 DELETE 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品) 。
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [创建产品的步骤2](#创建产品)。只有拥有产品的 owner 角色权限或者是 GitLab 管理员权限的用户账号可以删除产品。
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 来删除产品。请求成功后，该产品及其相关资源将被删除，包括 GitLab 中对应的 group 和名称为 default.project 的代码库。
 
 ### 查询产品
 查询产品有两个 API 接口，分别是查询产品列表、查询产品详情，用于查询用户被授权的产品信息。  
 查询产品列表的步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products 的 GET 接口，点击 try it out，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品)。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products 的 GET 接口，点击 try it out，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品)。
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [创建产品的步骤2](#创建产品)。只有当用户是产品成员时，才能查询到相关产品信息。
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 以查询产品。请求成功后，如果用户是某些产品的成员，将返回产品信息。
    
 查询产品详情的步骤如下：  
-1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products/{productName} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品) 。
+1. 访问 [Swagger UI](quickstart-03.md)，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products/{productName} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品) 。
 2. 其余步骤与“查询产品列表”相同，不再赘述。
 

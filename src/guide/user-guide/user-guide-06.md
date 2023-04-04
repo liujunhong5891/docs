@@ -12,13 +12,13 @@ Nautes 在部署产品的过程中或者部署完成后，支持通过 ArgoCD �
 下面将详细介绍这两种方式的操作步骤。
 
 ## ArgoCD 控制台
-1. 访问安装在部署集群中 ArgoCD 的 Web UI 地址【补充访问地址】，点击 log in via dex，在弹出的 GitLab Web UI 中填写您的 GitLab 账号和密码，点击登录后将单点登入到 ArgoCD。 
+1. 访问安装在部署集群中 [ArgoCD Web UI](quickstart-03.md) ，点击 log in via dex，在弹出的 GitLab Web UI 中填写您的 GitLab 账号和密码，点击登录后将单点登入到 ArgoCD。 
 ![directive syntax graph](./../images/quickstart-argocd-1.png)
 2. 在 ArgoCD Web UI，您可以查看与授权产品对应的 ArgoCD project，并拥有这些 project 下 application、exec、logs 资源的所有操作权限。详情参考 [ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/) 。
 ![directive syntax graph](./../images/quickstart-argocd-2.png) 
 
 ## kubectl 命令行
-1. 访问 dex 的服务地址【补充访问地址】，填写 extra scopes 属性值为 groups，点击 login，保存 ID Token 到本地。
+1. 访问 [dex 服务地址](quickstart-03.md)，填写 extra scopes 属性值为 groups，点击 login，保存 ID Token 到本地。
 ![directive syntax graph](./../images/quickstart-dex-1.png)
 ![directive syntax graph](./../images/quickstart-dex-2.png)
 
