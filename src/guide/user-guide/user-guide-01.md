@@ -54,3 +54,4 @@ outline: deep
 查询产品详情的步骤如下：  
 1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.product.v1.Product；选择相对路径是 /api/v1/products/{productName} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建产品的步骤1](#创建产品) 。
 2. 其余步骤与“查询产品列表”相同，不再赘述。
+

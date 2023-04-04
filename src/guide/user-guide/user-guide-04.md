@@ -27,7 +27,7 @@ outline: deep
     -H 'Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx' \
     -d '{
             "cluster": "my-cluster",
-            "env_type": "test"
+            "env_type": "development"
         }'
     ```
     
@@ -65,3 +65,17 @@ outline: deep
 查询环境详情的步骤如下：  
 1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.environment.v1.Environment；选择相对路径是 /api/v1/products/{products_name}/environments/{enviroment_name} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，在 enviroment_name 参数中输入环境名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建环境的步骤1](#创建环境)。
 2. 其余步骤与“查询环境列表”相同，不再赘述。
+
+## 强制提交环境（API 接口）
+详情规则参见 [强制提交资源文件（API 接口）](user-guide-03.md)。
+```Shell
+# 以下示例为创建环境时，设置 cluster 的属性值不合规，启用 insecure_skip_check 参数以强制提交环境的资源文件
+curl -X 'POST' \
+  'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/environments/environment-demo?insecure_skip_check=true' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "cluster": "my-cluster-invalid",
+  "env_type": "development"
+}'
+```

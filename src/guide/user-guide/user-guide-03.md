@@ -44,7 +44,7 @@ outline: deep
     ```
 
     请求成功后，将在产品对应的 GitLab group 中新增代码库，并在产品对应的 default.project 代码库中生成关联产品的代码库资源文件。
-    
+
     ```yaml
     apiVersion: nautes.resource.nautes.io/v1alpha1
     kind: CodeRepo
@@ -86,3 +86,32 @@ outline: deep
 查询代码库详情的步骤如下：  
 1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.coderepo.v1.CodeRepo；选择相对路径是 /api/v1/products/{products_name}/coderepos/{coderepo_name} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，在 coderepo_name 参数中输入代码库名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建代码库的步骤1](#创建代码库)。
 2. 其余步骤与“查询代码库列表”相同，不再赘述。
+
+## 强制提交代码库（API 接口）
+为了保证 Nautes 监听的产品配置清单符合既定规则，以便 Nautes 基于产品配置清单能够自动部署产品的运行时环境。因此，提交 API 请求时默认对产品配置清单中的所有资源文件启用校验，如果校验不通过，则不能提交请求。
+但在实际操作过程中，用户可能通过 Git CLI 或者 GitLab Web IDE 等渠道提交不符合既定规则的资源文件，例如创建集群不存在的环境、创建项目不存在的代码库等，为了兼容不合规资源的场景，POST 和 DELETE 类型的请求接口可以添加 insecure_skip_check 查询参数，并设置其属性值为 true，表示请求 API 强制提交资源文件，哪怕这个资源文件不符合既定规则。
+```Shell
+# 以下示例为创建代码库时，设置 project 的属性值不合规，启用 insecure_skip_check 参数以强制提交代码库的资源文件
+curl -X 'POST' \
+  'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/coderepo-demo/coderepos/coderepo-demo?insecure_skip_check=true' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "project": "project-demo-invalid",
+  "webhook": {
+    "events": [
+      "push_events"
+    ]
+  },
+  "deployment_runtime": true,
+  "pipeline_runtime": false,
+  "git": {
+    "gitlab": {
+      "name": "coderepo-demo",
+      "path": "coderepo-demo",
+      "visibility": "private",
+      "description": "coderepo-demo"
+    }
+  }
+}'
+```
