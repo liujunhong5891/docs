@@ -19,7 +19,9 @@ outline: deep
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。只有 owner 和 maintainer 角色的产品成员、GitLab 管理员才可以创建代码库。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增代码库。更新后的 API 请求的代码示例：
    ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
+    # 实操过程中根据实际情况替换 URL 地址和相关参数
+    # “project”是代码库的关联项目，“webhook.events”是代码库 webhook 的监听事件，“deployment_runtime、pipeline_runtime”表示是否用于特定类型的运行时
+    # “git.gitlab.name”是代码库名称，“git.gitlab.path” 是代码库路径，“git.gitlab.visibility”是代码库可见性，比如 private 或者 public 
     curl -X 'POST' \
     'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/coderepos/coderepo-demo' \
     -H 'accept: application/json' \
@@ -42,7 +44,6 @@ outline: deep
         }
     }'
     ```
-    其中，“project”是代码库的关联项目，“webhook.events”是代码库 webhook 的监听事件，“deployment_runtime、pipeline_runtime”表示是否用于特定类型的运行时。“git.gitlab.name”是代码库名称，“git.gitlab.path” 是代码库路径，“git.gitlab.visibility”是代码库可见性，比如 private 或者 public。  
     请求成功后，将在产品对应的 GitLab group 中新增代码库，并在产品对应的 default.project 代码库中生成关联产品的代码库资源文件。
 
     ```yaml

@@ -19,7 +19,8 @@ outline: deep
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员都可以创建特定产品的部署运行时。   
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增部署运行时。更新后的 API 请求的代码示例：  
    ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
+    # 实操过程中根据实际情况替换 URL 地址和相关参数
+    # “manifest_source.code_repo”是监听的代码库名称，“manifest_source.target_revision” 是监听的代码库版本，“manifest_source.path”是监听的代码库路径，“destination”是目标环境  
     curl -X 'POST' \
     'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/deploymentruntimes/dr-demo' \
     -H 'accept: application/json' \
@@ -37,8 +38,7 @@ outline: deep
         "destination": "environment-demo"
     }'    
     ```
-    
-    其中，“manifest_source.code_repo”是监听的代码库名称，“manifest_source.target_revision” 是监听的代码库版本，“manifest_source.path”是监听的代码库路径。“destination”是目标环境。  
+
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的部署运行时资源文件，并根据部署运行时的配置找到环境关联的部署集群实施自动部署。
 
     ```yaml

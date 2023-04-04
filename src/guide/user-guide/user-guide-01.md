@@ -20,6 +20,7 @@ outline: deep
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增产品。更新后的 API 请求的代码示例：
    ```Shell
     # 实操过程中根据实际情况替换 URL 地址和相关参数
+    # “git.gitlab.name” 是产品名称，“git.gitlab.path” 是产品路径，“git.gitlab.visibility”是产品的可见性，比如 private 或者 public  
     curl -X 'POST' \
     'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo' \
     -H 'accept: application/json' \
@@ -36,7 +37,6 @@ outline: deep
         }
     }'
    ```
-    其中，“git.gitlab.name” 是产品名称，“git.gitlab.path” 是产品路径，“git.gitlab.visibility”是产品的可见性，比如 private 或者 public。  
     请求成功后，将生成一个产品，同时在 GitLab 中根据产品参数生成对应的 group、以及这个 group 中名称为 default.project 的代码库，一个产品有且只有一个 default.project 代码库。default.project 代码库用于存储产品的配置清单，系统将根据这份清单自动生成产品的部署运行时环境。
 
 ### 删除产品

@@ -19,7 +19,8 @@ outline: deep
 2. 获取请求 API 的 access token，作为 API 请求的请求头参数。详情参考 [Personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)。具有 owner、maintainer、developer、reporter 角色的产品成员，以及 GitLab 管理员都可以创建特定产品的环境。  
 3. 将前置步骤获取的 access token 作为 API 请求的请求头参数，通过 curl 命令，或者 Postman、JMeter 等工具执行 API 请求以新增环境。更新后的 API 请求的代码示例：
    ```Shell
-    # 实操过程中根据实际情况替换 URL 地址和相关参数； 
+    # 实操过程中根据实际情况替换 URL 地址和相关参数 
+    # “cluster”是关联集群，指注册到租户管理集群的部署集群名称，“env_type”是环境类型
     curl -X 'POST' \
     'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/environments/environment-demo' \
     -H 'accept: application/json' \
@@ -31,7 +32,6 @@ outline: deep
         }'
     ```
     
-    其中，“cluster”是关联集群，指注册到租户管理集群的部署集群名称。“env_type”是环境类型。
     相同产品内的环境不能共享一个 kubernetes 集群，不同产品间的环境可以共享一个 kubernetes 集群。  
     请求成功后，在产品对应的 default.project 代码库中生成关联产品的环境资源文件。
 
