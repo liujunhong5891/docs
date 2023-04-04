@@ -112,64 +112,14 @@ spec:
   projectsRef:
     - project-demo-0329
 ```
-2. 将 [nautes.exe] 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。
+2. 将 nautes.exe【补充下载路径】 文件保存在 Windows 操作系统的某个目录下，然后执行以下命令。执行成功后，Nautes 将生成产品配置清单，并自动安装产品的部署运行时环境。其中，“examples/demo.yaml”是存储产品配置库模板的代码库的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 Nautes API 的访问地址。
 ```cmd
 nautes apply -f examples/demo.yaml -t $gitlab-access-token -s $api-server-address
 ```
-其中，"examples/demo.yaml"是存储产品配置库模板的代码库的相对路径，$gitlab-access-token 是您的 GitLab 访问令牌，$api-server-address 是 Nautes API 的访问地址。
-
 
 ### 提交部署配置清单
 
 通过 Git CLI 提交产品的部署配置清单，例如 deployment、service、volume 等资源。提交成功后，Nautes 将部署配置清单自动同步到产品的部署运行时环境，并执行自动部署。详情参考 [GitLab](https://docs.gitlab.com/ee/tutorials/make_your_first_git_commit.html)。
 
 ### 跟踪部署过程和结果
-在部署产品的过程中或部署完成后，可以通过 ArgoCD 控制台或者 kubectl 命令行来跟踪部署过程和结果。这两种方式均支持单点登录，方便用户管理被授权的产品资源。
-1. 访问安装在部署集群的 ArgoCD Web UI 地址【地址从哪来】，点击 log in via dex，填写 GitLab 账号和密码，然后单点登入 ArgoCD，并通过 ArgoCD 的 Web UI 管理被授权产品的 application，详情参考 [ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/) 。
-![directive syntax graph](./../images/quickstart-argocd-1.png)
-![directive syntax graph](./../images/quickstart-argocd-2.png)
-
-
-2. 访问 dex 服务地址，填写 extra scopes 值为 groups，点击 login，保存 ID Token 到本地。通过脚本获取部署集群的 kubeconfig 文件，并将 ID Token 替换 kubeconfig 文件中的 users 配置，然后便可以通过 kubectl 命令行管理被授权的产品资源。
-![directive syntax graph](./../images/quickstart-dex-1.png)
-![directive syntax graph](./../images/quickstart-dex-2.png)
-
-
-```Shell
-# 使用命令获取部署集群的 kubeconfig 文件
-kubectl get secret vc-$VCLUSTER-vcluster -n $VCLUSTER --template={{.data.config}} | base64 -d
-# 将集群名称 test-deployment-runtime 替换变量 $VCLUSTER 为例
-kubectl get secret vc-test-deployment-runtime-vcluster -n test-deployment-runtime --template={{.data.config}} | base64 -d
-```
-```yaml
-
-# 将 ID-Token 替换 kubeconfig 文件中的 users 配置
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTnprd05UUTNNamt3SGhjTk1qTXdNekUzTVRJd05USTVXaGNOTXpNd016RTBNVEl3TlRJNQpXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTnprd05UUTNNamt3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFRQlZEV2NVRmRLVHFJbEMzbktiYVU2Qmo0eTlZenRNbzNIMkN1ZlpteDMKaitMQUk0Rmh5R2p5UjhxeUhQb0FHcnhVVTVpOTgxc2lUbmVWV3pPYmFRMDRvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVVk4NjdIUm92ZWlzUFBhTmgzUzVoClBiNkg0cGN3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUloQUlyMTFvZGlOcE52cTN0ZkxPWmRKNEMwMWVOZXR5TDgKUStFKzVxYjdUaTFOQWlCVmZiUFRaQmF0MjlpanRiOUpuUWZ6NnVoYkt6cVRrVUpraWZLbXpvK3p4dz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-    # 根据实际情况修改 kubernetes 的 server 地址
-    server: https://10.204.118.216:32056
-  name: local
-contexts:
-- context:
-    cluster: local
-    namespace: default
-    user: user
-  name: Default
-current-context: Default
-kind: Config
-preferences: {}
-users:
-- name: user
-  user:
-    token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZGU5MDdiYWNiNDE2NjE3MDk3MTc4ZDg4NzgxYTU4ZjdiN2NmY2EifQ.eyJpc3MiOiJodHRwczovL2RleC5ibHV6aW4uaW86OTA4MCIsInN1YiI6IkNnSXhNaElHWjJsMGJHRmkiLCJhdWQiOiJwbGF0Zm9ybSIsImV4cCI6MTY4MDU5NDIzMCwiaWF0IjoxNjgwNTA3ODMwLCJhdF9oYXNoIjoidHFJa1E0QlI4NHg5dkJvQzBIUTFLQSIsImNfaGFzaCI6InRjZkc3Z3RJUURaX1NnczNWS1dFbWciLCJlbWFpbCI6ImxpdWp1bmhvbmdAdmlzcHJhY3RpY2UuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImdyb3VwcyI6WyJ5dW50aSIsIm5hdXRlcy1sYWJzIiwidGVrdG9uY2QiLCJkZXYtdGVuYW50IiwidGVzdC1wcm9kdWN0LTAzMTgiLCJ0ZXN0LXByb2R1Y3QtMDMxOC1CIiwieXVudGkvc3ViZ3JvdXAiLCJ5dW50aS9zdWJncm91cC9zdWJzdWJncm91cCJdLCJuYW1lIjoibGl1anVuaG9uZyIsInByZWZlcnJlZF91c2VybmFtZSI6ImxpdWp1bmhvbmcifQ.B6Aph154ziVkQvUGsAFNYj8aCGHLFSHfIkb0GHW80ivFW57lRtPlQ2zj4o0gr6LHFcSgrPuA8tCMnZCI1XSRargJDyAVEyK4athUdOS3QLU5B-ukrn21Ne5uPQfEDsu8CA26j3I32ceTW5USGRpOXebUER0ZGNG7qRaqcholx-NhYo0XFea_szQct7NBJbIA3e-NwdL1oR7sRgqce2iJpl2lpeSrDhDJvbHGUtwavM25n1yKWGBPX21od5WIp2OSYGnMjD3KhDvl40mTxmx8foBJ49f11Y2oB4tgnB269Zk5PPymYDj-6c3XcbV5kYfIRwTjJkrcgmYvXBdOpHfDrQ
-```
-
-```Shell
-# 切换集群为上文修改后的 kubeconfig 文件
-export KUBECONFIG=/opt/vcluster/kubeconfig-dex.yaml
-# 使用kubectl命令行管理被授权的资源，以下命令行仅为示例
-kubectl get deployment -n deployment-runtime-1
-kubectl delete deployment deployment-test -n deployment-runtime-1
-```
+在部署产品的过程中或部署完成后，可以通过 ArgoCD 控制台或者 kubectl 命令行来跟踪部署过程和结果。这两种方式均支持单点登录，方便用户管理被授权的产品资源。详情参考 [跟踪部署过程和结果](user-guide-06.md)。
