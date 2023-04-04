@@ -1,20 +1,35 @@
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTnprd05UUTNNamt3SGhjTk1qTXdNekUzTVRJd05USTVXaGNOTXpNd016RTBNVEl3TlRJNQpXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTnprd05UUTNNamt3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFRQlZEV2NVRmRLVHFJbEMzbktiYVU2Qmo0eTlZenRNbzNIMkN1ZlpteDMKaitMQUk0Rmh5R2p5UjhxeUhQb0FHcnhVVTVpOTgxc2lUbmVWV3pPYmFRMDRvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVVk4NjdIUm92ZWlzUFBhTmgzUzVoClBiNkg0cGN3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUloQUlyMTFvZGlOcE52cTN0ZkxPWmRKNEMwMWVOZXR5TDgKUStFKzVxYjdUaTFOQWlCVmZiUFRaQmF0MjlpanRiOUpuUWZ6NnVoYkt6cVRrVUpraWZLbXpvK3p4dz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-    # 配套修改 kubernetes 的 server 地址
-    server: https://10.204.118.216:32056
-  name: local
-contexts:
-- context:
-    cluster: local
-    namespace: default
-    user: user
-  name: Default
-current-context: Default
-kind: Config
-preferences: {}
-users:
-- name: user
-  user:
-    token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZGU5MDdiYWNiNDE2NjE3MDk3MTc4ZDg4NzgxYTU4ZjdiN2NmY2EifQ.eyJpc3MiOiJodHRwczovL2RleC5ibHV6aW4uaW86OTA4MCIsInN1YiI6IkNnSXhNaElHWjJsMGJHRmkiLCJhdWQiOiJwbGF0Zm9ybSIsImV4cCI6MTY4MDU5NDIzMCwiaWF0IjoxNjgwNTA3ODMwLCJhdF9oYXNoIjoidHFJa1E0QlI4NHg5dkJvQzBIUTFLQSIsImNfaGFzaCI6InRjZkc3Z3RJUURaX1NnczNWS1dFbWciLCJlbWFpbCI6ImxpdWp1bmhvbmdAdmlzcHJhY3RpY2UuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImdyb3VwcyI6WyJ5dW50aSIsIm5hdXRlcy1sYWJzIiwidGVrdG9uY2QiLCJkZXYtdGVuYW50IiwidGVzdC1wcm9kdWN0LTAzMTgiLCJ0ZXN0LXByb2R1Y3QtMDMxOC1CIiwieXVudGkvc3ViZ3JvdXAiLCJ5dW50aS9zdWJncm91cC9zdWJzdWJncm91cCJdLCJuYW1lIjoibGl1anVuaG9uZyIsInByZWZlcnJlZF91c2VybmFtZSI6ImxpdWp1bmhvbmcifQ.B6Aph154ziVkQvUGsAFNYj8aCGHLFSHfIkb0GHW80ivFW57lRtPlQ2zj4o0gr6LHFcSgrPuA8tCMnZCI1XSRargJDyAVEyK4athUdOS3QLU5B-ukrn21Ne5uPQfEDsu8CA26j3I32ceTW5USGRpOXebUER0ZGNG7qRaqcholx-NhYo0XFea_szQct7NBJbIA3e-NwdL1oR7sRgqce2iJpl2lpeSrDhDJvbHGUtwavM25n1yKWGBPX21od5WIp2OSYGnMjD3KhDvl40mTxmx8foBJ49f11Y2oB4tgnB269Zk5PPymYDj-6c3XcbV5kYfIRwTjJkrcgmYvXBdOpHfDrQ
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: runtime-appset
+  namespace: argocd
+spec:
+  generators: []
+  # - list:
+  #     elements:
+  #     - runtime: test-deployment-runtime
+  #       clusterURL: https://10.204.118.216:32056
+      # - runtime: demo-deployment-runtime
+      #   clusterURL: https://10.204.118.216:32156
+  template:
+    metadata:
+      name: '{{runtime}}'
+      namespace: argocd
+      finalizers: []
+    spec:
+      project: tenant1
+      source:
+        repoURL: ssh://git@gitlab.bluzin.io:2222/dev-tenant/management.git
+        targetRevision: HEAD
+        path: runtimes/{{runtime}}
+      destination:
+        server: '{{clusterURL}}'
+        namespace: argocd
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+  syncPolicy:
+    preserveResourcesOnDeletion: true

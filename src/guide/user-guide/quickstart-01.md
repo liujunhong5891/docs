@@ -12,7 +12,7 @@ outline: deep
 [跟踪部署过程和结果](#跟踪部署过程和结果)
 
 ### 准备前置条件
-在开始本节之前，请确保您已阅读 [用户指南的概述](https://liujunhong5891.github.io/docs/guide/user-guide/user-guide-00.html) 章节，了解 Nautes 的主流程和相关术语。
+在开始本节之前，请确保您已阅读 [用户指南的概述](user-guide-00.md) 章节，了解 Nautes 的主流程和相关术语。
 
 ### 安装租户管理集群
 
