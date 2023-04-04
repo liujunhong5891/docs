@@ -16,7 +16,7 @@ outline: deep
 
 ## 安装租户管理集群
 
-待补充。
+详情参见 [自动安装 Nautes](quickstart-03.md)。
 
 ## 注册部署集群
 
