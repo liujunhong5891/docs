@@ -30,7 +30,8 @@ const excludedPages = [
   'guide/user-guide/quickstart-02.md',
   'guide/user-guide/user-guide-00.md',
   'guide/user-guide/user-guide-01.md',
-  'guide/user-guide/user-guide-02.md'
+  'guide/user-guide/user-guide-02.md',
+  'guide/user-guide/user-guide-03.md'
   // 自定义markdown end
 ]
 

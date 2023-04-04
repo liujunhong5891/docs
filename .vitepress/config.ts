@@ -130,7 +130,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         { text: '注册集群', link: '/guide/default' },
         { text: '维护产品', link: '/guide/user-guide/user-guide-01' },
         { text: '维护项目', link: '/guide/user-guide/user-guide-02' },
-        { text: '维护代码库', link: '/guide/default' },
+        { text: '维护代码库', link: '/guide/user-guide/user-guide-03' },
         { text: '维护环境', link: '/guide/default' },
         { text: '维护部署运行时', link: '/guide/default' },
         { text: '跟踪部署过程和结果', link: '/guide/default' }
