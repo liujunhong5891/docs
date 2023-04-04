@@ -29,7 +29,7 @@ outline: deep
         "language": "Go"
         }'
     ```
-    
+
     请求成功后，将在产品对应的 default.project 代码库中生成关联产品的项目资源文件。
 
     ```yaml
@@ -63,3 +63,16 @@ outline: deep
 查询项目详情的步骤如下：  
 1. 访问 Swagger UI【补充访问地址】，选择右上角 select a definition 下拉框中的 api.project.v1.Projet；选择相对路径是 /api/v1/products/{products_name}/projects/{project_name} 的 GET 接口，点击 try it out，在 product_name 参数中输入产品名称，在 project_name 参数中输入项目名称，点击 execute，生成 API 请求的代码示例。详情参考 [创建项目的步骤1](#创建项目) 。
 2. 其余步骤与“查询项目列表”相同，不再赘述。
+
+## 强制提交代码库（API 接口）
+详情规则参见 [强制提交资源文件（API 接口）](user-guide-03.md#强制提交代码库api-接口)。
+```Shell
+# 以下示例为创建项目时，当产品中存在不合规的environment时，启用 insecure_skip_check 参数以强制提交项目的资源文件
+curl -X 'POST' \
+  'HTTP://xxx.xxx.xxx.xxx:xxxxx/api/v1/products/product-demo/projects/project-demo?insecure_skip_check=true' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "language": "Go"
+}'
+```

@@ -67,7 +67,7 @@ outline: deep
 2. 其余步骤与“查询环境列表”相同，不再赘述。
 
 ## 强制提交环境（API 接口）
-详情规则参见 [强制提交资源文件（API 接口）](user-guide-03.md)。
+详情规则参见 [强制提交资源文件（API 接口）](user-guide-03.md#强制提交代码库api-接口)。
 ```Shell
 # 以下示例为创建环境时，设置 cluster 的属性值不合规，启用 insecure_skip_check 参数以强制提交环境的资源文件
 curl -X 'POST' \
