@@ -99,6 +99,7 @@ const nav: ThemeConfig['nav'] = [
 ]
 
 export const sidebar: ThemeConfig['sidebar'] = {
+  width: '100px',
   '/guide/': [
     {
       text: '概述',
