@@ -18,13 +18,13 @@ const nav: ThemeConfig['nav'] = [
       // { text: 'Quick Start', link: '/guide/quick-start' }
       // { text: 'Style Guide', link: '/style-guide/' },
     // ]
-  },
-  {
-    text: 'API',
-    // activeMatch: `^/api/`,
-    link: ''
-    // link: '/api/'
   }
+  // {
+  //   text: 'API',
+  //   // activeMatch: `^/api/`,
+  //   link: ''
+  //   // link: '/api/'
+  // }
   // {
   //   text: 'Github',
   //   link: 'https://github.com/lanbingcloud'
