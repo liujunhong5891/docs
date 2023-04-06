@@ -59,5 +59,15 @@ git remote set-url origin ssh://git@gitlab.bluzin.io:2222/liujunhong/liujh-deplo
 4. 提交部署配置清单到产品的代码库。Git CLI 详情参考 [GitLab](https://docs.gitlab.com/ee/tutorials/make_your_first_git_commit.html)。
 
 
-## 跟踪部署过程和结果
-在部署产品的过程中或部署完成后，可以通过 ArgoCD 控制台或者 kubectl 命令行来跟踪部署过程和结果。这两种方式均支持单点登录，方便用户管理被授权的产品资源。详情参考 [跟踪部署过程和结果](user-guide-06.md)。
+## 查看部署结果
+在部署产品的过程中或者部署完成后，可以通过 ArgoCD 控制台或者 kubectl 命令行来查看部署结果。这两种方式均支持单点登录，方便用户管理被授权的产品资源。  
+下文主要描述如何通过 ArgoCD 查看部署结果。
+
+查看产品的相关资源：
+1. 访问部署运行时集群中的 [ArgoCD UI](quickstart-03.md#查看组件信息)。以 https://argocd.deployment1.119-8-58-20.nip.io:30443 为例，只需将“119-8-58-20”替换为部署运行时集群的访问IP，或者将IP中的“.”替换为“-”。
+2. 点击 log in via dex，将跳转到 GitLab UI 地址；填写您的 GitLab 账号密码并点击登录，将通过该账号单点录入 ArgoCD、并在 ArgoCD UI 呈现被授权产品相关的 ArgoCD applications。ArgoCD applications 与产品的部署运行时对应。
+3. 点击 ArgoCD UI 左侧菜单栏的“设置”，将跳转到 ArgoCD 的设置功能界面；点击 projects，可以查看被授权产品相关的 ArgoCD projects。ArgoCD projects 与产品对应。
+
+查看产品的部署运行时环境：
+1. 选中某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、运行时长、运行实例数等。
+2. 选中某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。
