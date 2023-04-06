@@ -99,7 +99,6 @@ const nav: ThemeConfig['nav'] = [
 ]
 
 export const sidebar: ThemeConfig['sidebar'] = {
-  width: '100px',
   '/guide/': [
     {
       text: '概述',
@@ -380,7 +379,9 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   themeConfig: {
     nav,
-    sidebar
+    sidebar,
+    // 修改 sidebar 宽度
+    width: '100px'
     // 修改顶部栏位的内容，在此配置【.】
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
