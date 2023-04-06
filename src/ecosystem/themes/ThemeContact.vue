@@ -32,7 +32,7 @@
 .text {
   text-align: center;
   line-height: 24px;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 500;
   transition: color 0.25s;
 }
