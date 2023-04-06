@@ -119,9 +119,9 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '快速入门',
       items: [
-        { text: '自动安装 Nautes', link: '/guide/user-guide/quickstart-03' },
-        { text: '从零开始安装部署运行时环境', link: '/guide/user-guide/quickstart-01' },
-        { text: '销毁部署运行时环境', link: '/guide/user-guide/quickstart-02' }
+        { text: '安装部署', link: '/guide/user-guide/quickstart-03' },
+        { text: '创建运行时环境', link: '/guide/user-guide/quickstart-01' },
+        { text: '销毁运行时环境', link: '/guide/user-guide/quickstart-02' }
       ]
     },
     {
