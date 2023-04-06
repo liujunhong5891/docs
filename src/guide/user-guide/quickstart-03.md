@@ -25,7 +25,7 @@ outline: deep
 - k8s：租户管理集群的 kubeconfig 文件。
 - pki：相关组件需要使用的证书和签发证书的 CA。
 - vault：Vault 的 unseal key、root token。
-- service：租户管理集群、ArgoCD、Vault、GitLab、Nautes API Server 的访问地址。
+- service：租户管理集群、Dex、ArgoCD、Vault、GitLab、Nautes API Server 的访问地址。
 
 ## 销毁步骤
 前提：安装部署成功后，已存在 /opt/nautes 目录、nautes-installer 容器。

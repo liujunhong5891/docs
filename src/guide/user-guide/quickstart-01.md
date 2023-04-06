@@ -65,9 +65,9 @@ git remote set-url origin xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 查看产品的相关资源：
 1. 访问部署运行时集群中的 [ArgoCD UI](quickstart-03.md#查看组件信息)。以 https://argocd.deployment1.119-8-58-20.nip.io:30443 为例，只需将“119-8-58-20”替换为部署运行时集群的访问IP即可。
-2. 点击 log in via dex，将跳转到 GitLab UI 地址；填写您的 GitLab 账号密码并点击登录，将通过该账号单点录入 ArgoCD、并在 ArgoCD UI 呈现被授权产品相关的 ArgoCD applications。ArgoCD applications 与产品的部署运行时对应。
+2. 点击 log in via dex，将跳转到 GitLab UI 地址；填写您的 GitLab 账号密码并点击登录，将单点录入到 ArgoCD、并在 ArgoCD UI 呈现被授权产品相关的 ArgoCD applications。ArgoCD applications 与产品的部署运行时对应。
 3. 点击 ArgoCD UI 左侧菜单栏的“设置”，将跳转到 ArgoCD 的设置功能界面；点击 projects，可以查看被授权产品相关的 ArgoCD projects。ArgoCD projects 与产品对应。
 
 查看产品的部署运行时环境：
-1. 选中某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、运行时长、运行实例数等。
-2. 选中某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。详情参考 [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)。
+1. 选择某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、运行时长、运行实例数等。
+2. 选择某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。
