@@ -43,8 +43,8 @@ metadata:
   name: ks-sample-dev
 spec:
   rules:
-  # 根据部署运行时集群的IP地址，替换host的域名。将“119-8-58-20”替换为部署运行时集群的访问IP，“.”或者“-”字符替换IP的连接符以表示域名。
-  - host: devops-sample.119-8-118-217.nip.io
+  # 根据部署运行时集群的IP地址，替换host的域名。这里将“119-8-58-20”替换为部署运行时集群的访问IP即可
+  - host: devops-sample.119-8-58-20.nip.io
     http:
       paths:
       ...
@@ -53,7 +53,7 @@ spec:
 3. 修改本地 Git 客户端配置，将产品的 GitLab 代码库设置为远程仓库。
 ```Shell
 # 以下为产品的 GitLab 代码库，用于存储产品的部署配置清单
-git remote set-url origin ssh://git@gitlab.bluzin.io:2222/liujunhong/liujh-deployment.git
+git remote set-url origin xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 4. 提交部署配置清单到产品的代码库。Git CLI 详情参考 [GitLab](https://docs.gitlab.com/ee/tutorials/make_your_first_git_commit.html)。
@@ -64,7 +64,7 @@ git remote set-url origin ssh://git@gitlab.bluzin.io:2222/liujunhong/liujh-deplo
 下文主要描述如何通过 ArgoCD 查看部署结果。
 
 查看产品的相关资源：
-1. 访问部署运行时集群中的 [ArgoCD UI](quickstart-03.md#查看组件信息)。以 https://argocd.deployment1.119-8-58-20.nip.io:30443 为例，只需将“119-8-58-20”替换为部署运行时集群的访问IP，或者将IP中的“.”替换为“-”。
+1. 访问部署运行时集群中的 [ArgoCD UI](quickstart-03.md#查看组件信息)。以 https://argocd.deployment1.119-8-58-20.nip.io:30443 为例，只需将“119-8-58-20”替换为部署运行时集群的访问IP即可。
 2. 点击 log in via dex，将跳转到 GitLab UI 地址；填写您的 GitLab 账号密码并点击登录，将通过该账号单点录入 ArgoCD、并在 ArgoCD UI 呈现被授权产品相关的 ArgoCD applications。ArgoCD applications 与产品的部署运行时对应。
 3. 点击 ArgoCD UI 左侧菜单栏的“设置”，将跳转到 ArgoCD 的设置功能界面；点击 projects，可以查看被授权产品相关的 ArgoCD projects。ArgoCD projects 与产品对应。
 
