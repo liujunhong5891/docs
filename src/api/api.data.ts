@@ -29,15 +29,15 @@ export default {
   // read from fs and generate the data
 
   load(): APIGroup[] {
-    // 临时注释 API 一级菜单，只保留 guide 一级目录
-    // return (sidebar as MultiSidebarConfig)['/api/'].map((group) => ({
-    //   text: group.text,
-    //   anchor: slugify(group.text),
-    //   items: group.items.map((item) => ({
-    //     ...item,
-    //     headers: parsePageHeaders(item.link)
-    //   }))
-    // }))
+    // 临时注释 API 一级菜单，只保留 guide 一级目录，将载入 SidebarConfig 的路径从 /api/ 变更为 /guide/
+    return (sidebar as MultiSidebarConfig)['/guide/'].map((group) => ({
+      text: group.text,
+      anchor: slugify(group.text),
+      items: group.items.map((item) => ({
+        ...item,
+        headers: parsePageHeaders(item.link)
+      }))
+    }))
   }
 }
 
