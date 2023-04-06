@@ -93,8 +93,7 @@ onMounted(async () => {
 
 <style scoped>
 section {
-  /* padding: 42px 32px; */
-  padding: 32px 22px;
+  padding: 42px 32px;
 }
 
 #hero {
