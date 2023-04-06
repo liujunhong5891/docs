@@ -20,8 +20,7 @@
 
 @media (min-width: 768px) {
   .ThemeContact {
-    /* padding: 48px 32px; */
-    padding: 40px 30px;
+    padding: 48px 32px;
   }
 }
 
@@ -33,7 +32,7 @@
 .text {
   text-align: center;
   line-height: 24px;
-  font-size: 16px;
+  font-size: 10px;
   font-weight: 500;
   transition: color 0.25s;
 }
