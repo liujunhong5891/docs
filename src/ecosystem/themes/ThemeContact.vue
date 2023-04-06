@@ -20,7 +20,8 @@
 
 @media (min-width: 768px) {
   .ThemeContact {
-    padding: 48px 32px;
+    /* padding: 48px 32px; */
+    padding: 40px 30px;
   }
 }
 

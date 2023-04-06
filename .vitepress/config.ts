@@ -379,9 +379,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   themeConfig: {
     nav,
-    sidebar,
-    // 修改 sidebar 宽度
-    width: '50px'
+    sidebar
     // 修改顶部栏位的内容，在此配置【.】
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
