@@ -70,4 +70,4 @@ git remote set-url origin xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 查看产品的部署运行时环境：
 1. 选中某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、运行时长、运行实例数等。
-2. 选中某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。
+2. 选中某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。详情参考 [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)。
