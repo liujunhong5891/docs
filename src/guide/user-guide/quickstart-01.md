@@ -22,7 +22,7 @@ outline: deep
 ## 提交产品配置清单
 通过 Nautes CLI 提交产品、环境、项目、代码库、部署运行时等资源文件，这些资源文件组成了“产品配置清单”。提交成功后，将根据产品配置清单向部署运行时集群实施自动部署，以安装产品的部署运行时环境。
 
-1. 克隆 [产品配置库模板](https://gitlab.bluzin.io/nautes-labs/cli.git) 的代码库，批量替换产品配置库模板中的变量 suffix。
+1. 克隆 [产品配置库模板](https://gitlab.bluzin.io/nautes-labs/cli.git) 的代码库，相对路径为“examples/demp.yaml”，批量替换产品配置库模板中的变量 suffix。
 
 2. 下载 [命令行工具](https://gitlab.bluzin.io/nautes-labs/cli.git)，执行以下命令。其中，“examples/demo.yaml” 指在产品配置库模板的代码库中的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 [Nautes API Server 的访问地址](quickstart-03.md#查看组件信息)。执行成功后，将生成产品配置清单，并自动安装产品的部署运行时环境。
 ```Shell
