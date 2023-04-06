@@ -27,16 +27,18 @@ export default {
   // declare files that should trigger HMR
   watch: './*.md',
   // read from fs and generate the data
-  load(): APIGroup[] {
-    return (sidebar as MultiSidebarConfig)['/api/'].map((group) => ({
-      text: group.text,
-      anchor: slugify(group.text),
-      items: group.items.map((item) => ({
-        ...item,
-        headers: parsePageHeaders(item.link)
-      }))
-    }))
-  }
+
+  // 临时注释 API 一级菜单，只保留 guide 一级目录
+  // load(): APIGroup[] {
+  //   return (sidebar as MultiSidebarConfig)['/api/'].map((group) => ({
+  //     text: group.text,
+  //     anchor: slugify(group.text),
+  //     items: group.items.map((item) => ({
+  //       ...item,
+  //       headers: parsePageHeaders(item.link)
+  //     }))
+  //   }))
+  // }
 }
 
 const headersCache = new Map<
