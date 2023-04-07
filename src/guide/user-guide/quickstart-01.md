@@ -8,8 +8,7 @@ outline: deep
 [注册部署运行时集群](#注册部署运行时集群)  
 [提交产品配置清单](#提交产品配置清单)  
 [提交部署配置清单](#提交部署配置清单)  
-[跟踪部署过程和结果](#跟踪部署过程和结果)
-
+[查看部署结果](#查看部署结果)
 
 ## 安装部署
 
@@ -69,5 +68,5 @@ git remote set-url origin xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 3. 点击 ArgoCD UI 左侧菜单栏的“设置”，将跳转到 ArgoCD 的设置功能界面；点击 projects，可以查看被授权产品相关的 ArgoCD projects。ArgoCD projects 与产品对应。
 
 查看产品的部署运行时环境：
-1. 选择某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、运行时长、运行实例数等。
+1. 选择某个 ArgoCD application，将跳转到 application 的详情界面，并呈现部署运行时环境中的资源，例如 deployment、service 等。可以查看资源的类型、名称、运行状态、健康状态、运行时长、运行实例数等。
 2. 选择某个资源，可以查看资源的资源清单、事件、日志等，并对该资源执行同步、重启、删除等操作。由于 ArgoCD 监听了产品的代码库，因此无论在 ArgoCD 中怎么操作，最终都将与代码库中的部署配置清单保持一致。
