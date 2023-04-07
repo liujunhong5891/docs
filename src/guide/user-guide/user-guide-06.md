@@ -3,7 +3,7 @@ outline: deep
 ---
 # 查看部署结果
 
-在开始本节之前，请确保您已阅读 [概述](user-guide-00.md) 章节，了解 Nautes 的主流程和相关术语；并且已经创建了至少一个部署运行时，详情参见 [维护部署运行时](user-guide-05.md)。
+在开始本节之前，请确保您已阅读 [概述](user-guide-00.md) 章节，了解创建运行时环境的主流程和相关术语；并且已经创建了至少一个部署运行时，详情参见 [维护部署运行时](user-guide-05.md)。
 
 在部署产品的过程中或者部署完成后，支持通过 ArgoCD 控制台和 kubectl 命令行两种方式查看部署结果。产品分别与 ArgoCD 中的 project、Kubernetes 集群中的 namespace 建立对应关系，借助 ArgoCD project 和 Kubernetes namespace 既定规则对产品进行权限管理。
 
