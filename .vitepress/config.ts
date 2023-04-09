@@ -9,7 +9,7 @@ import { jobsPlugin } from './jobsMdPlugin'
 const nav: ThemeConfig['nav'] = [
   {
     text: '文档',
-    link: '/guide/user-guide/user-guide-00',
+    link: '/guide/user-guide/introduction',
     activeMatch: `^/(guide|style-guide|cookbook|examples)/`
   }
 ]
