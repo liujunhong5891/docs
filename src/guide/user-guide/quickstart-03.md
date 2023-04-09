@@ -17,7 +17,7 @@ Nautes 支持基于公有云、私有云、主机、及 Kubernets 集群进行�
 git clone https://github.com/nautes-labs/installer.git
 ```
 2. 修改项目根目录下的 vars.yaml 文件，其中 access_key 和 secret_key 必须填写为阿里云账号的 AccessKey，其他变量可采用默认值。
-3. 执行 start.sh 脚本开始部署：
+3. 执行 `start.sh` 脚本开始部署：
 ```bash
 sh start.sh
 ```
@@ -45,7 +45,7 @@ sh start.sh
 git clone https://github.com/nautes-labs/installer.git
 ```
 2. 修改项目根目录下的 vars.yaml 文件，填写 access_key 和 secret_key。
-3. 执行 destroy.sh 脚本开始销毁环境：
+3. 执行 `destroy.sh` 脚本开始销毁环境：
 ```bash
 sh destroy.sh
 ```
