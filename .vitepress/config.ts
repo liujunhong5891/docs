@@ -133,7 +133,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         { text: '维护代码库', link: '/guide/user-guide/user-guide-03' },
         { text: '维护环境', link: '/guide/user-guide/user-guide-04' },
         { text: '维护部署运行时', link: '/guide/user-guide/user-guide-05' },
-        { text: '跟踪部署过程和结果', link: '/guide/user-guide/user-guide-06' }
+        { text: '查看部署结果', link: '/guide/user-guide/user-guide-06' }
       ]
     }
     // {
