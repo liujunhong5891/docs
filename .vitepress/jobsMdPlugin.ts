@@ -26,6 +26,7 @@ const excludedPages = [
   'guide/CICD-quickStart.md',
   'guide/docs-overview.md',
   'guide/default.md',
+  'guide/user-guide/introduction.md',
   'guide/user-guide/quickstart-01.md',
   'guide/user-guide/quickstart-02.md',
   'guide/user-guide/quickstart-03.md',
