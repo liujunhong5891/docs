@@ -9,110 +9,13 @@ import { jobsPlugin } from './jobsMdPlugin'
 const nav: ThemeConfig['nav'] = [
   {
     text: '文档',
-    link: 'guide/docs-overview.md',
+    link: '/guide/user-guide/user-guide-00',
     activeMatch: `^/(guide|style-guide|cookbook|examples)/`
-    // items: [
-    //   { text: 'Overview', link: 'guide/docs-overview.md' }
-      // { text: 'Tutorial', link: '/tutorial/' },
-      // { text: 'Examples', link: '/examples/' },
-      // { text: 'Quick Start', link: '/guide/quick-start' }
-      // { text: 'Style Guide', link: '/style-guide/' },
-    // ]
   }
-  // {
-  //   text: 'API',
-  //   // activeMatch: `^/api/`,
-  //   link: ''
-  //   // link: '/api/'
-  // }
-  // {
-  //   text: 'Github',
-  //   link: 'https://github.com/lanbingcloud'
-  // },
-  // {
-  //   text: '视频',
-  //   link: 'https://space.bilibili.com/404408807/?spm_id_from=333.999.0.0'
-  // },
-  // {
-  //   text: '社区',
-  //   link: ''
-  // }
-  // {
-  //   text: 'Ecosystem',
-  //   activeMatch: `^/ecosystem/`,
-  //   items: [
-  //     {
-  //       text: 'Resources',
-  //       items: [
-  //         { text: 'Partners', link: '/partners/' },
-  //         { text: 'Themes', link: '/ecosystem/themes' },
-  //         { text: 'Jobs', link: 'https://vuejobs.com/?ref=vuejs' },
-  //         { text: 'T-Shirt Shop', link: 'https://vue.threadless.com/' }
-  //       ]
-  //     },
-  //     {
-  //       text: 'Official Libraries',
-  //       items: [
-  //         { text: 'Vue Router', link: 'https://router.vuejs.org/' },
-  //         { text: 'Pinia', link: 'https://pinia.vuejs.org/' },
-  //         { text: 'Tooling Guide', link: '/guide/scaling-up/tooling.html' }
-  //       ]
-  //     },
-  //     {
-  //       text: 'Video Courses',
-  //       items: [
-  //         {
-  //           text: 'Vue Mastery',
-  //           link: 'https://www.vuemastery.com/courses/'
-  //         },
-  //         {
-  //           text: 'Vue School',
-  //           link: 'https://vueschool.io/?friend=vuejs&utm_source=Vuejs.org&utm_medium=Link&utm_content=Navbar%20Dropdown'
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       text: 'Help',
-  //       items: [
-  //         {
-  //           text: 'Discord Chat',
-  //           link: 'https://discord.com/invite/HBherRA'
-  //         },
-  //         {
-  //           text: 'GitHub Discussions',
-  //           link: 'https://github.com/vuejs/core/discussions'
-  //         },
-  //         { text: 'DEV Community', link: 'https://dev.to/t/vue' }
-  //       ]
-  //     },
-  //     {
-  //       text: 'News',
-  //       items: [
-  //         { text: 'Blog', link: 'https://blog.vuejs.org/' },
-  //         { text: 'Twitter', link: 'https://twitter.com/vuejs' },
-  //         { text: 'Newsletter', link: 'https://news.vuejs.org/' },
-  //         { text: 'Events', link: 'https://events.vuejs.org/' }
-  //       ]
-  //     }
-  //   ]
-  // },
 ]
 
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [
-    {
-      text: '概述',link: '/guide/user-guide/user-guide-00'
-    },
-    // {
-    //   text: '核心概念',
-    //   items: [
-    //     {
-    //       text: 'gitops',
-    //       link: '/guide/default'
-    //     },
-    //     { text: 'operator', link: '/guide/default' }
-    //   ]
-    // },
     {
       text: '快速入门',
       items: [
@@ -124,6 +27,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '用户指南',
       items: [
+        { text: '概述', link: '/guide/user-guide/user-guide-00' },
         { text: '注册集群', link: '/guide/default' },
         { text: '维护产品', link: '/guide/user-guide/user-guide-01' },
         { text: '维护项目', link: '/guide/user-guide/user-guide-02' },
@@ -133,192 +37,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         { text: '查看部署结果', link: '/guide/user-guide/user-guide-06' }
       ]
     }
-    // {
-    //   text: '开发指南',
-    //   items: [
-    //     { text: '筹备中', link: '/guide/default' }
-    //   ]
-    // },
-    // {
-    //   text: '运维指南',
-    //   items: [
-    //     { text: '筹备中', link: '/guide/default' }
-    //   ]
-    // },
-    // {
-    //   text: 'API参考',
-    //   items: [
-    //     {
-    //       text: '筹备中',
-    //       link: '/guide/default'
-    //     }
-    //   ]
-    // },
-    // {
-    //   text: '常见问题',
-    //   items: [
-    //     { text: '筹备中', link: '/guide/default' }
-    //   ]
-    // },
-    // {
-    //   text: '演示DEMO',
-    //   items: [
-    //     {
-    //       text: '通过ArgoCD部署和管理CI/CD环境',
-    //       link: '/guide/CICD-quickStart'
-    //     },
-    //     {
-    //       text: '用Tekton和ArgoEvents构建Kubernetes原生的流水线',
-    //       link: '/guide/CICD-quickStart'
-    //     },
-    //     { text: '集成Tekton和ArgoCD', link: '/guide/default' },
-    //     { text: 'Github界面访问Tekton和ArgoCD', link: '/guide/default' },
-    //     { text: '实现Kubernetes/Tekton/ArgoCD的统一认证', link: '/guide/default' },
-    //     { text: '实现Kubernetes/Tekton/ArgoCD的统一权限', link: '/guide/default' }
-    //   ]
-    // }
   ]
-  // '/api/': [
-  //   {
-  //     text: 'Global API',
-  //     items: [
-  //       { text: 'Application', link: '/api/application' },
-  //       {
-  //         text: 'General',
-  //         link: '/api/general'
-  //       }
-  //     ]
-  //   }
-  // ]
-  // '/examples/': [
-  //   {
-  //     text: 'Basic',
-  //     items: [
-  //       {
-  //         text: 'Hello World',
-  //         link: '/examples/#hello-world'
-  //       },
-  //       {
-  //         text: 'Handling User Input',
-  //         link: '/examples/#handling-input'
-  //       },
-  //       {
-  //         text: 'Attribute Bindings',
-  //         link: '/examples/#attribute-bindings'
-  //       },
-  //       {
-  //         text: 'Conditionals and Loops',
-  //         link: '/examples/#conditionals-and-loops'
-  //       },
-  //       {
-  //         text: 'Form Bindings',
-  //         link: '/examples/#form-bindings'
-  //       },
-  //       {
-  //         text: 'Simple Component',
-  //         link: '/examples/#simple-component'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     text: 'Practical',
-  //     items: [
-  //       {
-  //         text: 'Markdown Editor',
-  //         link: '/examples/#markdown'
-  //       },
-  //       {
-  //         text: 'Fetching Data',
-  //         link: '/examples/#fetching-data'
-  //       },
-  //       {
-  //         text: 'Grid with Sort and Filter',
-  //         link: '/examples/#grid'
-  //       },
-  //       {
-  //         text: 'Tree View',
-  //         link: '/examples/#tree'
-  //       },
-  //       {
-  //         text: 'SVG Graph',
-  //         link: '/examples/#svg'
-  //       },
-  //       {
-  //         text: 'Modal with Transitions',
-  //         link: '/examples/#modal'
-  //       },
-  //       {
-  //         text: 'List with Transitions',
-  //         link: '/examples/#list-transition'
-  //       },
-  //       {
-  //         text: 'TodoMVC',
-  //         link: '/examples/#todomvc'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     // https://eugenkiss.github.io/7guis/
-  //     text: '7 GUIs',
-  //     items: [
-  //       {
-  //         text: 'Counter',
-  //         link: '/examples/#counter'
-  //       },
-  //       {
-  //         text: 'Temperature Converter',
-  //         link: '/examples/#temperature-converter'
-  //       },
-  //       {
-  //         text: 'Flight Booker',
-  //         link: '/examples/#flight-booker'
-  //       },
-  //       {
-  //         text: 'Timer',
-  //         link: '/examples/#timer'
-  //       },
-  //       {
-  //         text: 'CRUD',
-  //         link: '/examples/#crud'
-  //       },
-  //       {
-  //         text: 'Circle Drawer',
-  //         link: '/examples/#circle-drawer'
-  //       },
-  //       {
-  //         text: 'Cells',
-  //         link: '/examples/#cells'
-  //       }
-  //     ]
-  //   }
-  // ],
-  // '/style-guide/': [
-  //   {
-  //     text: 'Style Guide',
-  //     items: [
-  //       {
-  //         text: 'Overview',
-  //         link: '/style-guide/'
-  //       },
-  //       {
-  //         text: 'A - Essential',
-  //         link: '/style-guide/rules-essential'
-  //       },
-  //       {
-  //         text: 'B - Strongly Recommended',
-  //         link: '/style-guide/rules-strongly-recommended'
-  //       },
-  //       {
-  //         text: 'C - Recommended',
-  //         link: '/style-guide/rules-recommended'
-  //       },
-  //       {
-  //         text: 'D - Use with Caution',
-  //         link: '/style-guide/rules-use-with-caution'
-  //       }
-  //     ]
-  //   }
-  // ]
 }
 
 // Placeholder of the i18n config for @vuejs-translations.
@@ -338,40 +57,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   base: '/docs/',
 
   head: [
-    // ['meta', { name: 'theme-color', content: '#3c8772' }],
-    // ['meta', { name: 'twitter:site', content: '@vuejs' }],
-    // ['meta', { name: 'twitter:card', content: 'summary' }],
-    // [
-    //   'meta',
-    //   {
-    //     name: 'twitter:image',
-    //     content: 'https://vuejs.org/images/logo.png'
-    //   }
-    // ],
-    // [
-    //   'link',
-    //   {
-    //     rel: 'preconnect',
-    //     href: 'https://sponsors.vuejs.org'
-    //   }
-    // ],
-    // [
-    //   'script',
-    //   {},
-    //   fs.readFileSync(
-    //     path.resolve(__dirname, './inlined-scripts/restorePreference.js'),
-    //     'utf-8'
-    //   )
-    // ],
-    // [
-    //   'script',
-    //   {
-    //     src: 'https://cdn.usefathom.com/script.js',
-    //     'data-site': 'XNOLWPLB',
-    //     'data-spa': 'auto',
-    //     defer: ''
-    //   }
-    // ]
   ],
 
   themeConfig: {
