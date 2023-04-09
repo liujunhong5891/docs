@@ -101,10 +101,7 @@ const nav: ThemeConfig['nav'] = [
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [
     {
-      text: '概述',
-      items: [
-        { text: '概述', link: '/guide/user-guide/user-guide-00' },
-      ]
+      text: '概述',link: '/guide/user-guide/user-guide-00'
     },
     // {
     //   text: '核心概念',
