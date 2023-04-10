@@ -1,5 +1,3 @@
-<script>
-if (typeof window !== "undefined") {
-  import('./.vitepress/clientScript.js');
-}
+<script type="module">
+  import './.vitepress/clientScript.js';
 </script>

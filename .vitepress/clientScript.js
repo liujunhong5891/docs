@@ -1,5 +1,7 @@
 // .vitepress/clientScript.js
-if (typeof window !== "undefined") {
+window.addEventListener("DOMContentLoaded", () => {
+    // 在此处添加需要在浏览器环境中执行的代码
+    // 例如：操作 document 对象
     if (app.route.path === '/') {
         // 在此处添加需要在浏览器环境中执行的代码
         document.addEventListener("DOMContentLoaded", function () {
@@ -13,5 +15,5 @@ if (typeof window !== "undefined") {
         window.location.replace(newUrl.toString());
         });
     }
-  }
+  });
   
