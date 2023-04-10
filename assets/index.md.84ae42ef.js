@@ -1,1 +1,0 @@
-import{_ as e,c as d,o as t}from"./app.37ed4dfe.js";"undefined"!=typeof window&&window.location.replace("/docs/guide/user-guide/introduction");const n=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"index.md"}');const i=e({name:"index.md"},[["render",function(e,n,i,o,r,a){return t(),d("div")}]]);export{n as __pageData,i as default};
