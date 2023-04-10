@@ -5,6 +5,8 @@ import type { Config as ThemeConfig } from '@vue/theme'
 import baseConfig from '@vue/theme/config'
 import { headerPlugin } from './headerMdPlugin'
 import { jobsPlugin } from './jobsMdPlugin'
+// .vitepress/config.js
+import clientAppEnhance from './clientAppEnhance';
 
 const nav: ThemeConfig['nav'] = [
   {
@@ -41,22 +43,15 @@ export const sidebar: ThemeConfig['sidebar'] = {
   ]
 }
 
-// Placeholder of the i18n config for @vuejs-translations.
-// const i18n: ThemeConfig['i18n'] = {
-// }
-
 export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
-
   lang: 'en-US',
   title: 'Lanbing', // 修改标题
-  // description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
   base: '/docs/',
-
   head: [
   ],
 
@@ -64,38 +59,10 @@ export default defineConfigWithTheme<ThemeConfig>({
     nav,
     sidebar,
     // 修改 sidebar 宽度
-    sidebarWidth: '200px'
-    // 修改顶部栏位的内容，在此配置【.】
-    // sidebarDepth : 3
-    // Placeholder of the i18n config for @vuejs-translations.
-    // i18n,
-
-    // algolia: {
-    //   indexName: 'vuejs',
-    //   appId: 'ML0LEBN7FQ',
-    //   apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
-    //   searchParameters: {
-    //     facetFilters: ['version:v3']
-    //   }
-    // },
-
-    // carbonAds: {
-    //   code: 'CEBDT27Y',
-    //   placement: 'vuejsorg'
-    // },
-
-    // socialLinks: [
-    //   { icon: 'languages', link: '/translations/' },
-    //   { icon: 'github', link: 'https://github.com/vuejs/' },
-    //   { icon: 'twitter', link: 'https://twitter.com/vuejs' },
-    //   { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
-    // ],
-
-    // editLink: {
-    //   repo: 'vuejs/docs',
-    //   text: 'Edit this page on GitHub'
-    // },
-
+    sidebarWidth: '200px',
+    footer: `
+      <a href="/docs/guide/user-guide/introduction">概述</a>
+    `,
     // footer: {
     //   license: {
     //     text: 'MIT License',
@@ -108,9 +75,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
-      // lineNumbers: true
     }
-    // lineNumbers: true
   },
 
   vite: {
@@ -144,4 +109,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   vue: {
     reactivityTransform: true
   }
+
+    
+  
 })

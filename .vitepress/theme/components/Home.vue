@@ -23,7 +23,7 @@ onMounted(async () => {
     </p>
     <p class="actions">
       <vue-mastery-modal />
-      <a class="get-started" href="/guide/introduction.html">
+      <a class="get-started" href="/guide/user-guide/introduction.md">
         Get Started
         <svg
           class="icon"

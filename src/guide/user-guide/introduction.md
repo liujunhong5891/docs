@@ -1,3 +1,7 @@
+---
+footerLink: /docs/guide/user-guide/introduction
+---
+
 # 概述
 
 Nautes 是Kubernetes原生的开源一站式开发者平台，融合了 DevOps 和 GitOps 理念和最佳实践，以可插拔的方式集成了业界最优秀的云原生开源项目。
