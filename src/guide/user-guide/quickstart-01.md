@@ -5,7 +5,8 @@ outline: deep
 
 本文档将描述创建部署运行时环境的执行过程。包括以下步骤：  
 [安装部署](#安装部署)  
-[注册部署运行时集群](#注册部署运行时集群)  
+[注册基于物理集群的运行时集群](#注册基于物理集群的运行时集群)   
+[注册基于虚拟集群的运行时集群](#注册基于虚拟集群的运行时集群)   
 [提交产品配置清单](#提交产品配置清单)  
 [提交部署配置清单](#提交部署配置清单)  
 [查看部署结果](#查看部署结果)
@@ -42,9 +43,9 @@ nautes apply -f examples/demo-cluster-virtual-worker.yaml -t $gitlab-access-toke
 ## 提交产品配置清单
 支持通过 Nautes CLI 提交产品、环境、项目、代码库、部署运行时等资源文件，这些资源文件组成了“产品配置清单”。提交成功后，将根据产品配置清单向部署运行时集群实施部署，以安装产品的部署运行时环境。
 
-1. 克隆 [产品配置库模板](https://gitlab.bluzin.io/nautes-labs/cli.git) 的代码库到本地，批量替换产品配置库模板中的变量 suffix。
+1. 克隆 [产品配置库模板](https://gitlab.bluzin.io/nautes-labs/cli.git) 的代码库到本地，批量替换产品配置库模板中的变量 suffix，并更新 Environment 资源的 cluster 的属性值为部署运行时集群的名称。
 
-2. 下载 [命令行工具](https://gitlab.bluzin.io/nautes-labs/cli.git)，执行以下命令。其中，“examples/demo.yaml” 指存储产品配置库模板的代码库的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 [Nautes API Server 的访问地址](quickstart-03.md#查看组件信息)。执行成功后，将生成产品配置清单，并安装产品的部署运行时环境。
+2. 下载 [命令行工具](https://gitlab.bluzin.io/nautes-labs/cli.git)，执行以下命令。其中，“examples/demo.yaml” 指存储产品配置库模板的代码库的相对路径，gitlab-access-token 是您的 GitLab 访问令牌，api-server-address 是 [Nautes API Server 的访问地址](quickstart-03.md#查看组件信息)。执行成功后，将生成产品配置清单，并在指定集群上安装产品的部署运行时环境。
 ```Shell
 nautes apply -f examples/demo.yaml -t $gitlab-access-token -s $api-server-address
 ```

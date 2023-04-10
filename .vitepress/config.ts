@@ -31,7 +31,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
       text: '用户指南',
       items: [
         { text: '主体流程', link: '/guide/user-guide/user-guide-00' },
-        { text: '注册集群', link: '/guide/default' },
+        { text: '注册集群', link: '/guide/user-guide/user-guide-07' },
         { text: '维护产品', link: '/guide/user-guide/user-guide-01' },
         { text: '维护项目', link: '/guide/user-guide/user-guide-02' },
         { text: '维护代码库', link: '/guide/user-guide/user-guide-03' },
