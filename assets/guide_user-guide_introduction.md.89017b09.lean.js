@@ -1,1 +1,0 @@
-import{_ as e,c as i,o as t,d as r}from"./app.7ca99584.js";const a=JSON.parse('{"title":"概述","description":"","frontmatter":{},"headers":[],"relativePath":"guide/user-guide/introduction.md"}'),s={name:"guide/user-guide/introduction.md"},p=[r("",9)];const l=e(s,[["render",function(e,r,a,s,l,n){return t(),i("div",null,p)}]]);export{a as __pageData,l as default};
