@@ -1,3 +1,1 @@
-<script type="module">
-  import './.vitepress/clientScript.js';
-</script>
+<script src=".vitepress/clientScript.js"></script>
