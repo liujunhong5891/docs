@@ -12,6 +12,8 @@ import VueJobs from './components/VueJobs.vue'
 import VueSchoolLink from './components/VueSchoolLink.vue'
 import Banner from './components/Banner.vue'
 import VueMasteryBanner from './components/VueMasteryBanner.vue'
+import CustomHomepageRedirect from './components/CustomHomepageRedirect.vue'
+
 
 export default Object.assign({}, VPTheme, {
   Layout: () => {
@@ -23,6 +25,7 @@ export default Object.assign({}, VPTheme, {
       // ]),
       // 'sidebar-top': () => h(PreferenceSwitch)
       // 'aside-mid': () => h(SponsorsAside)
+      CustomHomepageRedirect
     })
   },
   enhanceApp({ app }: { app: App }) {
