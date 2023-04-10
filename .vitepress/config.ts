@@ -42,13 +42,8 @@ export const sidebar: ThemeConfig['sidebar'] = {
   ]
 }
 
-// Placeholder of the i18n config for @vuejs-translations.
-// const i18n: ThemeConfig['i18n'] = {
-// }
-
 export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
-
   lang: 'en-US',
   title: 'Lanbing', // 修改标题
   srcDir: 'src',
@@ -65,37 +60,6 @@ export default defineConfigWithTheme<ThemeConfig>({
     sidebar,
     // 修改 sidebar 宽度
     sidebarWidth: '200px',
-    // 修改顶部栏位的内容，在此配置【.】
-    // sidebarDepth : 3
-    // Placeholder of the i18n config for @vuejs-translations.
-    // i18n,
-
-    // algolia: {
-    //   indexName: 'vuejs',
-    //   appId: 'ML0LEBN7FQ',
-    //   apiKey: 'f49cbd92a74532cc55cfbffa5e5a7d01',
-    //   searchParameters: {
-    //     facetFilters: ['version:v3']
-    //   }
-    // },
-
-    // carbonAds: {
-    //   code: 'CEBDT27Y',
-    //   placement: 'vuejsorg'
-    // },
-
-    // socialLinks: [
-    //   { icon: 'languages', link: '/translations/' },
-    //   { icon: 'github', link: 'https://github.com/vuejs/' },
-    //   { icon: 'twitter', link: 'https://twitter.com/vuejs' },
-    //   { icon: 'discord', link: 'https://discord.com/invite/HBherRA' }
-    // ],
-
-    // editLink: {
-    //   repo: 'vuejs/docs',
-    //   text: 'Edit this page on GitHub'
-    // },
-
     footer: {
       license: {
         text: 'MIT License',
@@ -108,9 +72,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     config(md) {
       md.use(headerPlugin).use(jobsPlugin)
-      // lineNumbers: true
     }
-    // lineNumbers: true
   },
 
   vite: {
