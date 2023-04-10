@@ -64,7 +64,7 @@ export default defineConfigWithTheme<ThemeConfig>({
     nav,
     sidebar,
     // 修改 sidebar 宽度
-    sidebarWidth: '200px'
+    sidebarWidth: '200px',
     // 修改顶部栏位的内容，在此配置【.】
     // sidebarDepth : 3
     // Placeholder of the i18n config for @vuejs-translations.
@@ -96,13 +96,13 @@ export default defineConfigWithTheme<ThemeConfig>({
     //   text: 'Edit this page on GitHub'
     // },
 
-    // footer: {
-    //   license: {
-    //     text: 'MIT License',
-    //     link: 'https://opensource.org/licenses/MIT'
-    //   },
-    //   copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
-    // }
+    footer: {
+      license: {
+        text: 'MIT License',
+        link: 'https://opensource.org/licenses/MIT'
+      },
+      copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
+    }
   },
 
   markdown: {
