@@ -56,7 +56,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
   base: '/docs/',
-  // plugins: [customRoutes], // 添加自定义路由的插件
+  plugins: [customRoutes], // 添加自定义路由的插件
 
   head: [
   ],
