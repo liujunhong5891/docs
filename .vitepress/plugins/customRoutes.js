@@ -3,7 +3,7 @@ const defaultRouteRedirect = (app) => {
       if (to.path === '/') {
         next('/docs/guide/user-guide/introduction');
       } else {
-        next();
+        next('/guide/user-guide/introduction');
       }
     });
   };
