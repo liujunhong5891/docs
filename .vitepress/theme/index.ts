@@ -25,7 +25,6 @@ export default Object.assign({}, VPTheme, {
       // ]),
       // 'sidebar-top': () => h(PreferenceSwitch)
       // 'aside-mid': () => h(SponsorsAside)
-      CustomHomepageRedirect
     })
   },
   enhanceApp({ app }: { app: App }) {
@@ -34,5 +33,8 @@ export default Object.assign({}, VPTheme, {
     app.provide('filter-headers', filterHeadersByPreference)
     app.component('VueSchoolLink', VueSchoolLink)
     app.component('VueJobs', VueJobs)
-  }
+  },
+  components: {
+    CustomHomepageRedirect,
+  },
 })
