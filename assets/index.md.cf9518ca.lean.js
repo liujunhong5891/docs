@@ -1,1 +1,0 @@
-import{_ as e}from"./chunks/brief-architecture.52ac7212.js";import{_ as i,o as r,c as a,a as t}from"./app.43e81688.js";const p=JSON.parse('{"title":"概述","description":"","frontmatter":{},"headers":[],"relativePath":"index.md"}'),s={name:"index.md"},l=[t("",9)];const n=i(s,[["render",function(e,i,t,p,s,n){return r(),a("div",null,l)}]]);export{p as __pageData,n as default};
