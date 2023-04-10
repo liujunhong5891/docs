@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as n}from"./app.7ca99584.js";"undefined"!=typeof window&&window.location.replace("/docs/guide/user-guide/introduction");const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"index.md"}');const i=e({name:"index.md"},[["render",function(e,d,i,o,r,a){return n(),t("div")}]]);export{d as __pageData,i as default};
