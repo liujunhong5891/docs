@@ -19,7 +19,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
     {
       text: '快速入门',
       items: [
-        { text: '概述', link: '/guide/user-guide/introduction' },
+        { text: '概述', link: 'index' },
         { text: '安装部署', link: '/guide/user-guide/quickstart-03' },
         { text: '创建运行时环境', link: '/guide/user-guide/quickstart-01' },
         { text: '销毁运行时环境', link: '/guide/user-guide/quickstart-02' }
