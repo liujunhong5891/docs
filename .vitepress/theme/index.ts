@@ -17,12 +17,12 @@ export default Object.assign({}, VPTheme, {
   Layout: () => {
     // @ts-ignore
     return h(VPTheme.Layout, null, {
-      banner: () => h(Banner),
-      banner: () => h('div', {}, [
-        h(VueMasteryBanner)
-      ]),
-      'sidebar-top': () => h(PreferenceSwitch),
-      'aside-mid': () => h(SponsorsAside)
+      // banner: () => h(Banner),
+      // banner: () => h('div', {}, [
+      //   h(VueMasteryBanner)
+      // ]),
+      'sidebar-top': () => h(PreferenceSwitch)
+      // 'aside-mid': () => h(SponsorsAside)
     })
   },
   enhanceApp({ app }: { app: App }) {
