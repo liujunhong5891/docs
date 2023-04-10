@@ -5,7 +5,6 @@ import type { Config as ThemeConfig } from '@vue/theme'
 import baseConfig from '@vue/theme/config'
 import { headerPlugin } from './headerMdPlugin'
 import { jobsPlugin } from './jobsMdPlugin'
-import customRoutes from './plugins/customRoutes'
 
 const nav: ThemeConfig['nav'] = [
   {
