@@ -1,7 +1,7 @@
 const defaultRouteRedirect = (app) => {
     app.beforeEach((to, from, next) => {
-      if (to.path === '/docs/') {
-        next('/guide/user-guide/introduction');
+      if (to.path === '/') {
+        next('/docs/guide/user-guide/introduction');
       } else {
         next();
       }
