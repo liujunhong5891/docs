@@ -52,7 +52,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
   base: '/docs/',
-  clientAppEnhance,
   head: [
   ],
 
@@ -61,13 +60,16 @@ export default defineConfigWithTheme<ThemeConfig>({
     sidebar,
     // 修改 sidebar 宽度
     sidebarWidth: '200px',
-    footer: {
-      license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      },
-      copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
-    }
+    footer: `
+      <a href="/docs/guide/user-guide/introduction">概述</a>
+    `,
+    // footer: {
+    //   license: {
+    //     text: 'MIT License',
+    //     link: 'https://opensource.org/licenses/MIT'
+    //   },
+    //   copyright: `Copyright © 2014-${new Date().getFullYear()} Evan You`
+    // }
   },
 
   markdown: {
@@ -107,4 +109,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   vue: {
     reactivityTransform: true
   }
+
+    
+  
 })

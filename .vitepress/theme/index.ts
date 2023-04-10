@@ -24,6 +24,7 @@ export default Object.assign({}, VPTheme, {
       // ]),
       // 'sidebar-top': () => h(PreferenceSwitch)
       // 'aside-mid': () => h(SponsorsAside)
+      'page-bottom': () => h(MyComponent)
     })
   },
   enhanceApp({ app }: { app: App }) {
