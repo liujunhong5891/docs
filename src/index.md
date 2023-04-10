@@ -1,7 +1,7 @@
 <script>
 //   if (typeof window === 'undefined') return;
   if (typeof window !== 'undefined') {
-    // window.location.replace('/guide/user-guide/introduction');
+    window.location.replace('/guide/user-guide/introduction');
     window.addEventListener('DOMContentLoaded', () => {
         if (app.route.path === '/') {
             // 在此处添加需要在浏览器环境中执行的代码
