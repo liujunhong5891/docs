@@ -5,6 +5,7 @@ import type { Config as ThemeConfig } from '@vue/theme'
 import baseConfig from '@vue/theme/config'
 import { headerPlugin } from './headerMdPlugin'
 import { jobsPlugin } from './jobsMdPlugin'
+import customRoutes from './plugins/customRoutes'
 
 const nav: ThemeConfig['nav'] = [
   {
@@ -50,12 +51,12 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   lang: 'en-US',
   title: 'Lanbing', // 修改标题
-  // description: 'Vue.js - The Progressive JavaScript Framework',
   srcDir: 'src',
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
   base: '/docs/',
+  plugins: [customRoutes], // 添加自定义路由的插件
 
   head: [
   ],
