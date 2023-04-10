@@ -55,7 +55,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   srcExclude: ['tutorial/**/description.md'],
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
-  base: '/',
+  base: '/docs/',
 
   head: [
   ],
