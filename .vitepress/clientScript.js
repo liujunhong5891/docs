@@ -1,8 +1,5 @@
-// .vitepress/clientAppEnhance.js
-import { onMounted } from 'vue'
-
-export default function clientAppEnhance({ app }) {
-  onMounted(() => {
+// .vitepress/clientScript.js
+if (typeof window !== "undefined") {
     if (app.route.path === '/') {
         // 在此处添加需要在浏览器环境中执行的代码
         document.addEventListener("DOMContentLoaded", function () {
@@ -16,5 +13,5 @@ export default function clientAppEnhance({ app }) {
         window.location.replace(newUrl.toString());
         });
     }
-  })
-}
+  }
+  

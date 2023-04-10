@@ -6,7 +6,6 @@ import baseConfig from '@vue/theme/config'
 import { headerPlugin } from './headerMdPlugin'
 import { jobsPlugin } from './jobsMdPlugin'
 // .vitepress/config.js
-import clientAppEnhance from './clientAppEnhance'
 
 const nav: ThemeConfig['nav'] = [
   {
@@ -57,7 +56,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   scrollOffset: 'header',
   outDir: '.vitepress/dist',
   base: '/',
-  clientAppEnhance,
 
   head: [
   ],
